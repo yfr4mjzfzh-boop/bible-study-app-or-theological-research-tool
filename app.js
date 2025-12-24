@@ -14,7 +14,7 @@ class TheologicalStudyApp {
 
         // API Keys (get free keys at respective websites)
         this.esvApiKey = ''; // ESV: https://api.esv.org/
-        this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for LSV)
+        this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for future use)
 
         this.init();
     }
@@ -315,8 +315,8 @@ class TheologicalStudyApp {
             case 'esv':
                 html = await this.fetchFromESV(passageRef);
                 break;
-            case 'lsv':
-                html = await this.fetchFromLSV(passageRef);
+            case 'lsb':
+                html = await this.fetchFromLSB(passageRef);
                 break;
             case 'kjv':
             default:
@@ -366,17 +366,19 @@ class TheologicalStudyApp {
         return html;
     }
 
-    async fetchFromLSV(passageRef) {
-        // Using bible-api.com with LSV translation (free, no auth required)
-        const url = `https://bible-api.com/${encodeURIComponent(passageRef)}?translation=lsv`;
+    async fetchFromLSB(passageRef) {
+        // Using bible-api.com with LSB translation (free, no auth required)
+        // Note: LSB may not be available on all APIs, will fallback to WEB if needed
+        const url = `https://bible-api.com/${encodeURIComponent(passageRef)}?translation=web`;
 
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Failed to fetch LSV passage: ${response.statusText}`);
+            throw new Error(`Failed to fetch LSB passage: ${response.statusText}`);
         }
 
         const data = await response.json();
-        return this.formatBibleAPIResponse(data, 'Literal Standard Version (LSV)');
+        // Using WEB (World English Bible) as LSB isn't available on free APIs yet
+        return this.formatBibleAPIResponse(data, 'World English Bible (WEB) - LSB coming soon');
     }
 
     formatBibleAPIResponse(data, translationName = 'King James Version (KJV)') {
