@@ -500,6 +500,57 @@ p {
     margin-bottom: var(--spacing-sm);
 }
 
+/* Tradition-specific badge colors */
+.tradition-badge.tradition-reformed {
+    background-color: #e3f2fd;
+    color: #0071e3;
+}
+
+body.dark-mode .tradition-badge.tradition-reformed {
+    background-color: #1a3a52;
+    color: #0a84ff;
+}
+
+.tradition-badge.tradition-patristic {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+body.dark-mode .tradition-badge.tradition-patristic {
+    background-color: #3a2a1a;
+    color: #ff9800;
+}
+
+.tradition-badge.tradition-catholic {
+    background-color: #f3e5f5;
+    color: #6a1b9a;
+}
+
+body.dark-mode .tradition-badge.tradition-catholic {
+    background-color: #2a1a3a;
+    color: #9c27b0;
+}
+
+.tradition-badge.tradition-orthodox {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+body.dark-mode .tradition-badge.tradition-orthodox {
+    background-color: #1a3a1a;
+    color: #4caf50;
+}
+
+.tradition-badge.tradition-mainline {
+    background-color: #fce4ec;
+    color: #c2185b;
+}
+
+body.dark-mode .tradition-badge.tradition-mainline {
+    background-color: #3a1a2a;
+    color: #e91e63;
+}
+
 .info-box {
     background-color: var(--bg-primary);
     border-radius: var(--radius-md);

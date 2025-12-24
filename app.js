@@ -11,6 +11,8 @@ class TheologicalStudyApp {
         this.darkMode = false;
         this.bibleCache = {}; // Cache API responses
         this.selectedTranslation = 'kjv'; // Default translation
+        this.commentaries = []; // Commentary database
+        this.enabledTraditions = ['reformed', 'patristic']; // Default traditions
 
         // API Keys (get free keys at respective websites)
         this.esvApiKey = ''; // ESV: https://api.esv.org/
@@ -25,11 +27,13 @@ class TheologicalStudyApp {
 
     init() {
         this.loadFromStorage();
+        this.loadCommentaryDatabase();
         this.setupEventListeners();
         this.initializeDarkMode();
         this.renderNotes();
         this.renderBookmarks();
         this.updateTagFilter();
+        this.setupTraditionFilters();
     }
 
     // ===================================
@@ -256,6 +260,9 @@ class TheologicalStudyApp {
 
         // Auto-populate note reference field
         document.getElementById('noteReference').value = title;
+
+        // Update commentary display
+        this.renderCommentary();
     }
 
     getDisplayBookName(bookKey) {
@@ -795,6 +802,165 @@ class TheologicalStudyApp {
         // This would render custom collections
         // Simplified for MVP - can be expanded later
         console.log('Collections:', this.collections);
+    }
+
+    // ===================================
+    // Commentary System
+    // ===================================
+
+    loadCommentaryDatabase() {
+        // Sample commentary entries - this will be expanded with your sources
+        this.commentaries = [
+            {
+                id: 1,
+                reference: 'Romans 8:28',
+                tradition: 'reformed',
+                author: 'John Calvin',
+                source: 'Commentary on Romans',
+                year: 1540,
+                text: 'We know that all things work together for good for those who love God. This passage teaches us that God\'s providence extends over all things, and that even adversities are turned to the benefit of believers. The "good" here is not temporal prosperity, but spiritual and eternal good - our conformity to Christ and ultimate glorification.'
+            },
+            {
+                id: 2,
+                reference: 'Romans 8:28',
+                tradition: 'patristic',
+                author: 'Augustine of Hippo',
+                source: 'On the Predestination of the Saints',
+                year: 428,
+                text: 'Those who are called according to His purpose are predestined to be conformed to the image of His Son. God works all things together for good, not because all things are good in themselves, but because God in His sovereign grace causes them to work for the good of His elect.'
+            },
+            {
+                id: 3,
+                reference: 'John 3:16',
+                tradition: 'reformed',
+                author: 'Charles Spurgeon',
+                source: 'Metropolitan Tabernacle Pulpit',
+                year: 1880,
+                text: 'God so loved the world - not a select few, not merely the nation of Israel, but the world. Yet this love is effectual only in those who believe. The gift of the Son is universal in its offer, but particular in its application. Whosoever believes shall not perish, and this belief is itself a gift of grace.'
+            },
+            {
+                id: 4,
+                reference: 'John 3:16',
+                tradition: 'patristic',
+                author: 'John Chrysostom',
+                source: 'Homilies on John',
+                year: 390,
+                text: 'See how the Son is given. Not by compulsion, not by necessity, but willingly. The Father gave Him, and the Son gave Himself. This is the wonder of God\'s love - that He should give His own Son for those who were His enemies. And what is required? Only faith, only to believe on Him.'
+            }
+        ];
+
+        // In production, you would load from localStorage or a JSON file
+        // this.commentaries = JSON.parse(localStorage.getItem('commentaries')) || this.commentaries;
+    }
+
+    setupTraditionFilters() {
+        const checkboxes = document.querySelectorAll('.tradition-filters input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            // Set initial state
+            checkbox.checked = this.enabledTraditions.includes(checkbox.value);
+
+            // Add event listener
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    this.enabledTraditions.push(e.target.value);
+                } else {
+                    this.enabledTraditions = this.enabledTraditions.filter(t => t !== e.target.value);
+                }
+                this.renderCommentary();
+            });
+        });
+    }
+
+    renderCommentary() {
+        if (!this.currentPassage) {
+            document.getElementById('commentaryDisplay').innerHTML = `
+                <div class="placeholder-message">
+                    <p>Select a passage to view commentary</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Get reference string
+        const bookName = this.getDisplayBookName(this.currentPassage.book);
+        let referenceStr = `${bookName} ${this.currentPassage.chapter}`;
+        if (this.currentPassage.verse) {
+            referenceStr += `:${this.currentPassage.verse}`;
+        }
+
+        // Find matching commentaries
+        const matchingCommentaries = this.commentaries.filter(c => {
+            // Check if tradition is enabled
+            if (!this.enabledTraditions.includes(c.tradition)) {
+                return false;
+            }
+
+            // Check if reference matches
+            // For now, exact match. Could expand to include chapter-level matches
+            return c.reference === referenceStr || c.reference.startsWith(`${bookName} ${this.currentPassage.chapter}:`);
+        });
+
+        const display = document.getElementById('commentaryDisplay');
+
+        if (matchingCommentaries.length === 0) {
+            display.innerHTML = `
+                <div class="placeholder-message">
+                    <p>No commentary available for ${referenceStr}</p>
+                    <p class="text-muted">Commentary can be added for this passage in the commentary database.</p>
+                    <div class="info-box" style="margin-top: 2rem;">
+                        <h4>How to add commentary:</h4>
+                        <p>Commentary entries can be added to the <code>loadCommentaryDatabase()</code> method in app.js.</p>
+                        <p>Future feature: AI-powered synthesis of commentary sources.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // Render commentaries
+        display.innerHTML = matchingCommentaries.map(c => `
+            <div class="commentary-item">
+                <span class="tradition-badge tradition-${c.tradition}">${this.getTraditionLabel(c.tradition)}</span>
+                <h4 style="margin-top: 0.5rem; margin-bottom: 0.5rem;">${this.escapeHtml(c.author)}</h4>
+                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 1rem;">
+                    ${this.escapeHtml(c.source)} (${c.year})
+                </p>
+                <p style="font-family: var(--font-serif); line-height: 1.8;">
+                    ${this.escapeHtml(c.text)}
+                </p>
+            </div>
+        `).join('');
+    }
+
+    getTraditionLabel(tradition) {
+        const labels = {
+            'reformed': 'Reformed',
+            'patristic': 'Patristic',
+            'catholic': 'Catholic',
+            'orthodox': 'Orthodox',
+            'mainline': 'Mainline Protestant'
+        };
+        return labels[tradition] || tradition;
+    }
+
+    addCommentary(commentaryData) {
+        // Method to add new commentary entries
+        const commentary = {
+            id: Date.now(),
+            reference: commentaryData.reference,
+            tradition: commentaryData.tradition,
+            author: commentaryData.author,
+            source: commentaryData.source,
+            year: commentaryData.year || null,
+            text: commentaryData.text,
+            addedAt: new Date().toISOString()
+        };
+
+        this.commentaries.push(commentary);
+        // Could save to localStorage here
+        // localStorage.setItem('commentaries', JSON.stringify(this.commentaries));
+        this.renderCommentary();
+        return commentary;
     }
 
     // ===================================
