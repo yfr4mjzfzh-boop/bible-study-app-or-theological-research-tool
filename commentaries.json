@@ -1,5 +1,37 @@
 [
   {
+    "reference": "Genesis 1:1",
+    "tradition": "reformed",
+    "author": "Matthew Henry",
+    "source": "Commentary on the Whole Bible",
+    "year": 1706,
+    "text": "In the beginning God created the heaven and the earth. Observe here, 1. That the world is not eternal. The world had a beginning. 2. That God is eternal, and has no beginning. Before all worlds, God was. 3. That God made all things out of nothing by the word of his power. There was not any pre-existent matter out of which the world was produced. 4. That the heaven and the earth include the whole universe, all beings besides God. The Creator is eternal, the creature had a beginning."
+  },
+  {
+    "reference": "Genesis 1:1",
+    "tradition": "patristic",
+    "author": "Basil the Great",
+    "source": "Hexaemeron (On the Six Days of Creation)",
+    "year": 370,
+    "text": "In the beginning God created. What a sublime and magnificent beginning! He does not tell us when this beginning was, but simply that there was a beginning. Time had not yet come into existence. The beginning of time was the creation of the heavens and the earth. Before this, there was God alone, existing in eternity. The words 'In the beginning' take us beyond all conception of time to the eternal counsel of God."
+  },
+  {
+    "reference": "Psalm 23:1",
+    "tradition": "reformed",
+    "author": "Charles Spurgeon",
+    "source": "The Treasury of David",
+    "year": 1870,
+    "text": "The LORD is my shepherd. Here is a personal interest - 'my shepherd'; a present tense - 'is'; and a delightful object - 'the LORD.' David had been a shepherd himself, and he could therefore appreciate the care which the Great Shepherd bestows upon His flock. No title can be more rich in consolation than this which the living God assumes - 'The LORD is my shepherd.' It is a covenant title, implying a relationship which nothing can dissolve."
+  },
+  {
+    "reference": "Psalm 23:1",
+    "tradition": "patristic",
+    "author": "Augustine of Hippo",
+    "source": "Expositions on the Psalms",
+    "year": 392,
+    "text": "The Lord feedeth me, and I shall lack nothing. He who hath Christ for his Shepherd needs nothing. Christ is the true Shepherd who gave His life for the sheep. He pastures us in the field of the Scriptures. In the verdant pastures of His word, there is abundance of spiritual nourishment. Under His care, we have all things necessary for life and godliness."
+  },
+  {
     "reference": "Romans 8:28",
     "tradition": "reformed",
     "author": "John Calvin",
@@ -14,6 +46,30 @@
     "source": "On the Predestination of the Saints",
     "year": 428,
     "text": "Those who are called according to His purpose are predestined to be conformed to the image of His Son. God works all things together for good, not because all things are good in themselves, but because God in His sovereign grace causes them to work for the good of His elect."
+  },
+  {
+    "reference": "Romans 8:29-30",
+    "tradition": "reformed",
+    "author": "Matthew Henry",
+    "source": "Commentary on the Whole Bible",
+    "year": 1706,
+    "text": "For whom he did foreknow, he also did predestinate. God's eternal purpose is here unfolded in a golden chain of salvation: foreknowledge, predestination, calling, justification, and glorification. Those whom God foreknew - not merely knew about, but knew with a special, loving knowledge - these he predestined to be conformed to the image of his Son. This is the goal of all God's work in us: Christlikeness."
+  },
+  {
+    "reference": "John 1:1",
+    "tradition": "patristic",
+    "author": "Athanasius",
+    "source": "Against the Arians",
+    "year": 356,
+    "text": "In the beginning was the Word. The Word was not made, but always was. The Word is eternal, co-equal, and co-eternal with the Father. This passage demolishes the Arian heresy which claims the Son was created. The Word is God Himself, the second person of the Trinity. He who is the Word became flesh, but He never ceased to be the eternal Word."
+  },
+  {
+    "reference": "John 1:1",
+    "tradition": "reformed",
+    "author": "John Calvin",
+    "source": "Commentary on John",
+    "year": 1553,
+    "text": "In the beginning was the Word. The Evangelist opens with the divinity of Christ. The Word was in the beginning, which means He is eternal. The Word was with God - distinct in person yet one in essence. The Word was God - possessing the same divine nature. These three declarations establish both the deity and the personal distinction of the Son."
   },
   {
     "reference": "John 3:16",
@@ -32,6 +88,22 @@
     "text": "See how the Son is given. Not by compulsion, not by necessity, but willingly. The Father gave Him, and the Son gave Himself. This is the wonder of God's love - that He should give His own Son for those who were His enemies. And what is required? Only faith, only to believe on Him."
   },
   {
+    "reference": "John 14:6",
+    "tradition": "reformed",
+    "author": "Matthew Henry",
+    "source": "Commentary on the Whole Bible",
+    "year": 1706,
+    "text": "I am the way, the truth, and the life. Christ is THE way, not merely A way. He is the true and living way to the Father. He is the truth - the substance of all Old Testament types, the fulfillment of all prophecies. He is the life - the source of all spiritual and eternal life. No man cometh unto the Father but by me - this excludes all other ways of salvation."
+  },
+  {
+    "reference": "Acts 4:12",
+    "tradition": "reformed",
+    "author": "John Gill",
+    "source": "Exposition of the Bible",
+    "year": 1746,
+    "text": "Neither is there salvation in any other. Salvation is not in works, not in rituals, not in any creature, but only in Christ. There is no other name under heaven given among men whereby we must be saved. This name, Jesus, signifies Savior. He alone can save from sin, wrath, and hell. All other refuges are refuges of lies."
+  },
+  {
     "reference": "Ephesians 2:8-9",
     "tradition": "reformed",
     "author": "Martin Luther",
@@ -46,5 +118,77 @@
     "source": "Commentary on Ephesians",
     "year": 387,
     "text": "Grace and faith are both gifts of God. We cannot even believe unless God first gives us the ability to believe. The faith by which we are saved is not generated from within ourselves, but is poured into us from heaven. All is of grace, from beginning to end."
+  },
+  {
+    "reference": "Philippians 2:12-13",
+    "tradition": "patristic",
+    "author": "John Chrysostom",
+    "source": "Homilies on Philippians",
+    "year": 404,
+    "text": "Work out your own salvation with fear and trembling, for it is God who works in you. We must work, yet it is God who works in us both to will and to do. Our working and God's working are not opposed but united. We work because God works in us. The fear and trembling arise from recognizing the greatness of the work and our utter dependence on divine grace."
+  },
+  {
+    "reference": "1 Corinthians 15:3-4",
+    "tradition": "reformed",
+    "author": "Charles Hodge",
+    "source": "Commentary on First Corinthians",
+    "year": 1857,
+    "text": "Christ died for our sins according to the scriptures. This is the gospel in brief: Christ's death was substitutionary (for our sins), scriptural (according to the scriptures), historical (he died), victorious (he rose), and verified (he appeared to witnesses). The resurrection is not a spiritual metaphor but a bodily, historical reality."
+  },
+  {
+    "reference": "Hebrews 11:1",
+    "tradition": "patristic",
+    "author": "John Chrysostom",
+    "source": "Homilies on Hebrews",
+    "year": 403,
+    "text": "Faith is the substance of things hoped for, the evidence of things not seen. Faith gives substance to what we hope for. It makes future blessings present to the soul. It is the eye of the soul by which we see invisible realities. Without faith, the promises of God seem empty; with faith, they become more real than the things we touch."
+  },
+  {
+    "reference": "Hebrews 11:1",
+    "tradition": "reformed",
+    "author": "John Owen",
+    "source": "Exposition of Hebrews",
+    "year": 1668,
+    "text": "Faith is that grace whereby we are enabled to believe all that God has revealed in His word. It gives subsistence to things hoped for - making them real to the soul even before they are possessed. It evidences things not seen - providing conviction about invisible spiritual realities. Faith rests wholly on the testimony and promise of God."
+  },
+  {
+    "reference": "Matthew 5:3",
+    "tradition": "patristic",
+    "author": "Augustine of Hippo",
+    "source": "Sermon on the Mount",
+    "year": 393,
+    "text": "Blessed are the poor in spirit. This is voluntary poverty of spirit - recognizing our spiritual bankruptcy before God. We are blessed not by possessing spiritual riches of our own, but by acknowledging that we have none. The kingdom of heaven belongs to those who renounce all confidence in their own righteousness and cast themselves wholly on God's mercy."
+  },
+  {
+    "reference": "Matthew 5:3",
+    "tradition": "reformed",
+    "author": "Matthew Henry",
+    "source": "Commentary on the Whole Bible",
+    "year": 1706,
+    "text": "Blessed are the poor in spirit. Those are poor in spirit who are humble and lowly in their own eyes, who see their own spiritual poverty and need. They are empty of self-righteousness, empty of self-sufficiency, and therefore capable of being filled with the riches of God's grace. Theirs is the kingdom of heaven, both in present possession and future perfection."
+  },
+  {
+    "reference": "Isaiah 53:5",
+    "tradition": "reformed",
+    "author": "John Calvin",
+    "source": "Commentary on Isaiah",
+    "year": 1551,
+    "text": "But he was wounded for our transgressions. This is the heart of the gospel. Christ bore not His own sins but ours. The punishment that brought us peace was upon Him. By His stripes - the wounds inflicted upon Him - we are healed. This healing is not primarily physical but spiritual: the healing of our souls from the disease of sin."
+  },
+  {
+    "reference": "Isaiah 53:6",
+    "tradition": "reformed",
+    "author": "Charles Spurgeon",
+    "source": "Metropolitan Tabernacle Pulpit",
+    "year": 1874,
+    "text": "All we like sheep have gone astray. Here is the universality of sin - all have gone astray. Here is the individuality of sin - each has turned to his own way. Here is the remedy - the LORD has laid on Him the iniquity of us all. Christ bore the sins of all His people. God's justice fell upon the Substitute, that mercy might flow to the guilty."
+  },
+  {
+    "reference": "Revelation 1:8",
+    "tradition": "patristic",
+    "author": "Victorinus",
+    "source": "Commentary on Revelation",
+    "year": 303,
+    "text": "I am Alpha and Omega, the beginning and the ending. Christ is the first and the last, the beginning and the end. All things are from Him and all things are unto Him. He is before all things and after all things. He spans all time and eternity. This title declares His absolute sovereignty and His eternal deity."
   }
 ]

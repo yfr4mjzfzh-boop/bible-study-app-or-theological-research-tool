@@ -808,8 +808,24 @@ class TheologicalStudyApp {
     // Commentary System
     // ===================================
 
-    loadCommentaryDatabase() {
-        // Sample commentary entries - this will be expanded with your sources
+    async loadCommentaryDatabase() {
+        // Try to load from external JSON file first
+        try {
+            const response = await fetch('commentaries.json');
+            if (response.ok) {
+                const data = await response.json();
+                this.commentaries = data.map((c, index) => ({
+                    ...c,
+                    id: c.id || index + 1
+                }));
+                console.log(`Loaded ${this.commentaries.length} commentary entries from commentaries.json`);
+                return;
+            }
+        } catch (error) {
+            console.log('Could not load external commentaries.json, using embedded data');
+        }
+
+        // Fallback to embedded commentary if external file not available
         this.commentaries = [
             {
                 id: 1,
@@ -822,35 +838,14 @@ class TheologicalStudyApp {
             },
             {
                 id: 2,
-                reference: 'Romans 8:28',
-                tradition: 'patristic',
-                author: 'Augustine of Hippo',
-                source: 'On the Predestination of the Saints',
-                year: 428,
-                text: 'Those who are called according to His purpose are predestined to be conformed to the image of His Son. God works all things together for good, not because all things are good in themselves, but because God in His sovereign grace causes them to work for the good of His elect.'
-            },
-            {
-                id: 3,
                 reference: 'John 3:16',
                 tradition: 'reformed',
                 author: 'Charles Spurgeon',
                 source: 'Metropolitan Tabernacle Pulpit',
                 year: 1880,
                 text: 'God so loved the world - not a select few, not merely the nation of Israel, but the world. Yet this love is effectual only in those who believe. The gift of the Son is universal in its offer, but particular in its application. Whosoever believes shall not perish, and this belief is itself a gift of grace.'
-            },
-            {
-                id: 4,
-                reference: 'John 3:16',
-                tradition: 'patristic',
-                author: 'John Chrysostom',
-                source: 'Homilies on John',
-                year: 390,
-                text: 'See how the Son is given. Not by compulsion, not by necessity, but willingly. The Father gave Him, and the Son gave Himself. This is the wonder of God\'s love - that He should give His own Son for those who were His enemies. And what is required? Only faith, only to believe on Him.'
             }
         ];
-
-        // In production, you would load from localStorage or a JSON file
-        // this.commentaries = JSON.parse(localStorage.getItem('commentaries')) || this.commentaries;
     }
 
     setupTraditionFilters() {
