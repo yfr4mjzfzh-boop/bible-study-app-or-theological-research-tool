@@ -9,6 +9,10 @@ class TheologicalStudyApp {
         this.bookmarks = [];
         this.collections = [];
         this.darkMode = false;
+        this.bibleCache = {}; // Cache API responses
+
+        // Set your ESV API key here (get free key at: https://api.esv.org/)
+        this.esvApiKey = ''; // Leave empty to use free bible-api.com instead
 
         this.init();
     }
@@ -192,7 +196,7 @@ class TheologicalStudyApp {
         return name.toLowerCase().replace(/\s+/g, '');
     }
 
-    loadPassage(reference) {
+    async loadPassage(reference) {
         this.currentPassage = reference;
         this.saveToStorage();
 
@@ -208,9 +212,17 @@ class TheologicalStudyApp {
 
         document.getElementById('passageTitle').textContent = title;
 
-        // Placeholder for actual Bible text
-        // In production, this would fetch from a Bible API or local database
-        document.getElementById('passageText').innerHTML = this.getPlaceholderText(reference);
+        // Show loading state
+        document.getElementById('passageText').innerHTML = '<div class="placeholder-message"><p>Loading passage...</p></div>';
+
+        // Fetch Bible text from API
+        try {
+            const bibleText = await this.fetchPassage(reference);
+            document.getElementById('passageText').innerHTML = bibleText;
+        } catch (error) {
+            console.error('Error fetching passage:', error);
+            document.getElementById('passageText').innerHTML = this.getErrorMessage(error);
+        }
 
         // Show chapter navigation
         document.getElementById('chapterNav').classList.remove('hidden');
@@ -222,14 +234,138 @@ class TheologicalStudyApp {
     getDisplayBookName(bookKey) {
         // Convert from key format to display format
         const bookMap = {
-            'genesis': 'Genesis',
-            'exodus': 'Exodus',
-            'john': 'John',
-            'romans': 'Romans',
-            'matthew': 'Matthew',
-            // Add more as needed
+            // Old Testament
+            'genesis': 'Genesis', 'exodus': 'Exodus', 'leviticus': 'Leviticus',
+            'numbers': 'Numbers', 'deuteronomy': 'Deuteronomy', 'joshua': 'Joshua',
+            'judges': 'Judges', 'ruth': 'Ruth', '1samuel': '1 Samuel', '2samuel': '2 Samuel',
+            '1kings': '1 Kings', '2kings': '2 Kings', '1chronicles': '1 Chronicles',
+            '2chronicles': '2 Chronicles', 'ezra': 'Ezra', 'nehemiah': 'Nehemiah',
+            'esther': 'Esther', 'job': 'Job', 'psalms': 'Psalms', 'proverbs': 'Proverbs',
+            'ecclesiastes': 'Ecclesiastes', 'songofsolomon': 'Song of Solomon',
+            'isaiah': 'Isaiah', 'jeremiah': 'Jeremiah', 'lamentations': 'Lamentations',
+            'ezekiel': 'Ezekiel', 'daniel': 'Daniel', 'hosea': 'Hosea', 'joel': 'Joel',
+            'amos': 'Amos', 'obadiah': 'Obadiah', 'jonah': 'Jonah', 'micah': 'Micah',
+            'nahum': 'Nahum', 'habakkuk': 'Habakkuk', 'zephaniah': 'Zephaniah',
+            'haggai': 'Haggai', 'zechariah': 'Zechariah', 'malachi': 'Malachi',
+            // New Testament
+            'matthew': 'Matthew', 'mark': 'Mark', 'luke': 'Luke', 'john': 'John',
+            'acts': 'Acts', 'romans': 'Romans', '1corinthians': '1 Corinthians',
+            '2corinthians': '2 Corinthians', 'galatians': 'Galatians', 'ephesians': 'Ephesians',
+            'philippians': 'Philippians', 'colossians': 'Colossians',
+            '1thessalonians': '1 Thessalonians', '2thessalonians': '2 Thessalonians',
+            '1timothy': '1 Timothy', '2timothy': '2 Timothy', 'titus': 'Titus',
+            'philemon': 'Philemon', 'hebrews': 'Hebrews', 'james': 'James',
+            '1peter': '1 Peter', '2peter': '2 Peter', '1john': '1 John',
+            '2john': '2 John', '3john': '3 John', 'jude': 'Jude', 'revelation': 'Revelation'
         };
         return bookMap[bookKey] || bookKey.charAt(0).toUpperCase() + bookKey.slice(1);
+    }
+
+    // ===================================
+    // Bible API Integration
+    // ===================================
+
+    async fetchPassage(reference) {
+        const bookName = this.getDisplayBookName(reference.book);
+        let passageRef = `${bookName} ${reference.chapter}`;
+
+        if (reference.verse) {
+            passageRef += `:${reference.verse}`;
+            if (reference.verseEnd) {
+                passageRef += `-${reference.verseEnd}`;
+            }
+        }
+
+        // Check cache first
+        if (this.bibleCache[passageRef]) {
+            return this.bibleCache[passageRef];
+        }
+
+        // Use ESV API if key is provided, otherwise use free bible-api.com
+        let html;
+        if (this.esvApiKey) {
+            html = await this.fetchFromESV(passageRef);
+        } else {
+            html = await this.fetchFromBibleAPI(passageRef);
+        }
+
+        // Cache the result
+        this.bibleCache[passageRef] = html;
+        return html;
+    }
+
+    async fetchFromBibleAPI(passageRef) {
+        // Using bible-api.com (free, no auth required)
+        const url = `https://bible-api.com/${encodeURIComponent(passageRef)}?translation=kjv`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch passage: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return this.formatBibleAPIResponse(data);
+    }
+
+    async fetchFromESV(passageRef) {
+        // Using ESV API (requires free API key from https://api.esv.org/)
+        const url = `https://api.esv.org/v3/passage/html/?q=${encodeURIComponent(passageRef)}&include-passage-references=false&include-verse-numbers=true&include-first-verse-numbers=true&include-footnotes=false&include-headings=false&include-short-copyright=false`;
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Token ${this.esvApiKey}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`ESV API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return `<div class="passage-text">${data.passages[0]}</div>`;
+    }
+
+    formatBibleAPIResponse(data) {
+        if (!data.verses || data.verses.length === 0) {
+            return '<div class="placeholder-message"><p>No verses found for this reference.</p></div>';
+        }
+
+        let html = '<div class="passage-text">';
+
+        data.verses.forEach(verse => {
+            html += `
+                <span class="verse">
+                    <sup class="verse-number">${verse.verse}</sup>
+                    ${this.escapeHtml(verse.text)}
+                </span>
+            `;
+        });
+
+        html += '</div>';
+
+        // Add attribution
+        html += '<div class="text-muted" style="margin-top: 1rem; font-size: 0.875rem;">Translation: King James Version (KJV)</div>';
+
+        return html;
+    }
+
+    getErrorMessage(error) {
+        return `
+            <div class="placeholder-message">
+                <p style="color: var(--danger);"><strong>Error loading passage</strong></p>
+                <p class="text-muted">${this.escapeHtml(error.message)}</p>
+                <div class="info-box" style="margin-top: 2rem; text-align: left;">
+                    <h4>Troubleshooting:</h4>
+                    <ul style="list-style-position: inside;">
+                        <li>Check your internet connection</li>
+                        <li>Verify the passage reference is correct</li>
+                        <li>Try a different chapter or book</li>
+                        <li>For ESV API: verify your API key is correct</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">You can continue using notes and bookmarks while offline.</p>
+                </div>
+            </div>
+        `;
     }
 
     getPlaceholderText(reference) {
