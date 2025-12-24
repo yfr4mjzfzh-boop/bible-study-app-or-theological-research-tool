@@ -10,9 +10,11 @@ class TheologicalStudyApp {
         this.collections = [];
         this.darkMode = false;
         this.bibleCache = {}; // Cache API responses
+        this.selectedTranslation = 'kjv'; // Default translation
 
-        // Set your ESV API key here (get free key at: https://api.esv.org/)
-        this.esvApiKey = ''; // Leave empty to use free bible-api.com instead
+        // API Keys (get free keys at respective websites)
+        this.esvApiKey = ''; // ESV: https://api.esv.org/
+        this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for LSV)
 
         this.init();
     }
@@ -41,6 +43,13 @@ class TheologicalStudyApp {
             this.collections = JSON.parse(localStorage.getItem('theologicalCollections')) || [];
             this.darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
             this.currentPassage = JSON.parse(localStorage.getItem('currentPassage')) || null;
+            this.selectedTranslation = localStorage.getItem('selectedTranslation') || 'kjv';
+
+            // Set translation selector
+            const translationSelect = document.getElementById('translationSelect');
+            if (translationSelect) {
+                translationSelect.value = this.selectedTranslation;
+            }
         } catch (error) {
             console.error('Error loading from storage:', error);
             this.showNotification('Error loading saved data', 'error');
@@ -54,6 +63,7 @@ class TheologicalStudyApp {
             localStorage.setItem('theologicalCollections', JSON.stringify(this.collections));
             localStorage.setItem('darkMode', JSON.stringify(this.darkMode));
             localStorage.setItem('currentPassage', JSON.stringify(this.currentPassage));
+            localStorage.setItem('selectedTranslation', this.selectedTranslation);
         } catch (error) {
             console.error('Error saving to storage:', error);
             this.showNotification('Error saving data', 'error');
@@ -72,6 +82,9 @@ class TheologicalStudyApp {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
         });
+
+        // Translation Selection
+        document.getElementById('translationSelect').addEventListener('change', (e) => this.changeTranslation(e.target.value));
 
         // Passage Navigation
         document.getElementById('searchBtn').addEventListener('click', () => this.searchPassage());
@@ -139,6 +152,20 @@ class TheologicalStudyApp {
         // Add active class to selected tab and section
         document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         document.getElementById(`${tabName}Tab`).classList.add('active');
+    }
+
+    // ===================================
+    // Translation Management
+    // ===================================
+
+    changeTranslation(translation) {
+        this.selectedTranslation = translation;
+        this.saveToStorage();
+
+        // Reload current passage if one is loaded
+        if (this.currentPassage) {
+            this.loadPassage(this.currentPassage);
+        }
     }
 
     // ===================================
@@ -276,21 +303,29 @@ class TheologicalStudyApp {
             }
         }
 
-        // Check cache first
-        if (this.bibleCache[passageRef]) {
-            return this.bibleCache[passageRef];
+        // Check cache first (include translation in cache key)
+        const cacheKey = `${passageRef}-${this.selectedTranslation}`;
+        if (this.bibleCache[cacheKey]) {
+            return this.bibleCache[cacheKey];
         }
 
-        // Use ESV API if key is provided, otherwise use free bible-api.com
+        // Fetch based on selected translation
         let html;
-        if (this.esvApiKey) {
-            html = await this.fetchFromESV(passageRef);
-        } else {
-            html = await this.fetchFromBibleAPI(passageRef);
+        switch (this.selectedTranslation) {
+            case 'esv':
+                html = await this.fetchFromESV(passageRef);
+                break;
+            case 'lsv':
+                html = await this.fetchFromLSV(passageRef);
+                break;
+            case 'kjv':
+            default:
+                html = await this.fetchFromBibleAPI(passageRef, 'kjv');
+                break;
         }
 
         // Cache the result
-        this.bibleCache[passageRef] = html;
+        this.bibleCache[cacheKey] = html;
         return html;
     }
 
@@ -309,6 +344,10 @@ class TheologicalStudyApp {
 
     async fetchFromESV(passageRef) {
         // Using ESV API (requires free API key from https://api.esv.org/)
+        if (!this.esvApiKey) {
+            return this.getAPIKeyMessage('ESV', 'https://api.esv.org/');
+        }
+
         const url = `https://api.esv.org/v3/passage/html/?q=${encodeURIComponent(passageRef)}&include-passage-references=false&include-verse-numbers=true&include-first-verse-numbers=true&include-footnotes=false&include-headings=false&include-short-copyright=false`;
 
         const response = await fetch(url, {
@@ -322,10 +361,25 @@ class TheologicalStudyApp {
         }
 
         const data = await response.json();
-        return `<div class="passage-text">${data.passages[0]}</div>`;
+        let html = `<div class="passage-text">${data.passages[0]}</div>`;
+        html += '<div class="text-muted" style="margin-top: 1rem; font-size: 0.875rem;">Translation: English Standard Version (ESV)</div>';
+        return html;
     }
 
-    formatBibleAPIResponse(data) {
+    async fetchFromLSV(passageRef) {
+        // Using bible-api.com with LSV translation (free, no auth required)
+        const url = `https://bible-api.com/${encodeURIComponent(passageRef)}?translation=lsv`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch LSV passage: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return this.formatBibleAPIResponse(data, 'Literal Standard Version (LSV)');
+    }
+
+    formatBibleAPIResponse(data, translationName = 'King James Version (KJV)') {
         if (!data.verses || data.verses.length === 0) {
             return '<div class="placeholder-message"><p>No verses found for this reference.</p></div>';
         }
@@ -344,9 +398,30 @@ class TheologicalStudyApp {
         html += '</div>';
 
         // Add attribution
-        html += '<div class="text-muted" style="margin-top: 1rem; font-size: 0.875rem;">Translation: King James Version (KJV)</div>';
+        html += `<div class="text-muted" style="margin-top: 1rem; font-size: 0.875rem;">Translation: ${translationName}</div>`;
 
         return html;
+    }
+
+    getAPIKeyMessage(translationName, apiUrl) {
+        return `
+            <div class="placeholder-message">
+                <p><strong>${translationName} Translation Requires API Key</strong></p>
+                <p class="text-muted">To use the ${translationName} translation, you need a free API key.</p>
+                <div class="info-box" style="margin-top: 2rem; text-align: left;">
+                    <h4>How to get your free ${translationName} API key:</h4>
+                    <ol style="margin-left: 1.5rem;">
+                        <li>Visit: <a href="${apiUrl}" target="_blank" style="color: var(--accent-primary);">${apiUrl}</a></li>
+                        <li>Sign up for a free account</li>
+                        <li>Copy your API key</li>
+                        <li>Open the app.js file</li>
+                        <li>Add your key to the appropriate variable at the top of the file</li>
+                        <li>Refresh the app</li>
+                    </ol>
+                    <p style="margin-top: 1rem;">Or switch to KJV or LSV which work without an API key!</p>
+                </div>
+            </div>
+        `;
     }
 
     getErrorMessage(error) {

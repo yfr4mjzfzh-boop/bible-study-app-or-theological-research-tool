@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Bible Study">
     <meta name="theme-color" content="#1a1a2e">
     <title>Theological Study</title>
+
+    <!-- App Icons -->
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -54,6 +61,15 @@
                         placeholder="Search passage (e.g., John 3:16)"
                         aria-label="Search passage">
                     <button id="searchBtn" class="btn btn-primary">Go</button>
+                </div>
+
+                <div class="translation-selector">
+                    <label for="translationSelect" style="font-size: 0.875rem; color: var(--text-secondary); margin-right: 0.5rem;">Translation:</label>
+                    <select id="translationSelect" class="select-input" style="max-width: 200px;">
+                        <option value="kjv">KJV (King James)</option>
+                        <option value="esv">ESV (English Standard)</option>
+                        <option value="lsv">LSV (Literal Standard)</option>
+                    </select>
                 </div>
 
                 <div class="quick-nav">

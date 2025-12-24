@@ -351,6 +351,15 @@ p {
     flex: 1;
 }
 
+.translation-selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
 .quick-nav {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr auto;
