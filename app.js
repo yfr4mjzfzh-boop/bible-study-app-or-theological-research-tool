@@ -901,6 +901,12 @@ class TheologicalStudyApp {
             referenceStr += `:${this.currentPassage.verse}`;
         }
 
+        // Debug logging
+        console.log('Commentary Filter Debug:');
+        console.log('  currentPassage:', this.currentPassage);
+        console.log('  referenceStr:', referenceStr);
+        console.log('  verse selected:', this.currentPassage.verse);
+
         // Find matching commentaries
         const matchingCommentaries = this.commentaries.filter(c => {
             // Check if tradition is enabled
@@ -911,12 +917,16 @@ class TheologicalStudyApp {
             // Check if reference matches
             // If user selected a specific verse, only show commentary for that exact verse
             if (this.currentPassage.verse) {
-                return c.reference === referenceStr;
+                const matches = c.reference === referenceStr;
+                console.log(`  Checking "${c.reference}" === "${referenceStr}": ${matches}`);
+                return matches;
             }
 
             // If user selected a chapter (no specific verse), show all commentary in that chapter
             return c.reference.startsWith(`${bookName} ${this.currentPassage.chapter}:`);
         });
+
+        console.log('  Total matching commentaries:', matchingCommentaries.length);
 
         const display = document.getElementById('commentaryDisplay');
 
