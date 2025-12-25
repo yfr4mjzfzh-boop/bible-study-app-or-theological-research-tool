@@ -891,8 +891,13 @@ class TheologicalStudyApp {
             }
 
             // Check if reference matches
-            // For now, exact match. Could expand to include chapter-level matches
-            return c.reference === referenceStr || c.reference.startsWith(`${bookName} ${this.currentPassage.chapter}:`);
+            // If user selected a specific verse, only show commentary for that exact verse
+            if (this.currentPassage.verse) {
+                return c.reference === referenceStr;
+            }
+
+            // If user selected a chapter (no specific verse), show all commentary in that chapter
+            return c.reference.startsWith(`${bookName} ${this.currentPassage.chapter}:`);
         });
 
         const display = document.getElementById('commentaryDisplay');
