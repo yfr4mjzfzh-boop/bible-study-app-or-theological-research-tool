@@ -320,14 +320,14 @@ class TheologicalStudyApp {
         let html;
         switch (this.selectedTranslation) {
             case 'esv':
-                html = await this.fetchFromESV(passageRef);
+                html = await this.fetchFromESV(passageRef, reference);
                 break;
             case 'lsb':
-                html = await this.fetchFromLSB(passageRef);
+                html = await this.fetchFromLSB(passageRef, reference);
                 break;
             case 'kjv':
             default:
-                html = await this.fetchFromBibleAPI(passageRef, 'kjv');
+                html = await this.fetchFromBibleAPI(passageRef, reference);
                 break;
         }
 
@@ -336,7 +336,7 @@ class TheologicalStudyApp {
         return html;
     }
 
-    async fetchFromBibleAPI(passageRef) {
+    async fetchFromBibleAPI(passageRef, reference) {
         // Using bible-api.com (free, no auth required)
         const url = `https://bible-api.com/${encodeURIComponent(passageRef)}?translation=kjv`;
 
@@ -346,10 +346,10 @@ class TheologicalStudyApp {
         }
 
         const data = await response.json();
-        return this.formatBibleAPIResponse(data);
+        return this.formatBibleAPIResponse(data, reference);
     }
 
-    async fetchFromESV(passageRef) {
+    async fetchFromESV(passageRef, reference) {
         // Using ESV API (requires free API key from https://api.esv.org/)
         if (!this.esvApiKey) {
             return this.getAPIKeyMessage('ESV', 'https://api.esv.org/');
@@ -373,7 +373,7 @@ class TheologicalStudyApp {
         return html;
     }
 
-    async fetchFromLSB(passageRef) {
+    async fetchFromLSB(passageRef, reference) {
         // Using bible-api.com with LSB translation (free, no auth required)
         // Note: LSB may not be available on all APIs, will fallback to WEB if needed
         const url = `https://bible-api.com/${encodeURIComponent(passageRef)}?translation=web`;
@@ -385,17 +385,35 @@ class TheologicalStudyApp {
 
         const data = await response.json();
         // Using WEB (World English Bible) as LSB isn't available on free APIs yet
-        return this.formatBibleAPIResponse(data, 'World English Bible (WEB) - LSB coming soon');
+        return this.formatBibleAPIResponse(data, reference, 'World English Bible (WEB) - LSB coming soon');
     }
 
-    formatBibleAPIResponse(data, translationName = 'King James Version (KJV)') {
+    formatBibleAPIResponse(data, reference, translationName = 'King James Version (KJV)') {
         if (!data.verses || data.verses.length === 0) {
             return '<div class="placeholder-message"><p>No verses found for this reference.</p></div>';
         }
 
+        // Filter verses based on the requested reference
+        let filteredVerses = data.verses;
+
+        if (reference.verse) {
+            // If a specific verse (or range) was requested, filter to only those verses
+            filteredVerses = data.verses.filter(v => {
+                const verseNum = parseInt(v.verse);
+                if (reference.verseEnd) {
+                    // Range requested (e.g., Romans 8:28-30)
+                    return verseNum >= reference.verse && verseNum <= reference.verseEnd;
+                } else {
+                    // Single verse requested (e.g., Genesis 1:1)
+                    return verseNum === reference.verse;
+                }
+            });
+        }
+        // If no specific verse requested (just chapter), show all verses in the chapter
+
         let html = '<div class="passage-text">';
 
-        data.verses.forEach(verse => {
+        filteredVerses.forEach(verse => {
             html += `
                 <span class="verse">
                     <sup class="verse-number">${verse.verse}</sup>
