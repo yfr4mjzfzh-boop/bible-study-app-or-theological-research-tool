@@ -18,6 +18,10 @@ class TheologicalStudyApp {
         this.esvApiKey = '948f99e1f43d00f0d3fef28825fb24022c09a127'; // ESV: https://api.esv.org/
         this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for future use)
 
+        // TheologAI integration
+        this.theologAiUrl = 'http://localhost:3000'; // TheologAI MCP server
+        this.useTheologAI = true; // Enable TheologAI commentary
+
         this.init();
     }
 
@@ -884,7 +888,46 @@ class TheologicalStudyApp {
         });
     }
 
-    renderCommentary() {
+    async fetchTheologAICommentary(reference) {
+        try {
+            const response = await fetch(`${this.theologAiUrl}/tools/commentary_lookup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reference: reference,
+                    commentator: 'Matthew Henry'
+                })
+            });
+
+            if (!response.ok) {
+                console.warn('TheologAI request failed:', response.statusText);
+                return null;
+            }
+
+            const data = await response.json();
+
+            // TheologAI returns commentary in MCP format
+            if (data && data.content && data.content[0] && data.content[0].text) {
+                return [{
+                    reference: reference,
+                    tradition: 'reformed',
+                    author: 'Matthew Henry',
+                    source: 'Commentary on the Whole Bible (via TheologAI)',
+                    year: 1706,
+                    text: data.content[0].text
+                }];
+            }
+
+            return null;
+        } catch (error) {
+            console.error('Error fetching from TheologAI:', error);
+            return null;
+        }
+    }
+
+    async renderCommentary() {
         if (!this.currentPassage) {
             document.getElementById('commentaryDisplay').innerHTML = `
                 <div class="placeholder-message">
@@ -906,9 +949,24 @@ class TheologicalStudyApp {
         console.log('  currentPassage:', this.currentPassage);
         console.log('  referenceStr:', referenceStr);
         console.log('  verse selected:', this.currentPassage.verse);
+        console.log('  Using TheologAI:', this.useTheologAI);
 
-        // Find matching commentaries
-        const matchingCommentaries = this.commentaries.filter(c => {
+        // Try TheologAI first if enabled
+        let matchingCommentaries = [];
+        if (this.useTheologAI) {
+            console.log('  Fetching from TheologAI...');
+            const theologAICommentary = await this.fetchTheologAICommentary(referenceStr);
+            if (theologAICommentary) {
+                matchingCommentaries = theologAICommentary;
+                console.log('  Got commentary from TheologAI');
+            } else {
+                console.log('  TheologAI unavailable, using local commentary');
+            }
+        }
+
+        // Fall back to local commentaries if TheologAI didn't return results
+        if (matchingCommentaries.length === 0) {
+            matchingCommentaries = this.commentaries.filter(c => {
             // Check if tradition is enabled
             if (!this.enabledTraditions.includes(c.tradition)) {
                 return false;
@@ -924,7 +982,8 @@ class TheologicalStudyApp {
 
             // If user selected a chapter (no specific verse), show all commentary in that chapter
             return c.reference.startsWith(`${bookName} ${this.currentPassage.chapter}:`);
-        });
+            });
+        }
 
         console.log('  Total matching commentaries:', matchingCommentaries.length);
 
