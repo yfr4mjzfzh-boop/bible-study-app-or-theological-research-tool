@@ -15,7 +15,7 @@ class TheologicalStudyApp {
         this.enabledTraditions = ['reformed', 'patristic']; // Default traditions
 
         // API Keys (get free keys at respective websites)
-        this.esvApiKey = ''; // ESV: https://api.esv.org/
+        this.esvApiKey = '948f99e1f43d00f0d3fef28825fb24022c09a127'; // ESV: https://api.esv.org/
         this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for future use)
 
         this.init();
@@ -369,7 +369,7 @@ class TheologicalStudyApp {
 
         const data = await response.json();
         let html = `<div class="passage-text">${data.passages[0]}</div>`;
-        html += '<div class="text-muted" style="margin-top: 1rem; font-size: 0.875rem;">Translation: English Standard Version (ESV)</div>';
+        html += '<div class="text-muted" style="margin-top: 1rem; font-size: 0.875rem; line-height: 1.5;">Scripture quotations are from the ESV® Bible (The Holy Bible, English Standard Version®), copyright © 2001 by Crossway, a publishing ministry of Good News Publishers. Used by permission. All rights reserved.</div>';
         return html;
     }
 
