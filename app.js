@@ -19,7 +19,7 @@ class TheologicalStudyApp {
         this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for future use)
 
         // TheologAI integration
-        this.theologAiUrl = 'http://localhost:3000'; // TheologAI MCP server
+        this.theologAiUrl = 'http://localhost:3001'; // TheologAI proxy server
         this.useTheologAI = true; // Enable TheologAI commentary
 
         this.init();
@@ -890,7 +890,7 @@ class TheologicalStudyApp {
 
     async fetchTheologAICommentary(reference) {
         try {
-            const response = await fetch(`${this.theologAiUrl}/tools/commentary_lookup`, {
+            const response = await fetch(`${this.theologAiUrl}/commentary`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -902,21 +902,21 @@ class TheologicalStudyApp {
             });
 
             if (!response.ok) {
-                console.warn('TheologAI request failed:', response.statusText);
+                console.warn('TheologAI proxy request failed:', response.statusText);
                 return null;
             }
 
             const data = await response.json();
 
-            // TheologAI returns commentary in MCP format
-            if (data && data.content && data.content[0] && data.content[0].text) {
+            // Proxy returns simplified format
+            if (data && data.success && data.text) {
                 return [{
                     reference: reference,
                     tradition: 'reformed',
                     author: 'Matthew Henry',
                     source: 'Commentary on the Whole Bible (via TheologAI)',
                     year: 1706,
-                    text: data.content[0].text
+                    text: data.text
                 }];
             }
 
