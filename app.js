@@ -945,19 +945,61 @@ class TheologicalStudyApp {
             return;
         }
 
-        // Render commentaries
-        display.innerHTML = matchingCommentaries.map(c => `
-            <div class="commentary-item">
-                <span class="tradition-badge tradition-${c.tradition}">${this.getTraditionLabel(c.tradition)}</span>
-                <h4 style="margin-top: 0.5rem; margin-bottom: 0.5rem;">${this.escapeHtml(c.author)}</h4>
-                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 1rem;">
-                    ${this.escapeHtml(c.source)} (${c.year})
-                </p>
-                <p style="font-family: var(--font-serif); line-height: 1.8;">
-                    ${this.escapeHtml(c.text)}
-                </p>
-            </div>
-        `).join('');
+        // Render commentaries with expand/collapse
+        display.innerHTML = matchingCommentaries.map((c, index) => {
+            const commentaryId = `commentary-${index}`;
+            const previewLength = 200;
+            const fullText = this.escapeHtml(c.text);
+            const needsExpand = c.text.length > previewLength;
+            const previewText = needsExpand ? fullText.substring(0, previewLength) + '...' : fullText;
+
+            return `
+                <div class="commentary-item">
+                    <span class="tradition-badge tradition-${c.tradition}">${this.getTraditionLabel(c.tradition)}</span>
+                    <h4 style="margin-top: 0.5rem; margin-bottom: 0.5rem;">${this.escapeHtml(c.author)}</h4>
+                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 1rem;">
+                        ${this.escapeHtml(c.source)} (${c.year})
+                    </p>
+                    <div class="commentary-text-wrapper">
+                        <p id="${commentaryId}-preview" class="commentary-text ${needsExpand ? '' : 'hidden'}" style="font-family: var(--font-serif); line-height: 1.8;">
+                            ${previewText}
+                        </p>
+                        <p id="${commentaryId}-full" class="commentary-text hidden" style="font-family: var(--font-serif); line-height: 1.8;">
+                            ${fullText}
+                        </p>
+                        ${needsExpand ? `
+                            <button class="expand-btn" onclick="app.toggleCommentary('${commentaryId}')" id="${commentaryId}-btn">
+                                <span id="${commentaryId}-btn-text">Read more</span>
+                                <svg id="${commentaryId}-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-left: 0.25rem; transition: transform 0.2s;">
+                                    <path d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                </svg>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    toggleCommentary(commentaryId) {
+        const preview = document.getElementById(`${commentaryId}-preview`);
+        const full = document.getElementById(`${commentaryId}-full`);
+        const btnText = document.getElementById(`${commentaryId}-btn-text`);
+        const icon = document.getElementById(`${commentaryId}-icon`);
+
+        if (preview.classList.contains('hidden')) {
+            // Currently showing full, switch to preview
+            preview.classList.remove('hidden');
+            full.classList.add('hidden');
+            btnText.textContent = 'Read more';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            // Currently showing preview, switch to full
+            preview.classList.add('hidden');
+            full.classList.remove('hidden');
+            btnText.textContent = 'Read less';
+            icon.style.transform = 'rotate(180deg)';
+        }
     }
 
     getTraditionLabel(tradition) {
