@@ -134,12 +134,14 @@ class TheologicalStudyApp {
 
     initializeDarkMode() {
         if (this.darkMode) {
+            document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
         }
     }
 
     toggleDarkMode() {
         this.darkMode = !this.darkMode;
+        document.documentElement.classList.toggle('dark-mode');
         document.body.classList.toggle('dark-mode');
         this.saveToStorage();
     }
