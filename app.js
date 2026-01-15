@@ -136,6 +136,11 @@ class TheologicalStudyApp {
         if (this.darkMode) {
             document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
+            // Update theme-color meta tag for mobile status bar
+            const themeColor = document.querySelector('meta[name="theme-color"]');
+            if (themeColor) {
+                themeColor.setAttribute('content', '#000000');
+            }
         }
     }
 
@@ -143,6 +148,11 @@ class TheologicalStudyApp {
         this.darkMode = !this.darkMode;
         document.documentElement.classList.toggle('dark-mode');
         document.body.classList.toggle('dark-mode');
+        // Update theme-color meta tag for mobile status bar
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        if (themeColor) {
+            themeColor.setAttribute('content', this.darkMode ? '#000000' : '#ffffff');
+        }
         this.saveToStorage();
     }
 
