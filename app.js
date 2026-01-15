@@ -1064,5 +1064,6 @@ let app;
 
 document.addEventListener('DOMContentLoaded', () => {
     app = new TheologicalStudyApp();
+    window.app = app; // Make app globally accessible for onclick handlers
     console.log('Theological Study App initialized');
 });
