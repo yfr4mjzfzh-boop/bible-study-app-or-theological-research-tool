@@ -79,6 +79,8 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--bg-primary);
+    min-height: 100%;
+    min-height: 100dvh;
 }
 
 html.dark-mode {
@@ -92,6 +94,12 @@ body {
     line-height: 1.6;
     transition: background-color var(--transition-normal), color var(--transition-normal);
     overflow-x: hidden;
+    min-height: 100%;
+    min-height: 100dvh;
+}
+
+body.dark-mode {
+    background-color: #000000;
 }
 
 /* ===================================
@@ -130,6 +138,8 @@ p {
     z-index: 100;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    /* Extend into safe area for notched devices */
+    padding-top: env(safe-area-inset-top, 0);
 }
 
 .header-content {
@@ -959,9 +969,17 @@ body.dark-mode .tradition-badge.tradition-mainline {
 
 /* Safe area for notched devices */
 @supports (padding: max(0px)) {
+    html, body {
+        /* Ensure background extends into safe areas */
+        padding-top: env(safe-area-inset-top, 0);
+    }
+
     .main-header {
+        padding-top: max(var(--spacing-md), env(safe-area-inset-top));
         padding-left: max(var(--spacing-md), env(safe-area-inset-left));
         padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+        /* Pull header up into safe area */
+        margin-top: calc(-1 * env(safe-area-inset-top, 0));
     }
 
     .main-content {
