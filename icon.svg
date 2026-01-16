@@ -1,38 +1,66 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="512" height="512" fill="#1a1a2e" rx="80"/>
+  <!-- Background with warm gradient -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B2635"/>
+      <stop offset="100%" style="stop-color:#5C1A23"/>
+    </linearGradient>
+    <linearGradient id="crossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#DAA520"/>
+      <stop offset="100%" style="stop-color:#B8860B"/>
+    </linearGradient>
+    <linearGradient id="pageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFF8F0"/>
+      <stop offset="100%" style="stop-color:#F5EDE4"/>
+    </linearGradient>
+  </defs>
 
-  <!-- Open Book -->
-  <g transform="translate(256, 256)">
+  <rect width="512" height="512" fill="url(#bgGrad)" rx="80"/>
+
+  <!-- Larger Open Bible -->
+  <g transform="translate(256, 270)">
+    <!-- Book shadow -->
+    <ellipse cx="0" cy="95" rx="150" ry="20" fill="rgba(0,0,0,0.3)"/>
+
     <!-- Left page -->
-    <path d="M -120 -80 Q -120 -40 -120 0 Q -120 40 -120 80 L -10 80 Q -10 40 -10 0 Q -10 -40 -10 -80 Z"
-          fill="#f5f5f7" stroke="#0071e3" stroke-width="4"/>
+    <path d="M -150 -100 Q -155 0 -150 100 L -8 100 Q -8 0 -8 -100 Q -80 -110 -150 -100"
+          fill="url(#pageGrad)" stroke="#D4C4B0" stroke-width="2"/>
 
     <!-- Right page -->
-    <path d="M 10 -80 Q 10 -40 10 0 Q 10 40 10 80 L 120 80 Q 120 40 120 0 Q 120 -40 120 -80 Z"
-          fill="#f5f5f7" stroke="#0071e3" stroke-width="4"/>
+    <path d="M 8 -100 Q 8 0 8 100 L 150 100 Q 155 0 150 -100 Q 80 -110 8 -100"
+          fill="url(#pageGrad)" stroke="#D4C4B0" stroke-width="2"/>
 
-    <!-- Binding -->
-    <rect x="-6" y="-80" width="12" height="160" fill="#0071e3"/>
+    <!-- Binding/Spine -->
+    <rect x="-8" y="-100" width="16" height="200" fill="#8B4513" rx="2"/>
+    <rect x="-4" y="-100" width="8" height="200" fill="#A0522D"/>
 
     <!-- Text lines on left page -->
-    <line x1="-100" y1="-50" x2="-30" y2="-50" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="-100" y1="-30" x2="-30" y2="-30" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="-100" y1="-10" x2="-30" y2="-10" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="-100" y1="10" x2="-30" y2="10" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="-100" y1="30" x2="-30" y2="30" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
+    <line x1="-130" y1="-60" x2="-25" y2="-60" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="-130" y1="-35" x2="-25" y2="-35" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="-130" y1="-10" x2="-25" y2="-10" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="-130" y1="15" x2="-25" y2="15" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="-130" y1="40" x2="-25" y2="40" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="-130" y1="65" x2="-25" y2="65" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
 
     <!-- Text lines on right page -->
-    <line x1="30" y1="-50" x2="100" y2="-50" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="30" y1="-30" x2="100" y2="-30" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="30" y1="-10" x2="100" y2="-10" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="30" y1="10" x2="100" y2="10" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
-    <line x1="30" y1="30" x2="100" y2="30" stroke="#0071e3" stroke-width="3" opacity="0.6"/>
+    <line x1="25" y1="-60" x2="130" y2="-60" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="25" y1="-35" x2="130" y2="-35" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="25" y1="-10" x2="130" y2="-10" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="25" y1="15" x2="130" y2="15" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="25" y1="40" x2="130" y2="40" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
+    <line x1="25" y1="65" x2="130" y2="65" stroke="#C4A484" stroke-width="3" opacity="0.5"/>
 
-    <!-- Decorative cross element -->
-    <g transform="translate(0, -140)">
-      <rect x="-3" y="0" width="6" height="40" fill="#0071e3" rx="2"/>
-      <rect x="-15" y="12" width="30" height="6" fill="#0071e3" rx="2"/>
-    </g>
+    <!-- Cross going through the Bible -->
+    <!-- Vertical beam - goes through the middle/binding of the Bible -->
+    <rect x="-10" y="-180" width="20" height="280" fill="url(#crossGrad)" rx="3"/>
+    <rect x="-7" y="-180" width="14" height="280" fill="#FFE55C" opacity="0.3"/>
+
+    <!-- Horizontal beam - spans across the width of the Bible -->
+    <rect x="-140" y="-50" width="280" height="18" fill="url(#crossGrad)" rx="3"/>
+    <rect x="-140" y="-47" width="280" height="12" fill="#FFE55C" opacity="0.3"/>
+
+    <!-- Cross intersection highlight -->
+    <rect x="-10" y="-50" width="20" height="18" fill="#FFD700"/>
   </g>
 </svg>
