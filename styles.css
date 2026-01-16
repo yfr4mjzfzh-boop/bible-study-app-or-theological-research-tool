@@ -137,7 +137,7 @@ p {
    =================================== */
 
 .main-header {
-    background-color: rgba(139, 38, 53, 0.85);
+    background-color: rgba(139, 38, 53, 0.92);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -146,6 +146,8 @@ p {
     z-index: 100;
     /* Extend into safe area for notched devices */
     padding-top: env(safe-area-inset-top, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
 }
 
 body.dark-mode .main-header {
@@ -187,49 +189,62 @@ body.dark-mode .main-header {
 }
 
 /* ===================================
-   Tab Navigation
+   Tab Navigation - iOS Bottom Tab Bar
    =================================== */
 
 .tab-navigation {
     display: flex;
-    background-color: rgba(245, 237, 232, 0.8);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(139, 38, 53, 0.1);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    position: sticky;
-    top: 57px;
-    z-index: 99;
+    justify-content: space-around;
+    background-color: rgba(255, 249, 245, 0.85);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    backdrop-filter: blur(25px) saturate(180%);
+    border-top: 1px solid rgba(139, 38, 53, 0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 body.dark-mode .tab-navigation {
-    background-color: rgba(37, 32, 32, 0.8);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(26, 26, 26, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .tab-btn {
     flex: 1;
-    min-width: 80px;
-    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px 6px;
     background: none;
     border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-secondary);
-    font-size: 0.9375rem;
+    color: var(--text-muted);
+    font-size: 0.625rem;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
-    white-space: nowrap;
+}
+
+.tab-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.5;
 }
 
 .tab-btn:active {
-    background-color: var(--bg-tertiary);
+    transform: scale(0.95);
 }
 
 .tab-btn.active {
     color: var(--accent-primary);
-    border-bottom-color: var(--accent-gold);
+}
+
+.tab-btn.active .tab-icon {
+    stroke: var(--accent-primary);
 }
 
 /* ===================================
@@ -240,7 +255,8 @@ body.dark-mode .tab-navigation {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-lg);
-    min-height: calc(100vh - 120px);
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
+    min-height: calc(100vh - 60px);
 }
 
 .content-section {
@@ -1032,17 +1048,10 @@ body.dark-mode .modal-content {
 
 /* Safe area for notched devices */
 @supports (padding: max(0px)) {
-    html, body {
-        /* Ensure background extends into safe areas */
-        padding-top: env(safe-area-inset-top, 0);
-    }
-
     .main-header {
-        padding-top: max(var(--spacing-md), env(safe-area-inset-top));
-        padding-left: max(var(--spacing-md), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-md), env(safe-area-inset-right));
-        /* Pull header up into safe area */
-        margin-top: calc(-1 * env(safe-area-inset-top, 0));
+        padding-top: env(safe-area-inset-top, 0);
+        padding-left: env(safe-area-inset-left, 0);
+        padding-right: env(safe-area-inset-right, 0);
     }
 
     .main-content {
