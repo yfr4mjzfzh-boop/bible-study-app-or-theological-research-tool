@@ -179,12 +179,14 @@ class TheologicalStudyApp {
         if (this.darkMode) {
             document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
+            // Dark mode: iOS 26 black style
             if (themeColor) {
-                themeColor.setAttribute('content', '#1a1a1a');
+                themeColor.setAttribute('content', '#000000');
             }
         } else {
             document.documentElement.classList.remove('dark-mode');
             document.body.classList.remove('dark-mode');
+            // Light mode: burgundy header
             if (themeColor) {
                 themeColor.setAttribute('content', '#8B2635');
             }
