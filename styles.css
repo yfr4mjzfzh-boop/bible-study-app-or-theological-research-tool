@@ -43,6 +43,9 @@
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
     --transition-slow: 350ms ease;
+
+    /* Header dimensions for dynamic positioning */
+    --header-height: 57px;
 }
 
 /* Dark Mode */
@@ -79,6 +82,7 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--bg-primary);
+    scroll-behavior: smooth;
 }
 
 html.dark-mode {
@@ -123,13 +127,27 @@ p {
    =================================== */
 
 .main-header {
-    background-color: var(--bg-primary);
+    background-color: rgba(255, 255, 255, 0.8);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    transition: background-color var(--transition-normal), border-color var(--transition-normal);
+    will-change: transform;
+}
+
+body.dark-mode .main-header {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Safari-specific optimizations for smooth scrolling */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+    .main-header {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
 }
 
 .header-content {
@@ -164,8 +182,14 @@ p {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     position: sticky;
-    top: 57px;
+    top: var(--header-height);
     z-index: 99;
+    scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tab-navigation::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-btn {
@@ -200,7 +224,14 @@ p {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-lg);
-    min-height: calc(100vh - 120px);
+    min-height: calc(100dvh - 120px);
+}
+
+/* Fallback for browsers that don't support dvh */
+@supports not (height: 100dvh) {
+    .main-content {
+        min-height: calc(100vh - 120px);
+    }
 }
 
 .content-section {
@@ -806,6 +837,10 @@ body.dark-mode .tradition-badge.tradition-mainline {
     align-items: center;
     z-index: 1000;
     padding: var(--spacing-lg);
+    padding-top: max(var(--spacing-lg), env(safe-area-inset-top));
+    padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
+    padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
 }
 
 .modal.hidden {
@@ -936,6 +971,27 @@ body.dark-mode .tradition-badge.tradition-mainline {
     }
 }
 
+/* Landscape orientation on small devices (iPhone, etc.) */
+@media (max-height: 500px) and (orientation: landscape) {
+    .main-content {
+        min-height: calc(100dvh - 100px);
+    }
+
+    .header-content {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .tab-btn {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .passage-display,
+    .note-editor,
+    .commentary-container {
+        padding: var(--spacing-md);
+    }
+}
+
 /* ===================================
    iOS Specific Optimizations
    =================================== */
@@ -952,16 +1008,37 @@ body.dark-mode .tradition-badge.tradition-mainline {
         font-size: 16px; /* Prevent zoom on focus */
     }
 
-    .tab-navigation {
+    .tab-navigation,
+    .notes-list,
+    .bookmarks-list {
         -webkit-overflow-scrolling: touch;
+    }
+
+    /* Improve touch scrolling performance */
+    .main-content,
+    .passage-display,
+    .commentary-container {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Fix sticky positioning issues on iOS Safari */
+    .main-header,
+    .tab-navigation {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
 
 /* Safe area for notched devices */
 @supports (padding: max(0px)) {
     .main-header {
+        padding-top: env(safe-area-inset-top);
         padding-left: max(var(--spacing-md), env(safe-area-inset-left));
         padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+    }
+
+    .tab-navigation {
+        top: calc(var(--header-height) + env(safe-area-inset-top));
     }
 
     .main-content {
