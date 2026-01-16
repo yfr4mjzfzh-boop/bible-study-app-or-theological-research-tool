@@ -133,17 +133,24 @@ p {
 }
 
 /* ===================================
-   Header
+   Header - iOS 26 Glassy Style
    =================================== */
 
 .main-header {
-    background-color: var(--header-bg);
-    border-bottom: none;
+    background-color: rgba(139, 38, 53, 0.85);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
     /* Extend into safe area for notched devices */
     padding-top: env(safe-area-inset-top, 0);
+}
+
+body.dark-mode .main-header {
+    background-color: rgba(45, 31, 34, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .main-header .app-title {
@@ -185,13 +192,20 @@ p {
 
 .tab-navigation {
     display: flex;
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(245, 237, 232, 0.8);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(139, 38, 53, 0.1);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     position: sticky;
     top: 57px;
     z-index: 99;
+}
+
+body.dark-mode .tab-navigation {
+    background-color: rgba(37, 32, 32, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn {
@@ -259,16 +273,19 @@ p {
 }
 
 .btn-primary {
-    background-color: var(--accent-primary);
+    background: linear-gradient(180deg, rgba(139, 38, 53, 0.95) 0%, rgba(139, 38, 53, 1) 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(139, 38, 53, 0.3);
 }
 
 .btn-primary:hover {
-    background-color: var(--accent-hover);
+    background: linear-gradient(180deg, rgba(166, 50, 66, 0.95) 0%, rgba(166, 50, 66, 1) 100%);
+    box-shadow: 0 4px 12px rgba(139, 38, 53, 0.4);
 }
 
 .btn-primary:active {
     transform: scale(0.98);
+    box-shadow: 0 1px 4px rgba(139, 38, 53, 0.3);
 }
 
 .btn-secondary {
@@ -514,9 +531,17 @@ p {
 .commentary-item {
     margin-bottom: var(--spacing-xl);
     padding: var(--spacing-lg);
-    background-color: var(--bg-primary);
-    border-radius: var(--radius-md);
+    background-color: rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
     border-left: 4px solid var(--accent-primary);
+    box-shadow: 0 2px 12px rgba(139, 38, 53, 0.08);
+}
+
+body.dark-mode .commentary-item {
+    background-color: rgba(53, 45, 45, 0.6);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .commentary-text-wrapper {
@@ -678,15 +703,28 @@ body.dark-mode .tradition-badge.tradition-mainline {
 }
 
 .note-item {
-    background-color: var(--bg-secondary);
+    background-color: rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     border-left: 4px solid var(--accent-primary);
     transition: all var(--transition-fast);
+    box-shadow: 0 2px 12px rgba(139, 38, 53, 0.08);
+}
+
+body.dark-mode .note-item {
+    background-color: rgba(53, 45, 45, 0.6);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .note-item:hover {
-    box-shadow: 0 4px 12px var(--shadow);
+    box-shadow: 0 4px 16px rgba(139, 38, 53, 0.15);
+    transform: translateY(-1px);
+}
+
+body.dark-mode .note-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .note-header {
@@ -839,13 +877,22 @@ body.dark-mode .tradition-badge.tradition-mainline {
 }
 
 .modal-content {
-    background-color: var(--bg-primary);
+    background-color: rgba(255, 249, 245, 0.95);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
     border-radius: var(--radius-xl);
     width: 100%;
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px var(--shadow-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(139, 38, 53, 0.1);
+}
+
+body.dark-mode .modal-content {
+    background-color: rgba(26, 26, 26, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {
@@ -1033,13 +1080,22 @@ body.dark-mode .tradition-badge.tradition-mainline {
     right: -300px;
     width: 300px;
     height: 100%;
-    background-color: var(--bg-primary);
+    background-color: rgba(255, 249, 245, 0.9);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
     z-index: 1001;
-    box-shadow: -4px 0 20px var(--shadow-lg);
+    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
     transition: right var(--transition-normal);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    border-left: 1px solid rgba(139, 38, 53, 0.1);
+}
+
+body.dark-mode .sidebar {
+    background-color: rgba(26, 26, 26, 0.9);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4);
 }
 
 .sidebar.active {
