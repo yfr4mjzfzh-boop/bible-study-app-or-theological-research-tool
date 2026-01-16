@@ -56,11 +56,11 @@
     <rect x="-10" y="-180" width="20" height="280" fill="url(#crossGrad)" rx="3"/>
     <rect x="-7" y="-180" width="14" height="280" fill="#FFE55C" opacity="0.3"/>
 
-    <!-- Horizontal beam - spans across the width of the Bible -->
-    <rect x="-140" y="-50" width="280" height="18" fill="url(#crossGrad)" rx="3"/>
-    <rect x="-140" y="-47" width="280" height="12" fill="#FFE55C" opacity="0.3"/>
+    <!-- Horizontal beam - narrower and aligned with top of Bible -->
+    <rect x="-120" y="-108" width="240" height="16" fill="url(#crossGrad)" rx="3"/>
+    <rect x="-120" y="-105" width="240" height="10" fill="#FFE55C" opacity="0.3"/>
 
     <!-- Cross intersection highlight -->
-    <rect x="-10" y="-50" width="20" height="18" fill="#FFD700"/>
+    <rect x="-10" y="-108" width="20" height="16" fill="#FFD700"/>
   </g>
 </svg>

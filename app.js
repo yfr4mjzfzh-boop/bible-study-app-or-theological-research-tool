@@ -158,26 +158,42 @@ class TheologicalStudyApp {
     // ===================================
 
     initializeDarkMode() {
+        // Apply dark mode classes and theme color
+        this.applyDarkModeState();
+
+        // Listen for orientation changes to refresh theme color (iOS fix)
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.applyDarkModeState(), 100);
+        });
+
+        // Also listen for resize as a fallback
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => this.applyDarkModeState(), 100);
+        });
+    }
+
+    applyDarkModeState() {
+        const themeColor = document.querySelector('meta[name="theme-color"]');
         if (this.darkMode) {
             document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
-            // Update theme-color meta tag for mobile status bar
-            const themeColor = document.querySelector('meta[name="theme-color"]');
             if (themeColor) {
-                themeColor.setAttribute('content', '#000000');
+                themeColor.setAttribute('content', '#1a1a1a');
+            }
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+            if (themeColor) {
+                themeColor.setAttribute('content', '#8B2635');
             }
         }
     }
 
     toggleDarkMode() {
         this.darkMode = !this.darkMode;
-        document.documentElement.classList.toggle('dark-mode');
-        document.body.classList.toggle('dark-mode');
-        // Update theme-color meta tag for mobile status bar
-        const themeColor = document.querySelector('meta[name="theme-color"]');
-        if (themeColor) {
-            themeColor.setAttribute('content', this.darkMode ? '#000000' : '#ffffff');
-        }
+        this.applyDarkModeState();
         this.saveToStorage();
     }
 
