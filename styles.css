@@ -46,6 +46,9 @@
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
     --transition-slow: 350ms ease;
+
+    /* Header dimensions for dynamic positioning */
+    --header-height: 57px;
 }
 
 /* Dark Mode - Burgundy/Gold Theme */
@@ -87,6 +90,7 @@ html {
     background-color: var(--bg-primary);
     min-height: 100%;
     min-height: 100dvh;
+    scroll-behavior: smooth;
 }
 
 html.dark-mode {
@@ -144,6 +148,8 @@ p {
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: background-color var(--transition-normal), border-color var(--transition-normal);
+    will-change: transform;
     /* Extend into safe area for notched devices */
     padding-top: env(safe-area-inset-top, 0);
     padding-left: env(safe-area-inset-left, 0);
@@ -190,6 +196,14 @@ body.dark-mode .main-header {
 .main-header .icon-btn .icon {
     width: 18px;
     height: 18px;
+}
+
+/* Safari-specific optimizations for smooth scrolling */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+    .main-header {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
 }
 
 .header-content {
@@ -283,7 +297,14 @@ body.dark-mode .tab-navigation {
     margin: 0 auto;
     padding: var(--spacing-lg);
     padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
-    min-height: calc(100vh - 60px);
+    min-height: calc(100dvh - 120px);
+}
+
+/* Fallback for browsers that don't support dvh */
+@supports not (height: 100dvh) {
+    .main-content {
+        min-height: calc(100vh - 120px);
+    }
 }
 
 .content-section {
@@ -913,6 +934,10 @@ body.dark-mode .note-item:hover {
     align-items: center;
     z-index: 1000;
     padding: var(--spacing-lg);
+    padding-top: max(var(--spacing-lg), env(safe-area-inset-top));
+    padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
+    padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
+    padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
 }
 
 .modal.hidden {
@@ -1052,6 +1077,27 @@ body.dark-mode .modal-content {
     }
 }
 
+/* Landscape orientation on small devices (iPhone, etc.) */
+@media (max-height: 500px) and (orientation: landscape) {
+    .main-content {
+        min-height: calc(100dvh - 100px);
+    }
+
+    .header-content {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .tab-btn {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .passage-display,
+    .note-editor,
+    .commentary-container {
+        padding: var(--spacing-md);
+    }
+}
+
 /* ===================================
    iOS Specific Optimizations
    =================================== */
@@ -1068,17 +1114,33 @@ body.dark-mode .modal-content {
         font-size: 16px; /* Prevent zoom on focus */
     }
 
-    .tab-navigation {
+    .tab-navigation,
+    .notes-list,
+    .bookmarks-list {
         -webkit-overflow-scrolling: touch;
+    }
+
+    /* Improve touch scrolling performance */
+    .main-content,
+    .passage-display,
+    .commentary-container {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Fix sticky positioning issues on iOS Safari */
+    .main-header,
+    .tab-navigation {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
 
 /* Safe area for notched devices */
 @supports (padding: max(0px)) {
     .main-header {
-        padding-top: env(safe-area-inset-top, 0);
-        padding-left: env(safe-area-inset-left, 0);
-        padding-right: env(safe-area-inset-right, 0);
+        padding-top: env(safe-area-inset-top);
+        padding-left: max(var(--spacing-md), env(safe-area-inset-left));
+        padding-right: max(var(--spacing-md), env(safe-area-inset-right));
     }
 
     .main-content {
