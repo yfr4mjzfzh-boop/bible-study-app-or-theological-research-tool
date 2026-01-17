@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Bible Study">
-    <meta name="theme-color" content="#1a1a2e">
+    <meta name="theme-color" content="#8B2635" id="themeColorMeta">
     <title>Theological Study</title>
 
     <!-- App Icons -->
@@ -38,12 +38,34 @@
         </div>
     </header>
 
-    <!-- Navigation Tabs -->
+    <!-- Navigation Tabs - Now at Bottom iOS Style -->
     <nav class="tab-navigation">
-        <button class="tab-btn active" data-tab="passage">Passage</button>
-        <button class="tab-btn" data-tab="commentary">Commentary</button>
-        <button class="tab-btn" data-tab="notes">Notes</button>
-        <button class="tab-btn" data-tab="bookmarks">Bookmarks</button>
+        <button class="tab-btn active" data-tab="passage">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Passage</span>
+        </button>
+        <button class="tab-btn" data-tab="commentary">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Commentary</span>
+        </button>
+        <button class="tab-btn" data-tab="notes">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>Notes</span>
+        </button>
+        <button class="tab-btn" data-tab="bookmarks">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Bookmarks</span>
+        </button>
     </nav>
 
     <!-- Main Content Area -->
@@ -364,6 +386,78 @@
             <div class="modal-footer">
                 <button id="saveCollectionBtn" class="btn btn-primary">Create</button>
                 <button class="btn btn-secondary modal-close">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div id="sidebarOverlay" class="sidebar-overlay hidden"></div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button id="closeSidebar" class="icon-btn" aria-label="Close menu">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Font Size Controls -->
+            <div class="sidebar-section">
+                <h3>Display</h3>
+                <div class="font-size-controls">
+                    <span>Font Size</span>
+                    <div class="font-size-buttons">
+                        <button id="fontDecrease" class="btn btn-secondary btn-sm">A-</button>
+                        <span id="fontSizeLabel">100%</span>
+                        <button id="fontIncrease" class="btn btn-secondary btn-sm">A+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="sidebar-section">
+                <h3>Data</h3>
+                <button id="exportAllData" class="sidebar-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export All Data
+                </button>
+                <button id="clearAllData" class="sidebar-btn danger">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear All Data
+                </button>
+            </div>
+
+            <!-- About -->
+            <div class="sidebar-section">
+                <h3>About</h3>
+                <div class="about-info">
+                    <p><strong>Theological Study App</strong></p>
+                    <p class="text-muted">A tool for studying Scripture with commentaries from multiple Christian traditions.</p>
+                    <p class="version">Version 1.0</p>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Commentary Full View Modal -->
+    <div id="commentaryModal" class="modal hidden">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="commentaryModalTitle">Commentary</h3>
+                <button class="modal-close" id="closeCommentaryModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="commentaryModalContent" class="commentary-full-text"></div>
             </div>
         </div>
     </div>

@@ -3,22 +3,25 @@
    =================================== */
 
 :root {
-    /* Light Mode Colors */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f5f5f7;
-    --bg-tertiary: #e8e8ed;
-    --text-primary: #1d1d1f;
-    --text-secondary: #6e6e73;
-    --text-muted: #86868b;
-    --border-color: #d2d2d7;
-    --accent-primary: #0071e3;
-    --accent-hover: #0077ed;
-    --accent-light: #e3f2fd;
-    --success: #34c759;
-    --warning: #ff9500;
-    --danger: #ff3b30;
-    --shadow: rgba(0, 0, 0, 0.1);
-    --shadow-lg: rgba(0, 0, 0, 0.15);
+    /* Light Mode Colors - Burgundy/Gold Theme */
+    --bg-primary: #FFF9F5;
+    --bg-secondary: #F5EDE8;
+    --bg-tertiary: #EBE0D8;
+    --text-primary: #2D1F1A;
+    --text-secondary: #5C4A42;
+    --text-muted: #8B7355;
+    --border-color: #D4C4B8;
+    --accent-primary: #8B2635;
+    --accent-hover: #A63242;
+    --accent-light: #F5E6E8;
+    --accent-gold: #DAA520;
+    --accent-gold-light: #FFF3D4;
+    --success: #2E7D32;
+    --warning: #E65100;
+    --danger: #C62828;
+    --shadow: rgba(139, 38, 53, 0.1);
+    --shadow-lg: rgba(139, 38, 53, 0.15);
+    --header-bg: #8B2635;
 
     /* Typography */
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -45,23 +48,26 @@
     --transition-slow: 350ms ease;
 }
 
-/* Dark Mode */
+/* Dark Mode - Burgundy/Gold Theme */
 body.dark-mode {
-    --bg-primary: #000000;
-    --bg-secondary: #1c1c1e;
-    --bg-tertiary: #2c2c2e;
-    --text-primary: #f5f5f7;
-    --text-secondary: #98989d;
-    --text-muted: #636366;
-    --border-color: #38383a;
-    --accent-primary: #0a84ff;
-    --accent-hover: #409cff;
-    --accent-light: #1a3a52;
-    --success: #32d74b;
-    --warning: #ff9f0a;
-    --danger: #ff453a;
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #252020;
+    --bg-tertiary: #352D2D;
+    --text-primary: #F5EDE8;
+    --text-secondary: #C4B5AC;
+    --text-muted: #8B7B72;
+    --border-color: #4A3F3A;
+    --accent-primary: #D4626F;
+    --accent-hover: #E8848F;
+    --accent-light: #3D2A2D;
+    --accent-gold: #FFD700;
+    --accent-gold-light: #3D3520;
+    --success: #4CAF50;
+    --warning: #FF9800;
+    --danger: #EF5350;
     --shadow: rgba(0, 0, 0, 0.3);
     --shadow-lg: rgba(0, 0, 0, 0.5);
+    --header-bg: #2D1F22;
 }
 
 /* ===================================
@@ -79,6 +85,8 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--bg-primary);
+    min-height: 100%;
+    min-height: 100dvh;
 }
 
 html.dark-mode {
@@ -92,6 +100,12 @@ body {
     line-height: 1.6;
     transition: background-color var(--transition-normal), color var(--transition-normal);
     overflow-x: hidden;
+    min-height: 100%;
+    min-height: 100dvh;
+}
+
+body.dark-mode {
+    background-color: #000000;
 }
 
 /* ===================================
@@ -119,17 +133,63 @@ p {
 }
 
 /* ===================================
-   Header
+   Header - iOS 26 Style
    =================================== */
 
 .main-header {
-    background-color: var(--bg-primary);
-    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(139, 38, 53, 0.92);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    /* Extend into safe area for notched devices */
+    padding-top: env(safe-area-inset-top, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+}
+
+/* Dark mode: iOS 26 black glass style */
+body.dark-mode .main-header {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.main-header .app-title {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+}
+
+/* iOS 26 Style Circular Glass Buttons */
+.main-header .icon-btn {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.main-header .icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.main-header .icon-btn:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.main-header .icon-btn .icon {
+    width: 18px;
+    height: 18px;
 }
 
 .header-content {
@@ -154,42 +214,64 @@ p {
 }
 
 /* ===================================
-   Tab Navigation
+   Tab Navigation - iOS Bottom Tab Bar
    =================================== */
 
 .tab-navigation {
     display: flex;
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    position: sticky;
-    top: 57px;
-    z-index: 99;
+    justify-content: space-around;
+    background-color: rgba(139, 38, 53, 0.92);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Dark mode: iOS 26 black glass style */
+body.dark-mode .tab-navigation {
+    background-color: rgba(0, 0, 0, 0.85);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .tab-btn {
     flex: 1;
-    min-width: 80px;
-    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px 6px;
     background: none;
     border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-secondary);
-    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.625rem;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
-    white-space: nowrap;
+}
+
+.tab-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.5;
+    stroke: rgba(255, 255, 255, 0.6);
 }
 
 .tab-btn:active {
-    background-color: var(--bg-tertiary);
+    transform: scale(0.95);
 }
 
 .tab-btn.active {
-    color: var(--accent-primary);
-    border-bottom-color: var(--accent-primary);
+    color: #FFD700;
+}
+
+.tab-btn.active .tab-icon {
+    stroke: #FFD700;
 }
 
 /* ===================================
@@ -200,7 +282,8 @@ p {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-lg);
-    min-height: calc(100vh - 120px);
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
+    min-height: calc(100vh - 60px);
 }
 
 .content-section {
@@ -233,16 +316,19 @@ p {
 }
 
 .btn-primary {
-    background-color: var(--accent-primary);
+    background: linear-gradient(180deg, rgba(139, 38, 53, 0.95) 0%, rgba(139, 38, 53, 1) 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(139, 38, 53, 0.3);
 }
 
 .btn-primary:hover {
-    background-color: var(--accent-hover);
+    background: linear-gradient(180deg, rgba(166, 50, 66, 0.95) 0%, rgba(166, 50, 66, 1) 100%);
+    box-shadow: 0 4px 12px rgba(139, 38, 53, 0.4);
 }
 
 .btn-primary:active {
     transform: scale(0.98);
+    box-shadow: 0 1px 4px rgba(139, 38, 53, 0.3);
 }
 
 .btn-secondary {
@@ -488,9 +574,17 @@ p {
 .commentary-item {
     margin-bottom: var(--spacing-xl);
     padding: var(--spacing-lg);
-    background-color: var(--bg-primary);
-    border-radius: var(--radius-md);
+    background-color: rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
     border-left: 4px solid var(--accent-primary);
+    box-shadow: 0 2px 12px rgba(139, 38, 53, 0.08);
+}
+
+body.dark-mode .commentary-item {
+    background-color: rgba(53, 45, 45, 0.6);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .commentary-text-wrapper {
@@ -652,15 +746,28 @@ body.dark-mode .tradition-badge.tradition-mainline {
 }
 
 .note-item {
-    background-color: var(--bg-secondary);
+    background-color: rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
     border-left: 4px solid var(--accent-primary);
     transition: all var(--transition-fast);
+    box-shadow: 0 2px 12px rgba(139, 38, 53, 0.08);
+}
+
+body.dark-mode .note-item {
+    background-color: rgba(53, 45, 45, 0.6);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 .note-item:hover {
-    box-shadow: 0 4px 12px var(--shadow);
+    box-shadow: 0 4px 16px rgba(139, 38, 53, 0.15);
+    transform: translateY(-1px);
+}
+
+body.dark-mode .note-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .note-header {
@@ -813,13 +920,22 @@ body.dark-mode .tradition-badge.tradition-mainline {
 }
 
 .modal-content {
-    background-color: var(--bg-primary);
+    background-color: rgba(255, 249, 245, 0.95);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
     border-radius: var(--radius-xl);
     width: 100%;
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px var(--shadow-lg);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(139, 38, 53, 0.1);
+}
+
+body.dark-mode .modal-content {
+    background-color: rgba(26, 26, 26, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {
@@ -960,8 +1076,9 @@ body.dark-mode .tradition-badge.tradition-mainline {
 /* Safe area for notched devices */
 @supports (padding: max(0px)) {
     .main-header {
-        padding-left: max(var(--spacing-md), env(safe-area-inset-left));
-        padding-right: max(var(--spacing-md), env(safe-area-inset-right));
+        padding-top: env(safe-area-inset-top, 0);
+        padding-left: env(safe-area-inset-left, 0);
+        padding-right: env(safe-area-inset-right, 0);
     }
 
     .main-content {
@@ -969,6 +1086,199 @@ body.dark-mode .tradition-badge.tradition-mainline {
         padding-right: max(var(--spacing-lg), env(safe-area-inset-right));
         padding-bottom: max(var(--spacing-lg), env(safe-area-inset-bottom));
     }
+}
+
+/* ===================================
+   Sidebar Menu
+   =================================== */
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: rgba(255, 249, 245, 0.9);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    z-index: 1001;
+    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
+    transition: right var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border-left: 1px solid rgba(139, 38, 53, 0.1);
+}
+
+body.dark-mode .sidebar {
+    background-color: rgba(26, 26, 26, 0.9);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar.active {
+    right: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: var(--spacing-md);
+}
+
+.sidebar-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.sidebar-section h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-md);
+}
+
+.sidebar-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    padding: var(--spacing-md);
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: var(--spacing-sm);
+}
+
+.sidebar-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+.sidebar-btn.danger {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.sidebar-btn.danger:hover {
+    background-color: rgba(255, 59, 48, 0.1);
+}
+
+.sidebar-btn .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.font-size-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.font-size-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+    min-width: 36px;
+}
+
+#fontSizeLabel {
+    min-width: 45px;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.about-info {
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.about-info p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.about-info .version {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+/* Large Modal for Commentary */
+.modal-large {
+    max-width: 700px;
+}
+
+.modal-large .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.commentary-full-text {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+}
+
+.commentary-full-text .commentary-meta {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.commentary-full-text .author-name {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--text-primary);
+}
+
+.commentary-full-text .source-info {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
 }
 
 /* ===================================

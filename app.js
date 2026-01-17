@@ -13,6 +13,7 @@ class TheologicalStudyApp {
         this.selectedTranslation = 'kjv'; // Default translation
         this.commentaries = []; // Commentary database
         this.enabledTraditions = ['reformed', 'patristic']; // Default traditions
+        this.fontSize = 100; // Font size percentage
 
         // API Keys (get free keys at respective websites)
         this.esvApiKey = '948f99e1f43d00f0d3fef28825fb24022c09a127'; // ESV: https://api.esv.org/
@@ -48,6 +49,10 @@ class TheologicalStudyApp {
             this.darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
             this.currentPassage = JSON.parse(localStorage.getItem('currentPassage')) || null;
             this.selectedTranslation = localStorage.getItem('selectedTranslation') || 'kjv';
+            this.fontSize = JSON.parse(localStorage.getItem('fontSize')) || 100;
+
+            // Apply font size
+            this.applyFontSize();
 
             // Set translation selector
             const translationSelect = document.getElementById('translationSelect');
@@ -68,6 +73,7 @@ class TheologicalStudyApp {
             localStorage.setItem('darkMode', JSON.stringify(this.darkMode));
             localStorage.setItem('currentPassage', JSON.stringify(this.currentPassage));
             localStorage.setItem('selectedTranslation', this.selectedTranslation);
+            localStorage.setItem('fontSize', JSON.stringify(this.fontSize));
         } catch (error) {
             console.error('Error saving to storage:', error);
             this.showNotification('Error saving data', 'error');
@@ -126,6 +132,25 @@ class TheologicalStudyApp {
         document.getElementById('collectionModal').addEventListener('click', (e) => {
             if (e.target.id === 'collectionModal') this.closeModal();
         });
+
+        // Sidebar Menu
+        document.getElementById('menuToggle').addEventListener('click', () => this.toggleSidebar());
+        document.getElementById('closeSidebar').addEventListener('click', () => this.closeSidebar());
+        document.getElementById('sidebarOverlay').addEventListener('click', () => this.closeSidebar());
+
+        // Font Size Controls
+        document.getElementById('fontIncrease').addEventListener('click', () => this.changeFontSize(10));
+        document.getElementById('fontDecrease').addEventListener('click', () => this.changeFontSize(-10));
+
+        // Data Management
+        document.getElementById('exportAllData').addEventListener('click', () => this.exportAllData());
+        document.getElementById('clearAllData').addEventListener('click', () => this.clearAllData());
+
+        // Commentary Modal
+        document.getElementById('closeCommentaryModal').addEventListener('click', () => this.closeCommentaryModal());
+        document.getElementById('commentaryModal').addEventListener('click', (e) => {
+            if (e.target.id === 'commentaryModal') this.closeCommentaryModal();
+        });
     }
 
     // ===================================
@@ -133,17 +158,148 @@ class TheologicalStudyApp {
     // ===================================
 
     initializeDarkMode() {
+        // Apply dark mode classes and theme color
+        this.applyDarkModeState();
+
+        // Listen for orientation changes to refresh theme color (iOS fix)
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.applyDarkModeState(), 100);
+        });
+
+        // Also listen for resize as a fallback
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => this.applyDarkModeState(), 100);
+        });
+    }
+
+    applyDarkModeState() {
+        const themeColor = document.querySelector('meta[name="theme-color"]');
         if (this.darkMode) {
             document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
+            // Dark mode: iOS 26 black style
+            if (themeColor) {
+                themeColor.setAttribute('content', '#000000');
+            }
+        } else {
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+            // Light mode: burgundy header
+            if (themeColor) {
+                themeColor.setAttribute('content', '#8B2635');
+            }
         }
     }
 
     toggleDarkMode() {
         this.darkMode = !this.darkMode;
-        document.documentElement.classList.toggle('dark-mode');
-        document.body.classList.toggle('dark-mode');
+        this.applyDarkModeState();
         this.saveToStorage();
+    }
+
+    // ===================================
+    // Sidebar Menu
+    // ===================================
+
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        overlay.classList.remove('hidden');
+    }
+
+    closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.classList.add('hidden'), 250);
+    }
+
+    // ===================================
+    // Font Size Controls
+    // ===================================
+
+    changeFontSize(delta) {
+        this.fontSize = Math.max(70, Math.min(150, this.fontSize + delta));
+        this.applyFontSize();
+        this.saveToStorage();
+    }
+
+    applyFontSize() {
+        document.documentElement.style.setProperty('--user-font-size', `${this.fontSize}%`);
+        document.querySelector('.passage-text')?.style.setProperty('font-size', `${this.fontSize}%`);
+        document.querySelector('.commentary-display')?.style.setProperty('font-size', `${this.fontSize}%`);
+
+        const label = document.getElementById('fontSizeLabel');
+        if (label) label.textContent = `${this.fontSize}%`;
+    }
+
+    // ===================================
+    // Data Management
+    // ===================================
+
+    exportAllData() {
+        const data = {
+            notes: this.notes,
+            bookmarks: this.bookmarks,
+            collections: this.collections,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `theological-study-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        this.closeSidebar();
+        this.showNotification('Data exported successfully', 'success');
+    }
+
+    clearAllData() {
+        if (confirm('Are you sure you want to clear ALL data? This includes notes, bookmarks, and collections. This cannot be undone.')) {
+            this.notes = [];
+            this.bookmarks = [];
+            this.collections = [];
+            this.saveToStorage();
+            this.renderNotes();
+            this.renderBookmarks();
+            this.updateTagFilter();
+            this.closeSidebar();
+            this.showNotification('All data cleared', 'success');
+        }
+    }
+
+    // ===================================
+    // Commentary Modal
+    // ===================================
+
+    openCommentaryModal(commentary) {
+        const modal = document.getElementById('commentaryModal');
+        const title = document.getElementById('commentaryModalTitle');
+        const content = document.getElementById('commentaryModalContent');
+
+        title.textContent = `${commentary.reference} - ${commentary.author}`;
+        content.innerHTML = `
+            <div class="commentary-meta">
+                <div class="author-name">${commentary.author}</div>
+                <div class="source-info">${commentary.source}${commentary.year ? ` (${commentary.year})` : ''}</div>
+            </div>
+            <div class="commentary-body">${commentary.text}</div>
+        `;
+
+        modal.classList.remove('hidden');
+    }
+
+    closeCommentaryModal() {
+        document.getElementById('commentaryModal').classList.add('hidden');
     }
 
     // ===================================
@@ -947,7 +1103,10 @@ class TheologicalStudyApp {
             return;
         }
 
-        // Render commentaries with expand/collapse
+        // Store commentaries for modal access
+        this.currentCommentaries = matchingCommentaries;
+
+        // Render commentaries with expand/collapse and full-page view option
         display.innerHTML = matchingCommentaries.map((c, index) => {
             const commentaryId = `commentary-${index}`;
             const previewLength = 200;
@@ -969,14 +1128,24 @@ class TheologicalStudyApp {
                         <p id="${commentaryId}-full" class="commentary-text hidden" style="font-family: var(--font-serif); line-height: 1.8;">
                             ${fullText}
                         </p>
-                        ${needsExpand ? `
-                            <button class="expand-btn" onclick="app.toggleCommentary('${commentaryId}')" id="${commentaryId}-btn">
-                                <span id="${commentaryId}-btn-text">Read more</span>
-                                <svg id="${commentaryId}-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-left: 0.25rem; transition: transform 0.2s;">
-                                    <path d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                                </svg>
-                            </button>
-                        ` : ''}
+                        <div class="commentary-actions" style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                            ${needsExpand ? `
+                                <button class="expand-btn" onclick="app.toggleCommentary('${commentaryId}')" id="${commentaryId}-btn">
+                                    <span id="${commentaryId}-btn-text">Read more</span>
+                                    <svg id="${commentaryId}-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-left: 0.25rem; transition: transform 0.2s;">
+                                        <path d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
+                            ${needsExpand ? `
+                                <button class="expand-btn" onclick="app.openCommentaryModal(app.currentCommentaries[${index}])" style="background-color: var(--accent-primary); color: white;">
+                                    <span>Full Page</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 0.25rem;">
+                                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
                 </div>
             `;
