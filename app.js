@@ -175,22 +175,31 @@ class TheologicalStudyApp {
     }
 
     applyDarkModeState() {
-        const themeColor = document.querySelector('meta[name="theme-color"]');
+        // Update classes
         if (this.darkMode) {
             document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
-            // Dark mode: iOS 26 black style
-            if (themeColor) {
-                themeColor.setAttribute('content', '#000000');
-            }
         } else {
             document.documentElement.classList.remove('dark-mode');
             document.body.classList.remove('dark-mode');
-            // Light mode: burgundy header
-            if (themeColor) {
-                themeColor.setAttribute('content', '#8B2635');
-            }
         }
+
+        // Force update theme-color meta tag (remove and re-add for iOS reliability)
+        this.updateThemeColor();
+    }
+
+    updateThemeColor() {
+        // Remove existing theme-color meta tag
+        const existingThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (existingThemeColor) {
+            existingThemeColor.remove();
+        }
+
+        // Create and add new theme-color meta tag with correct color
+        const newThemeColor = document.createElement('meta');
+        newThemeColor.name = 'theme-color';
+        newThemeColor.content = this.darkMode ? '#000000' : '#8B2635';
+        document.head.appendChild(newThemeColor);
     }
 
     toggleDarkMode() {

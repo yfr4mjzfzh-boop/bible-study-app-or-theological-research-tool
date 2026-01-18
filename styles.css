@@ -87,7 +87,7 @@ html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-primary);
+    background-color: #8B2635;
     min-height: 100%;
     min-height: 100dvh;
     scroll-behavior: smooth;
