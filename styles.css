@@ -144,9 +144,9 @@ p {
 
 .main-header {
     background-color: rgba(139, 38, 53, 0.75);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    backdrop-filter: blur(40px) saturate(200%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(180%);
+    border-bottom: none;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -161,7 +161,7 @@ p {
 /* Dark mode: iOS 26 black glass style */
 body.dark-mode .main-header {
     background-color: rgba(0, 0, 0, 0.7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: none;
 }
 
 .main-header .app-title {
@@ -258,9 +258,9 @@ body.dark-mode .main-header {
     display: flex;
     justify-content: space-around;
     background-color: rgba(139, 38, 53, 0.75);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    backdrop-filter: blur(40px) saturate(200%);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(180%);
+    border-top: none;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -274,7 +274,7 @@ body.dark-mode .main-header {
 /* Dark mode: iOS 26 black glass style */
 body.dark-mode .tab-navigation {
     background-color: rgba(0, 0, 0, 0.7);
-    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-top: none;
 }
 
 .tab-btn {
