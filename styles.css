@@ -200,6 +200,17 @@ body.dark-mode .main-header {
     height: 18px;
 }
 
+/* Larger hamburger menu icon */
+.main-header .icon-btn-lg {
+    width: 40px;
+    height: 40px;
+}
+
+.main-header .icon-btn-lg .icon-lg {
+    width: 22px;
+    height: 22px;
+}
+
 /* Safari-specific optimizations for smooth scrolling */
 @supports (-webkit-backdrop-filter: blur(1px)) {
     .main-header {

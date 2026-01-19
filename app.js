@@ -46,7 +46,16 @@ class TheologicalStudyApp {
             this.notes = JSON.parse(localStorage.getItem('theologicalNotes')) || [];
             this.bookmarks = JSON.parse(localStorage.getItem('theologicalBookmarks')) || [];
             this.collections = JSON.parse(localStorage.getItem('theologicalCollections')) || [];
-            this.darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
+
+            // Check if user has a saved preference, otherwise use system preference
+            const savedDarkMode = localStorage.getItem('darkMode');
+            if (savedDarkMode === null) {
+                // No saved preference, use system preference
+                this.darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            } else {
+                this.darkMode = JSON.parse(savedDarkMode);
+            }
+
             this.currentPassage = JSON.parse(localStorage.getItem('currentPassage')) || null;
             this.selectedTranslation = localStorage.getItem('selectedTranslation') || 'kjv';
             this.fontSize = JSON.parse(localStorage.getItem('fontSize')) || 100;
@@ -161,6 +170,17 @@ class TheologicalStudyApp {
         // Apply dark mode classes and theme color
         this.applyDarkModeState();
 
+        // Listen for system dark mode preference changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                // Only auto-switch if user hasn't manually set a preference
+                if (localStorage.getItem('darkMode') === null) {
+                    this.darkMode = e.matches;
+                    this.applyDarkModeState();
+                }
+            });
+        }
+
         // Listen for orientation changes to refresh theme color (iOS fix)
         window.addEventListener('orientationchange', () => {
             setTimeout(() => this.applyDarkModeState(), 100);
@@ -182,6 +202,12 @@ class TheologicalStudyApp {
         } else {
             document.documentElement.classList.remove('dark-mode');
             document.body.classList.remove('dark-mode');
+        }
+
+        // Update dark mode label in sidebar
+        const darkModeLabel = document.getElementById('darkModeLabel');
+        if (darkModeLabel) {
+            darkModeLabel.textContent = this.darkMode ? 'Light Mode' : 'Dark Mode';
         }
 
         // Force update theme-color meta tag (remove and re-add for iOS reliability)

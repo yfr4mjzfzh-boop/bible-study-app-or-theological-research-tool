@@ -22,13 +22,8 @@
         <div class="header-content">
             <h1 class="app-title">Theological Study</h1>
             <div class="header-actions">
-                <button id="darkModeToggle" class="icon-btn" aria-label="Toggle dark mode">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                </button>
-                <button id="menuToggle" class="icon-btn" aria-label="Toggle menu">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button id="menuToggle" class="icon-btn icon-btn-lg" aria-label="Toggle menu">
+                    <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -407,6 +402,15 @@
             <!-- Font Size Controls -->
             <div class="sidebar-section">
                 <h3>Display</h3>
+
+                <!-- Dark Mode Toggle -->
+                <button id="darkModeToggle" class="sidebar-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <span id="darkModeLabel">Dark Mode</span>
+                </button>
+
                 <div class="font-size-controls">
                     <span>Font Size</span>
                     <div class="font-size-buttons">
