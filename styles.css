@@ -248,7 +248,8 @@ body.dark-mode .main-header {
    =================================== */
 
 .tab-navigation {
-    height: 65px
+    height:65px;
+    box sizing:border-box;
     display: flex;
     justify-content: space-around;
     background-color: rgba(139, 38, 53, 0.75);
