@@ -1,0 +1,31 @@
+{
+  "name": "bible-study-app",
+  "version": "1.0.0",
+  "description": "Theological Research and Bible Study iOS App",
+  "main": "app.js",
+  "scripts": {
+    "sync": "cp index.html app.js styles.css manifest.json icon.svg commentaries.json capacitor-init.js www/ && npm run ios:sync",
+    "ios:open": "npx cap open ios",
+    "ios:sync": "npx cap sync ios",
+    "ios:build": "npx cap copy ios && npx cap sync ios",
+    "ios:update": "npm run sync"
+  },
+  "keywords": [
+    "bible",
+    "theology",
+    "study",
+    "ios"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/share": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0"
+  }
+}

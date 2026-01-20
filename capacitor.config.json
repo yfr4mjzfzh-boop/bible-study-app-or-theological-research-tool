@@ -1,0 +1,11 @@
+{
+  "appId": "com.biblestudy.app",
+  "appName": "Bible Study",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}

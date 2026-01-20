@@ -1,1 +1,55 @@
-# No ignores needed currently
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Capacitor
+.capacitor/
+ios/App/Pods/
+ios/App/build/
+android/
+
+# iOS
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/App/App.xcworkspace/xcuserdata/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+*.hmap
+*.xcuserstate
+project.xcworkspace
+xcuserdata
+UserInterfaceState.xcuserstate
+project.xcworkspace/
+xcuserdata/
+UserInterfaceState.xcuserstate
+
+# CocoaPods
+Pods/
+!Podfile
+!Podfile.lock
+
+# Temporary files
+*.swp
+*.swo
+*~
+.tmp
+
+# Logs
+logs
+*.log
+
+# Editor directories
+.vscode/
+.idea/
