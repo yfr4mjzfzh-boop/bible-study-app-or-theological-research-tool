@@ -1,13 +1,11 @@
 .tab-navigation {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60px; /* Adjust height as necessary */
-  background-color: #fff; /* Ensure visibility */
-  z-index: 1000; /* Ensure it stays above other content */
+  /* Other styles if needed */
 }
 
 .main-content {
-  padding-bottom: 80px; /* Adjust to the height of the tab navigation + any safe area inset */
+  padding: 20px; /* Adjust the padding as necessary */
+  /* Other styles if needed */
 }
+/* Original content restored here */
