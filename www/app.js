@@ -14,6 +14,7 @@ class TheologicalStudyApp {
         this.commentaries = []; // Commentary database
         this.enabledTraditions = ['reformed', 'patristic']; // Default traditions
         this.currentView = 'bible'; // 'bible' or 'commentary'
+        this.fontSize = 100; // Default font size percentage
 
         // API Keys (get free keys at respective websites)
         this.esvApiKey = '948f99e1f43d00f0d3fef28825fb24022c09a127'; // ESV: https://api.esv.org/
@@ -144,6 +145,7 @@ class TheologicalStudyApp {
         this.loadCommentaryDatabase();
         this.setupEventListeners();
         this.initializeDarkMode();
+        this.applyFontSize();
         this.renderNotes();
         this.renderBookmarks();
         this.updateTagFilter();
@@ -162,6 +164,7 @@ class TheologicalStudyApp {
             this.darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
             this.currentPassage = JSON.parse(localStorage.getItem('currentPassage')) || null;
             this.selectedTranslation = localStorage.getItem('selectedTranslation') || 'kjv';
+            this.fontSize = parseInt(localStorage.getItem('fontSize')) || 100;
 
             // Set translation selector
             const translationSelect = document.getElementById('translationSelect');
@@ -182,6 +185,7 @@ class TheologicalStudyApp {
             localStorage.setItem('darkMode', JSON.stringify(this.darkMode));
             localStorage.setItem('currentPassage', JSON.stringify(this.currentPassage));
             localStorage.setItem('selectedTranslation', this.selectedTranslation);
+            localStorage.setItem('fontSize', this.fontSize.toString());
         } catch (error) {
             console.error('Error saving to storage:', error);
             this.showNotification('Error saving data', 'error');
@@ -195,6 +199,19 @@ class TheologicalStudyApp {
     setupEventListeners() {
         // Dark Mode Toggle
         document.getElementById('darkModeToggle').addEventListener('click', () => this.toggleDarkMode());
+
+        // Sidebar Menu
+        document.getElementById('menuToggle').addEventListener('click', () => this.toggleSidebar());
+        document.getElementById('closeSidebar').addEventListener('click', () => this.closeSidebar());
+        document.getElementById('sidebarOverlay').addEventListener('click', () => this.closeSidebar());
+
+        // Font Size Controls
+        document.getElementById('fontIncrease').addEventListener('click', () => this.changeFontSize(10));
+        document.getElementById('fontDecrease').addEventListener('click', () => this.changeFontSize(-10));
+
+        // Data Management
+        document.getElementById('exportAllData').addEventListener('click', () => this.exportAllData());
+        document.getElementById('clearAllData').addEventListener('click', () => this.clearAllData());
 
         // Tab Navigation
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -270,7 +287,107 @@ class TheologicalStudyApp {
         this.darkMode = !this.darkMode;
         document.documentElement.classList.toggle('dark-mode');
         document.body.classList.toggle('dark-mode');
+
+        // Update sidebar label
+        const label = document.getElementById('darkModeLabel');
+        if (label) {
+            label.textContent = this.darkMode ? 'Light Mode' : 'Dark Mode';
+        }
+
         this.saveToStorage();
+    }
+
+    // ===================================
+    // Sidebar Menu
+    // ===================================
+
+    toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+    }
+
+    closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+
+    // ===================================
+    // Font Size Controls
+    // ===================================
+
+    changeFontSize(delta) {
+        this.fontSize = Math.max(70, Math.min(150, this.fontSize + delta));
+        this.applyFontSize();
+        this.saveToStorage();
+    }
+
+    applyFontSize() {
+        document.documentElement.style.setProperty('--user-font-size', `${this.fontSize}%`);
+        const passageText = document.querySelector('.passage-text');
+        const commentaryDisplay = document.querySelector('.commentary-display');
+
+        if (passageText) passageText.style.fontSize = `${this.fontSize}%`;
+        if (commentaryDisplay) commentaryDisplay.style.fontSize = `${this.fontSize}%`;
+
+        const label = document.getElementById('fontSizeLabel');
+        if (label) label.textContent = `${this.fontSize}%`;
+    }
+
+    // ===================================
+    // Data Management
+    // ===================================
+
+    exportAllData() {
+        const data = {
+            notes: this.notes,
+            bookmarks: this.bookmarks,
+            collections: this.collections,
+            darkMode: this.darkMode,
+            fontSize: this.fontSize,
+            selectedTranslation: this.selectedTranslation,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
+        };
+
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `theological-study-backup-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+
+        this.showNotification('Data exported successfully', 'success');
+        this.closeSidebar();
+    }
+
+    clearAllData() {
+        if (confirm('Are you sure you want to clear ALL data? This includes notes, bookmarks, and collections. This action cannot be undone.')) {
+            if (confirm('This will permanently delete everything. Are you absolutely sure?')) {
+                this.notes = [];
+                this.bookmarks = [];
+                this.collections = [];
+                this.currentPassage = null;
+
+                localStorage.clear();
+                this.saveToStorage();
+
+                this.renderNotes();
+                this.renderBookmarks();
+                this.updateTagFilter();
+
+                this.showNotification('All data cleared', 'success');
+                this.closeSidebar();
+
+                // Reload the page to reset everything
+                setTimeout(() => window.location.reload(), 1000);
+            }
+        }
     }
 
     // ===================================

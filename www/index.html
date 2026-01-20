@@ -22,13 +22,8 @@
         <div class="header-content">
             <h1 class="app-title">Theological Study</h1>
             <div class="header-actions">
-                <button id="darkModeToggle" class="icon-btn" aria-label="Toggle dark mode">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                </button>
-                <button id="menuToggle" class="icon-btn" aria-label="Toggle menu">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button id="menuToggle" class="icon-btn icon-btn-lg" aria-label="Toggle menu">
+                    <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -380,6 +375,74 @@
             </div>
         </div>
     </div>
+
+    <!-- Sidebar Menu -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button id="closeSidebar" class="icon-btn" aria-label="Close menu">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Display Settings -->
+            <div class="sidebar-section">
+                <h3>Display</h3>
+
+                <!-- Dark Mode Toggle -->
+                <button id="darkModeToggle" class="sidebar-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <span id="darkModeLabel">Dark Mode</span>
+                </button>
+
+                <div class="font-size-controls">
+                    <span>Font Size</span>
+                    <div class="font-size-buttons">
+                        <button id="fontDecrease" class="btn btn-secondary btn-sm">A-</button>
+                        <span id="fontSizeLabel">100%</span>
+                        <button id="fontIncrease" class="btn btn-secondary btn-sm">A+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Management -->
+            <div class="sidebar-section">
+                <h3>Data</h3>
+                <button id="exportAllData" class="sidebar-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export All Data
+                </button>
+                <button id="clearAllData" class="sidebar-btn danger">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear All Data
+                </button>
+            </div>
+
+            <!-- About -->
+            <div class="sidebar-section">
+                <h3>About</h3>
+                <div class="about-info">
+                    <p><strong>Theological Study App</strong></p>
+                    <p class="text-muted">A tool for studying Scripture with commentaries from multiple Christian traditions.</p>
+                    <p class="version">Version 1.0</p>
+                </div>
+            </div>
+        </nav>
+    </aside>
 
     <!-- Capacitor for native iOS functionality -->
     <script src="capacitor.js"></script>
