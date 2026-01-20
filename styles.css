@@ -198,8 +198,8 @@ body.dark-mode .main-header {
 
 /* Larger hamburger menu icon - Enhanced floating effect */
 .main-header .icon-btn-lg {
-    width: 28px;
-    height: 28px;
+    width: 50px;
+    height: 50px;
     background-color: rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
@@ -210,8 +210,8 @@ body.dark-mode .main-header {
 }
 
 .main-header .icon-btn-lg .icon-lg {
-    width: 40px;
-    height: 40px;
+    width: 25px;
+    height: 25px;
 }
 
 /* Safari-specific optimizations for smooth scrolling */
@@ -255,7 +255,7 @@ body.dark-mode .main-header {
     background-color: rgba(139, 38, 53, 0.75);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
     backdrop-filter: blur(40px) saturate(180%);
-    border-top: 0;
+    border-top: -10;
     position: fixed;
     bottom:0;
     left: 0;
