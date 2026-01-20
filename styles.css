@@ -3,22 +3,26 @@
    =================================== */
 
 :root {
-    /* Light Mode Colors */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f5f5f7;
-    --bg-tertiary: #e8e8ed;
-    --text-primary: #1d1d1f;
-    --text-secondary: #6e6e73;
-    --text-muted: #86868b;
-    --border-color: #d2d2d7;
-    --accent-primary: #0071e3;
-    --accent-hover: #0077ed;
-    --accent-light: #e3f2fd;
-    --success: #34c759;
-    --warning: #ff9500;
-    --danger: #ff3b30;
-    --shadow: rgba(0, 0, 0, 0.1);
-    --shadow-lg: rgba(0, 0, 0, 0.15);
+    /* Light Mode Colors - Burgundy/Gold Theme */
+    --bg-primary: #FFF9F5;
+    --bg-secondary: #F5EDE8;
+    --bg-tertiary: #EBE0D8;
+    --text-primary: #2D1F1A;
+    --text-secondary: #5C4A42;
+    --text-muted: #8B7355;
+    --border-color: #D4C4B8;
+    --accent-primary: #8B2635;
+    --accent-secondary: #8B2635;
+    --accent-hover: #A63242;
+    --accent-light: #F5E6E8;
+    --accent-gold: #DAA520;
+    --accent-gold-light: #FFF3D4;
+    --success: #2E7D32;
+    --warning: #E65100;
+    --danger: #C62828;
+    --shadow: rgba(139, 38, 53, 0.1);
+    --shadow-lg: rgba(139, 38, 53, 0.15);
+    --header-bg: #8B2635;
 
     /* Typography */
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -45,26 +49,31 @@
     --transition-slow: 350ms ease;
 
     /* Header dimensions for dynamic positioning */
-    --header-height: 57px;
+    --header-height: 60px;
+    --tab-height: 65px;
 }
 
-/* Dark Mode */
+/* Dark Mode - Burgundy/Gold Theme */
 body.dark-mode {
-    --bg-primary: #000000;
-    --bg-secondary: #1c1c1e;
-    --bg-tertiary: #2c2c2e;
-    --text-primary: #f5f5f7;
-    --text-secondary: #98989d;
-    --text-muted: #636366;
-    --border-color: #38383a;
-    --accent-primary: #0a84ff;
-    --accent-hover: #409cff;
-    --accent-light: #1a3a52;
-    --success: #32d74b;
-    --warning: #ff9f0a;
-    --danger: #ff453a;
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #252020;
+    --bg-tertiary: #352D2D;
+    --text-primary: #F5EDE8;
+    --text-secondary: #C4B5AC;
+    --text-muted: #8B7B72;
+    --border-color: #4A3F3A;
+    --accent-primary: #D4626F;
+    --accent-secondary: #D4626F;
+    --accent-hover: #E8848F;
+    --accent-light: #3D2A2D;
+    --accent-gold: #FFD700;
+    --accent-gold-light: #3D3520;
+    --success: #4CAF50;
+    --warning: #FF9800;
+    --danger: #EF5350;
     --shadow: rgba(0, 0, 0, 0.3);
     --shadow-lg: rgba(0, 0, 0, 0.5);
+    --header-bg: #2D1F22;
 }
 
 /* ===================================
@@ -127,19 +136,82 @@ p {
    =================================== */
 
 .main-header {
-    background-color: rgba(255, 255, 255, 0.8);
-    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(139, 38, 53, 0.75);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(180%);
+    border-bottom: none;
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    transition: background-color var(--transition-normal), border-color var(--transition-normal);
+    transition: background-color var(--transition-normal);
     will-change: transform;
+    /* Extend into safe area for notched devices */
+    padding-top: env(safe-area-inset-top, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
 }
 
+/* Dark mode: iOS 26 black glass style */
 body.dark-mode .main-header {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-bottom: none;
+}
+
+.main-header .app-title {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+}
+
+/* iOS 26 Style Circular Glass Buttons - Floating Effect */
+.main-header .icon-btn {
+    color: #FFFFFF;
+    background-color: rgba(255, 255, 255, 0.18);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.main-header .icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-header .icon-btn:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.32);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-header .icon-btn .icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Larger hamburger menu icon - Enhanced floating effect */
+.main-header .icon-btn-lg {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.main-header .icon-btn-lg:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), 0 3px 6px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.main-header .icon-btn-lg .icon-lg {
+    width: 22px;
+    height: 22px;
 }
 
 /* Safari-specific optimizations for smooth scrolling */
@@ -177,43 +249,62 @@ body.dark-mode .main-header {
 
 .tab-navigation {
     display: flex;
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    position: sticky;
-    top: var(--header-height);
-    z-index: 99;
-    scrollbar-width: none; /* Firefox */
+    justify-content: space-around;
+    background-color: rgba(139, 38, 53, 0.75);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(180%);
+    border-top: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.tab-navigation::-webkit-scrollbar {
-    display: none;
+/* Dark mode: iOS 26 black glass style */
+body.dark-mode .tab-navigation {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-top: none;
 }
 
 .tab-btn {
     flex: 1;
-    min-width: 80px;
-    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px 6px;
     background: none;
     border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-secondary);
-    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.625rem;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
-    white-space: nowrap;
+}
+
+.tab-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.5;
+    stroke: rgba(255, 255, 255, 0.6);
 }
 
 .tab-btn:active {
-    background-color: var(--bg-tertiary);
+    transform: scale(0.95);
 }
 
 .tab-btn.active {
-    color: var(--accent-primary);
-    border-bottom-color: var(--accent-primary);
+    color: #FFD700;
+}
+
+.tab-btn.active .tab-icon {
+    stroke: #FFD700;
+    stroke-width: 2;
 }
 
 /* ===================================
@@ -224,13 +315,14 @@ body.dark-mode .main-header {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-lg);
-    min-height: calc(100dvh - 120px);
+    padding-bottom: calc(var(--tab-height) + var(--spacing-lg));
+    min-height: 100dvh;
 }
 
 /* Fallback for browsers that don't support dvh */
 @supports not (height: 100dvh) {
     .main-content {
-        min-height: calc(100vh - 120px);
+        min-height: 100vh;
     }
 }
 
@@ -1057,6 +1149,35 @@ body.dark-mode .tradition-badge.tradition-mainline {
     display: flex;
     gap: var(--spacing-sm);
     justify-content: flex-end;
+}
+
+/* Commentary Modal - Full Screen */
+.commentary-modal-content {
+    max-width: 900px;
+    max-height: 90vh;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.commentary-modal-content .modal-body {
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+}
+
+.commentary-modal-content .modal-header {
+    flex-shrink: 0;
+    background: var(--bg-secondary);
+}
+
+.commentary-modal-content .modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Keyword Passages Modal */

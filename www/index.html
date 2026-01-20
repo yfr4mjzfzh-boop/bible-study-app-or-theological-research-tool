@@ -35,9 +35,29 @@
 
     <!-- Navigation Tabs -->
     <nav class="tab-navigation">
-        <button class="tab-btn active" data-tab="passage">Study</button>
-        <button class="tab-btn" data-tab="notes">Notes</button>
-        <button class="tab-btn" data-tab="bookmarks">Bookmarks</button>
+        <button class="tab-btn active" data-tab="passage">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Study</span>
+        </button>
+        <button class="tab-btn" data-tab="notes">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span>Notes</span>
+        </button>
+        <button class="tab-btn" data-tab="bookmarks">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Bookmarks</span>
+        </button>
     </nav>
 
     <!-- Main Content Area -->
@@ -217,7 +237,18 @@
                 <div class="commentary-container">
                     <!-- Tradition Filter -->
                     <div class="filter-bar">
-                        <h3>Theological Traditions</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Theological Traditions</h3>
+                            <button id="expandCommentaryBtn" class="btn btn-secondary btn-sm" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <polyline points="9 21 3 21 3 15"></polyline>
+                                    <line x1="21" y1="3" x2="14" y2="10"></line>
+                                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                                </svg>
+                                Full Screen
+                            </button>
+                        </div>
                         <div class="tradition-filters">
                             <label class="filter-checkbox">
                                 <input type="checkbox" class="tradition-filter" value="reformed" checked>
@@ -443,6 +474,24 @@
             </div>
         </nav>
     </aside>
+
+    <!-- Commentary Full-Screen Modal -->
+    <div id="commentaryModal" class="modal hidden">
+        <div class="modal-content commentary-modal-content">
+            <div class="modal-header">
+                <h3 id="commentaryModalTitle">Commentary</h3>
+                <button class="modal-close" id="closeCommentaryModal" aria-label="Close commentary">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="commentaryModalBody">
+                <!-- Commentary content will be injected here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Capacitor for native iOS functionality -->
     <script src="capacitor.js"></script>

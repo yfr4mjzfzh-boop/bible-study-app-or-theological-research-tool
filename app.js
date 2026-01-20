@@ -270,6 +270,13 @@ class TheologicalStudyApp {
         document.getElementById('collectionModal').addEventListener('click', (e) => {
             if (e.target.id === 'collectionModal') this.closeModal();
         });
+
+        // Commentary Modal
+        document.getElementById('expandCommentaryBtn')?.addEventListener('click', () => this.openCommentaryModal());
+        document.getElementById('closeCommentaryModal')?.addEventListener('click', () => this.closeCommentaryModal());
+        document.getElementById('commentaryModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'commentaryModal') this.closeCommentaryModal();
+        });
     }
 
     // ===================================
@@ -1213,6 +1220,73 @@ class TheologicalStudyApp {
 
     closeModal() {
         document.getElementById('collectionModal').classList.add('hidden');
+    }
+
+    openCommentaryModal() {
+        if (!this.currentPassage) {
+            this.showNotification('No passage selected', 'warning');
+            return;
+        }
+
+        // Get reference string
+        const bookName = this.getDisplayBookName(this.currentPassage.book);
+        let referenceStr = `${bookName} ${this.currentPassage.chapter}`;
+        if (this.currentPassage.verse) {
+            referenceStr += `:${this.currentPassage.verse}`;
+        }
+
+        // Find matching commentaries
+        const matchingCommentaries = this.commentaries.filter(c => {
+            if (!this.enabledTraditions.includes(c.tradition)) {
+                return false;
+            }
+
+            if (this.currentPassage.verse) {
+                return c.reference === referenceStr;
+            }
+
+            return c.reference.startsWith(`${bookName} ${this.currentPassage.chapter}:`);
+        });
+
+        // Update modal title
+        document.getElementById('commentaryModalTitle').textContent = `Commentary - ${referenceStr}`;
+
+        // Populate modal body
+        const modalBody = document.getElementById('commentaryModalBody');
+
+        if (matchingCommentaries.length === 0) {
+            modalBody.innerHTML = `
+                <div class="placeholder-message">
+                    <p>No commentary available for ${referenceStr}</p>
+                    <p class="text-muted">Commentary can be added for this passage in the commentary database.</p>
+                </div>
+            `;
+        } else {
+            modalBody.innerHTML = matchingCommentaries.map((c, index) => {
+                const commentaryId = `modal-commentary-${index}`;
+                const fullText = this.escapeHtml(c.text);
+
+                return `
+                    <div class="commentary-item" style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-color);">
+                        <span class="tradition-badge tradition-${c.tradition}">${this.getTraditionLabel(c.tradition)}</span>
+                        <h4 style="margin-top: 0.5rem; margin-bottom: 0.5rem;">${this.escapeHtml(c.author)}</h4>
+                        <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 1rem;">
+                            ${this.escapeHtml(c.source)} (${c.year})
+                        </p>
+                        <p class="commentary-text" style="font-family: var(--font-serif); line-height: 1.8; white-space: pre-wrap;">
+                            ${fullText}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show modal
+        document.getElementById('commentaryModal').classList.remove('hidden');
+    }
+
+    closeCommentaryModal() {
+        document.getElementById('commentaryModal').classList.add('hidden');
     }
 
     saveCollection() {
