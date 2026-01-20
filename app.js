@@ -13,10 +13,124 @@ class TheologicalStudyApp {
         this.selectedTranslation = 'kjv'; // Default translation
         this.commentaries = []; // Commentary database
         this.enabledTraditions = ['reformed', 'patristic']; // Default traditions
+        this.currentView = 'bible'; // 'bible' or 'commentary'
 
         // API Keys (get free keys at respective websites)
         this.esvApiKey = '948f99e1f43d00f0d3fef28825fb24022c09a127'; // ESV: https://api.esv.org/
         this.apiBibleKey = ''; // API.Bible: https://scripture.api.bible/ (for future use)
+
+        // Keyword-to-Scripture mapping for quick theological topic search
+        this.keywordMap = {
+            // Salvation & Gospel
+            'salvation': ['John 3:16', 'Romans 10:9-10', 'Ephesians 2:8-9', 'Acts 4:12'],
+            'gospel': ['1 Corinthians 15:1-4', 'Romans 1:16', 'Mark 1:15'],
+            'grace': ['Ephesians 2:8-9', 'Romans 3:23-24', 'Titus 2:11', '2 Corinthians 12:9'],
+            'faith': ['Hebrews 11:1', 'Romans 1:17', 'Ephesians 2:8', 'James 2:17'],
+            'justification': ['Romans 5:1', 'Romans 3:28', 'Galatians 2:16'],
+            'sanctification': ['1 Thessalonians 4:3', 'Hebrews 12:14', '2 Thessalonians 2:13'],
+            'glorification': ['Romans 8:30', 'Philippians 3:21', '1 Corinthians 15:42-44'],
+            'redemption': ['Ephesians 1:7', 'Colossians 1:14', 'Romans 3:24', 'Hebrews 9:12'],
+
+            // God's Attributes
+            'love': ['1 John 4:8', 'John 3:16', 'Romans 5:8', '1 Corinthians 13:4-7'],
+            'holiness': ['Leviticus 19:2', '1 Peter 1:15-16', 'Isaiah 6:3', 'Revelation 4:8'],
+            'sovereignty': ['Psalm 115:3', 'Daniel 4:35', 'Romans 9:20-21', 'Ephesians 1:11'],
+            'omnipotence': ['Jeremiah 32:17', 'Matthew 19:26', 'Job 42:2'],
+            'omniscience': ['Psalm 139:1-6', '1 John 3:20', 'Hebrews 4:13'],
+            'omnipresence': ['Psalm 139:7-10', 'Jeremiah 23:24'],
+            'justice': ['Deuteronomy 32:4', 'Psalm 89:14', 'Isaiah 30:18'],
+            'mercy': ['Psalm 103:8-12', 'Ephesians 2:4-5', 'Lamentations 3:22-23'],
+
+            // Trinity
+            'trinity': ['Matthew 28:19', '2 Corinthians 13:14', '1 Peter 1:2', 'John 14:16-17'],
+            'father': ['Matthew 6:9', 'John 14:6', 'Romans 8:15'],
+            'son': ['John 1:1', 'Colossians 1:15-20', 'Hebrews 1:1-3', 'Philippians 2:5-11'],
+            'holy spirit': ['John 14:26', 'Acts 1:8', 'Romans 8:26', 'Galatians 5:22-23'],
+            'spirit': ['John 14:26', 'Acts 1:8', 'Romans 8:26', 'Galatians 5:22-23'],
+
+            // Jesus Christ
+            'incarnation': ['John 1:14', 'Philippians 2:6-8', '1 Timothy 3:16', 'Hebrews 2:14'],
+            'resurrection': ['1 Corinthians 15:3-4', 'Romans 6:9', 'Matthew 28:5-6', 'Acts 2:24'],
+            'atonement': ['Romans 3:25', '1 John 2:2', 'Hebrews 2:17', 'Isaiah 53:5-6'],
+            'cross': ['1 Corinthians 1:18', 'Galatians 6:14', 'Colossians 2:14', 'Hebrews 12:2'],
+            'blood': ['Hebrews 9:22', '1 Peter 1:18-19', 'Revelation 1:5', 'Ephesians 1:7'],
+            'sacrifice': ['Hebrews 10:10', 'Ephesians 5:2', '1 Corinthians 5:7'],
+
+            // Christian Life
+            'prayer': ['Matthew 6:9-13', 'Philippians 4:6', '1 Thessalonians 5:17', 'James 5:16'],
+            'worship': ['John 4:23-24', 'Psalm 95:6', 'Romans 12:1', 'Revelation 4:11'],
+            'obedience': ['John 14:15', '1 Samuel 15:22', 'James 1:22', 'Luke 6:46'],
+            'repentance': ['Acts 3:19', '2 Corinthians 7:10', 'Luke 13:3', '1 John 1:9'],
+            'forgiveness': ['Ephesians 4:32', 'Colossians 3:13', '1 John 1:9', 'Matthew 6:14'],
+            'peace': ['John 14:27', 'Philippians 4:7', 'Romans 5:1', 'Isaiah 26:3'],
+            'joy': ['Nehemiah 8:10', 'Philippians 4:4', 'John 15:11', 'Romans 15:13'],
+            'hope': ['Romans 15:13', 'Hebrews 6:19', '1 Peter 1:3', 'Jeremiah 29:11'],
+
+            // Fruit of the Spirit
+            'fruit': ['Galatians 5:22-23', 'John 15:5', 'Colossians 1:10'],
+            'patience': ['Romans 12:12', 'James 5:7-8', 'Galatians 5:22'],
+            'kindness': ['Ephesians 4:32', 'Colossians 3:12', 'Galatians 5:22'],
+            'goodness': ['Psalm 34:8', 'Romans 15:14', 'Galatians 5:22'],
+            'gentleness': ['Philippians 4:5', '1 Peter 3:15', 'Galatians 5:22'],
+            'self-control': ['Proverbs 25:28', '1 Corinthians 9:25', 'Galatians 5:22'],
+
+            // Sin & Temptation
+            'sin': ['Romans 3:23', 'Romans 6:23', '1 John 1:8-10', 'James 1:15'],
+            'temptation': ['1 Corinthians 10:13', 'James 1:13-14', 'Matthew 26:41', 'Hebrews 4:15'],
+            'flesh': ['Galatians 5:16-17', 'Romans 8:5-8', '1 John 2:16'],
+            'pride': ['Proverbs 16:18', 'James 4:6', '1 Peter 5:5', 'Proverbs 11:2'],
+            'idolatry': ['Exodus 20:3-4', '1 Corinthians 10:14', 'Colossians 3:5'],
+
+            // Spiritual Warfare
+            'armor': ['Ephesians 6:10-18', '1 Thessalonians 5:8', 'Romans 13:12'],
+            'devil': ['1 Peter 5:8', 'James 4:7', 'Ephesians 6:11', 'John 8:44'],
+            'satan': ['1 Peter 5:8', 'James 4:7', 'Ephesians 6:11', 'Revelation 12:9'],
+            'spiritual warfare': ['Ephesians 6:12', '2 Corinthians 10:4', '1 Timothy 6:12'],
+
+            // End Times
+            'second coming': ['Acts 1:11', '1 Thessalonians 4:16-17', 'Revelation 1:7', 'Matthew 24:30'],
+            'heaven': ['John 14:2-3', 'Revelation 21:1-4', 'Philippians 3:20', '2 Corinthians 5:1'],
+            'hell': ['Matthew 25:46', 'Revelation 20:15', '2 Thessalonians 1:9', 'Matthew 13:42'],
+            'judgment': ['Hebrews 9:27', '2 Corinthians 5:10', 'Romans 14:10', 'Revelation 20:12'],
+            'eternal life': ['John 3:16', 'John 10:28', '1 John 5:11-13', 'Romans 6:23'],
+
+            // Church & Community
+            'church': ['Matthew 16:18', 'Ephesians 5:25', 'Acts 2:42', '1 Corinthians 12:27'],
+            'unity': ['John 17:21', 'Ephesians 4:3', 'Psalm 133:1', '1 Corinthians 1:10'],
+            'fellowship': ['1 John 1:7', 'Acts 2:42', 'Hebrews 10:25', 'Philippians 2:1'],
+            'baptism': ['Matthew 28:19', 'Romans 6:3-4', 'Acts 2:38', 'Galatians 3:27'],
+            'communion': ['1 Corinthians 11:23-26', 'Luke 22:19-20', 'Acts 2:42'],
+
+            // Wisdom & Knowledge
+            'wisdom': ['Proverbs 9:10', 'James 1:5', 'Proverbs 3:5-6', 'Colossians 2:3'],
+            'knowledge': ['Proverbs 1:7', 'Hosea 4:6', 'Philippians 3:8', '2 Peter 3:18'],
+            'truth': ['John 8:32', 'John 14:6', 'Psalm 119:160', 'Ephesians 4:15'],
+            'word': ['Psalm 119:105', '2 Timothy 3:16-17', 'Hebrews 4:12', 'Matthew 4:4'],
+            'scripture': ['2 Timothy 3:16-17', 'Psalm 119:105', 'Hebrews 4:12', '2 Peter 1:20-21'],
+
+            // Discipleship & Service
+            'disciple': ['Matthew 28:19-20', 'Luke 14:27', 'John 8:31', '2 Timothy 2:2'],
+            'servant': ['Mark 10:45', 'Philippians 2:7', 'Galatians 5:13', 'Matthew 20:26-28'],
+            'mission': ['Matthew 28:18-20', 'Acts 1:8', 'Romans 10:14-15', 'Mark 16:15'],
+            'witness': ['Acts 1:8', '1 Peter 3:15', 'Matthew 5:16', 'Acts 4:20'],
+
+            // Relationships
+            'marriage': ['Genesis 2:24', 'Ephesians 5:22-33', 'Hebrews 13:4', '1 Corinthians 7:3-5'],
+            'family': ['Ephesians 6:1-4', 'Joshua 24:15', 'Psalm 127:3', 'Proverbs 22:6'],
+            'children': ['Psalm 127:3', 'Ephesians 6:1-4', 'Proverbs 22:6', 'Mark 10:14'],
+            'parents': ['Exodus 20:12', 'Ephesians 6:1-3', 'Colossians 3:20', 'Proverbs 1:8'],
+            'neighbor': ['Matthew 22:39', 'Luke 10:27', 'Romans 13:9', 'Leviticus 19:18'],
+
+            // Spiritual Gifts
+            'gifts': ['1 Corinthians 12:4-11', 'Romans 12:6-8', 'Ephesians 4:11-13', '1 Peter 4:10'],
+            'tongues': ['1 Corinthians 14:2', 'Acts 2:4', '1 Corinthians 12:10', '1 Corinthians 14:27'],
+            'prophecy': ['1 Corinthians 14:1', 'Romans 12:6', '1 Thessalonians 5:20', 'Joel 2:28'],
+
+            // Promises & Covenants
+            'promise': ['2 Peter 1:4', 'Hebrews 10:23', '2 Corinthians 1:20', 'Romans 4:21'],
+            'covenant': ['Genesis 9:11-17', 'Jeremiah 31:31-34', 'Hebrews 8:6-13', 'Luke 22:20'],
+            'blessing': ['Numbers 6:24-26', 'Ephesians 1:3', 'Genesis 12:2', 'Psalm 67:1']
+        };
 
         this.init();
     }
@@ -90,10 +204,23 @@ class TheologicalStudyApp {
         // Translation Selection
         document.getElementById('translationSelect').addEventListener('change', (e) => this.changeTranslation(e.target.value));
 
+        // View Toggle (Bible/Commentary)
+        document.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.toggleView(e.target.closest('.segment-btn').dataset.view));
+        });
+
         // Passage Navigation
         document.getElementById('searchBtn').addEventListener('click', () => this.searchPassage());
-        document.getElementById('passageSearch').addEventListener('keypress', (e) => {
+        const passageSearchInput = document.getElementById('passageSearch');
+        passageSearchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.searchPassage();
+        });
+        // Keyword suggestions as user types
+        passageSearchInput.addEventListener('input', (e) => this.showKeywordSuggestions(e.target.value));
+        passageSearchInput.addEventListener('focus', (e) => this.showKeywordSuggestions(e.target.value));
+        passageSearchInput.addEventListener('blur', () => {
+            // Delay to allow click on suggestions
+            setTimeout(() => this.hideKeywordSuggestions(), 200);
         });
         document.getElementById('quickNavBtn').addEventListener('click', () => this.quickNavigate());
 
@@ -158,6 +285,183 @@ class TheologicalStudyApp {
         // Add active class to selected tab and section
         document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         document.getElementById(`${tabName}Tab`).classList.add('active');
+    }
+
+    // ===================================
+    // View Toggle (Bible/Commentary)
+    // ===================================
+
+    toggleView(viewName) {
+        this.currentView = viewName;
+
+        // Update segmented control buttons
+        document.querySelectorAll('.segment-btn').forEach(btn => {
+            if (btn.dataset.view === viewName) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Toggle view content
+        if (viewName === 'bible') {
+            document.getElementById('bibleView').classList.add('active');
+            document.getElementById('commentaryView').classList.remove('active');
+        } else {
+            document.getElementById('bibleView').classList.remove('active');
+            document.getElementById('commentaryView').classList.add('active');
+            // Refresh commentary if passage is loaded
+            if (this.currentPassage) {
+                this.displayCommentary(this.currentPassage);
+            }
+        }
+    }
+
+    // ===================================
+    // Keyword Search Suggestions
+    // ===================================
+
+    showKeywordSuggestions(query) {
+        const suggestionsBox = document.getElementById('keywordSuggestions');
+
+        if (!query || query.length < 2) {
+            this.hideKeywordSuggestions();
+            return;
+        }
+
+        const queryLower = query.toLowerCase().trim();
+
+        // Check if it looks like a passage reference (contains numbers or book names)
+        const passagePattern = /\d|john|genesis|matthew|psalm|romans|corinthians|timothy|peter|james|exodus|leviticus|numbers|deuteronomy|joshua|judges|samuel|kings|chronicles|ezra|nehemiah|esther|job|proverbs|ecclesiastes|isaiah|jeremiah|lamentations|ezekiel|daniel|hosea|joel|amos|obadiah|jonah|micah|nahum|habakkuk|zephaniah|haggai|zechariah|malachi|mark|luke|acts|galatians|ephesians|philippians|colossians|thessalonians|titus|philemon|hebrews|jude|revelation/i;
+
+        if (passagePattern.test(query)) {
+            // Likely a passage reference, don't show keyword suggestions
+            this.hideKeywordSuggestions();
+            return;
+        }
+
+        // Find matching keywords
+        const matches = Object.keys(this.keywordMap).filter(keyword =>
+            keyword.includes(queryLower) || queryLower.includes(keyword)
+        );
+
+        if (matches.length === 0) {
+            this.hideKeywordSuggestions();
+            return;
+        }
+
+        // Display up to 5 suggestions
+        const suggestions = matches.slice(0, 5);
+        let html = '<div class="suggestions-list">';
+
+        suggestions.forEach(keyword => {
+            const passages = this.keywordMap[keyword];
+            html += `
+                <div class="suggestion-item" data-keyword="${keyword}">
+                    <div class="suggestion-keyword">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="M21 21l-4.35-4.35"></path>
+                        </svg>
+                        <span class="keyword-text">${keyword}</span>
+                    </div>
+                    <div class="suggestion-passages">
+                        ${passages.slice(0, 3).map(p => `<span class="passage-tag">${p}</span>`).join('')}
+                        ${passages.length > 3 ? `<span class="more-count">+${passages.length - 3} more</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        suggestionsBox.innerHTML = html;
+        suggestionsBox.classList.remove('hidden');
+
+        // Add click handlers to suggestions
+        suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const keyword = item.dataset.keyword;
+                this.selectKeyword(keyword);
+            });
+        });
+    }
+
+    hideKeywordSuggestions() {
+        const suggestionsBox = document.getElementById('keywordSuggestions');
+        suggestionsBox.classList.add('hidden');
+        suggestionsBox.innerHTML = '';
+    }
+
+    selectKeyword(keyword) {
+        const passages = this.keywordMap[keyword];
+        if (passages && passages.length > 0) {
+            // Show modal with all passages for this keyword
+            this.showKeywordPassagesModal(keyword, passages);
+        }
+        this.hideKeywordSuggestions();
+    }
+
+    showKeywordPassagesModal(keyword, passages) {
+        // Create a temporary modal to show all passages for the keyword
+        const modal = document.createElement('div');
+        modal.className = 'modal active';
+        modal.id = 'keywordModal';
+
+        let html = `
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h2>Passages about "${keyword}"</h2>
+                </div>
+                <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                        Select a passage to study:
+                    </p>
+                    <div class="keyword-passages-list">
+        `;
+
+        passages.forEach(passage => {
+            html += `
+                <button class="keyword-passage-btn" data-passage="${passage}">
+                    <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    ${passage}
+                </button>
+            `;
+        });
+
+        html += `
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary modal-close">Cancel</button>
+                </div>
+            </div>
+        `;
+
+        modal.innerHTML = html;
+        document.body.appendChild(modal);
+
+        // Add event listeners
+        modal.querySelectorAll('.keyword-passage-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const passage = btn.dataset.passage;
+                document.getElementById('passageSearch').value = passage;
+                this.searchPassage();
+                document.body.removeChild(modal);
+            });
+        });
+
+        modal.querySelector('.modal-close').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
     }
 
     // ===================================

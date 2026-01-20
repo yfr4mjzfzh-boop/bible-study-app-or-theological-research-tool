@@ -40,8 +40,7 @@
 
     <!-- Navigation Tabs -->
     <nav class="tab-navigation">
-        <button class="tab-btn active" data-tab="passage">Passage</button>
-        <button class="tab-btn" data-tab="commentary">Commentary</button>
+        <button class="tab-btn active" data-tab="passage">Study</button>
         <button class="tab-btn" data-tab="notes">Notes</button>
         <button class="tab-btn" data-tab="bookmarks">Bookmarks</button>
     </nav>
@@ -58,10 +57,13 @@
                         type="text"
                         id="passageSearch"
                         class="search-input"
-                        placeholder="Search passage (e.g., John 3:16)"
+                        placeholder="Search passage or keyword (e.g., John 3:16, salvation)"
                         aria-label="Search passage">
                     <button id="searchBtn" class="btn btn-primary">Go</button>
                 </div>
+
+                <!-- Keyword Suggestions Dropdown -->
+                <div id="keywordSuggestions" class="keyword-suggestions hidden"></div>
 
                 <div class="translation-selector">
                     <label for="translationSelect" style="font-size: 0.875rem; color: var(--text-secondary); margin-right: 0.5rem;">Translation:</label>
@@ -167,78 +169,89 @@
                 </div>
             </div>
 
-            <!-- Passage Display -->
-            <div class="passage-display">
-                <div id="passageHeader" class="passage-header">
-                    <h2 id="passageTitle">Select a passage to begin</h2>
-                    <div class="passage-actions">
-                        <button id="bookmarkPassageBtn" class="icon-btn" title="Bookmark this passage">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div id="passageText" class="passage-text">
-                    <div class="placeholder-message">
-                        <p>Use the search bar or quick navigation above to find a passage.</p>
-                        <p class="text-muted">Bible text will be displayed here once added to the application.</p>
-                    </div>
-                </div>
-
-                <!-- Chapter Navigation -->
-                <div id="chapterNav" class="chapter-navigation hidden">
-                    <button id="prevChapterBtn" class="btn btn-secondary">← Previous Chapter</button>
-                    <button id="nextChapterBtn" class="btn btn-secondary">Next Chapter →</button>
+            <!-- View Toggle (Bible / Commentary) -->
+            <div class="view-toggle-container">
+                <div class="segmented-control">
+                    <button class="segment-btn active" data-view="bible">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        Bible
+                    </button>
+                    <button class="segment-btn" data-view="commentary">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Commentary
+                    </button>
                 </div>
             </div>
-        </section>
 
-        <!-- Commentary Tab -->
-        <section id="commentaryTab" class="content-section">
-            <div class="commentary-container">
-                <!-- Tradition Filter -->
-                <div class="filter-bar">
-                    <h3>Theological Traditions</h3>
-                    <div class="tradition-filters">
-                        <label class="filter-checkbox">
-                            <input type="checkbox" value="reformed" checked>
-                            <span>Reformed</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" value="patristic" checked>
-                            <span>Patristic</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" value="catholic">
-                            <span>Catholic</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" value="orthodox">
-                            <span>Orthodox</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" value="mainline">
-                            <span>Mainline Protestant</span>
-                        </label>
+            <!-- Bible View -->
+            <div id="bibleView" class="view-content active">
+                <div class="passage-display">
+                    <div id="passageHeader" class="passage-header">
+                        <h2 id="passageTitle">Select a passage to begin</h2>
+                        <div class="passage-actions">
+                            <button id="bookmarkPassageBtn" class="icon-btn" title="Bookmark this passage">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="passageText" class="passage-text">
+                        <div class="placeholder-message">
+                            <p>Use the search bar or quick navigation above to find a passage.</p>
+                            <p class="text-muted">Try searching by passage reference or theological keywords like "salvation", "grace", "faith", etc.</p>
+                        </div>
+                    </div>
+
+                    <!-- Chapter Navigation -->
+                    <div id="chapterNav" class="chapter-navigation hidden">
+                        <button id="prevChapterBtn" class="btn btn-secondary">← Previous Chapter</button>
+                        <button id="nextChapterBtn" class="btn btn-secondary">Next Chapter →</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Commentary Display -->
-                <div id="commentaryDisplay" class="commentary-display">
-                    <div class="placeholder-message">
-                        <p>Commentary for the current passage will appear here.</p>
-                        <p class="text-muted">The commentary system is ready to receive content organized by theological tradition.</p>
-                        <div class="info-box">
-                            <h4>Supported Traditions:</h4>
-                            <ul>
-                                <li><strong>Reformed:</strong> Scholastics and dogmatics</li>
-                                <li><strong>Patristic:</strong> Church fathers</li>
-                                <li><strong>Catholic:</strong> Roman Catholic theology</li>
-                                <li><strong>Orthodox:</strong> Eastern Orthodox theology</li>
-                                <li><strong>Mainline Protestant:</strong> Conservative mainline scholars</li>
-                            </ul>
+            <!-- Commentary View -->
+            <div id="commentaryView" class="view-content">
+                <div class="commentary-container">
+                    <!-- Tradition Filter -->
+                    <div class="filter-bar">
+                        <h3>Theological Traditions</h3>
+                        <div class="tradition-filters">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="tradition-filter" value="reformed" checked>
+                                <span>Reformed</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="tradition-filter" value="patristic" checked>
+                                <span>Patristic</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="tradition-filter" value="catholic">
+                                <span>Catholic</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="tradition-filter" value="orthodox">
+                                <span>Orthodox</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="tradition-filter" value="mainline">
+                                <span>Mainline Protestant</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Commentary Display -->
+                    <div id="commentaryDisplay" class="commentary-display">
+                        <div class="placeholder-message">
+                            <p>Select a passage to view commentary from various theological traditions.</p>
+                            <p class="text-muted">Commentary will appear organized by tradition when you navigate to a passage.</p>
                         </div>
                     </div>
                 </div>

@@ -350,10 +350,95 @@ p {
     display: flex;
     gap: var(--spacing-sm);
     margin-bottom: var(--spacing-md);
+    position: relative;
 }
 
 .search-container .search-input {
     flex: 1;
+}
+
+/* Keyword Suggestions Dropdown */
+.keyword-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 60px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.keyword-suggestions.hidden {
+    display: none;
+}
+
+.suggestions-list {
+    padding: var(--spacing-xs);
+}
+
+.suggestion-item {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.suggestion-keyword {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.suggestion-keyword .icon-sm {
+    width: 16px;
+    height: 16px;
+    color: var(--accent-primary);
+}
+
+.keyword-text {
+    text-transform: capitalize;
+}
+
+.suggestion-passages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-left: 24px;
+}
+
+.passage-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: var(--accent-secondary);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.more-count {
+    display: inline-block;
+    padding: 2px 8px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-style: italic;
 }
 
 .translation-selector {
@@ -369,6 +454,64 @@ p {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr auto;
     gap: var(--spacing-sm);
+}
+
+/* View Toggle (Segmented Control) */
+.view-toggle-container {
+    background-color: var(--bg-secondary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+}
+
+.segmented-control {
+    display: inline-flex;
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.segment-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.segment-btn .icon-sm {
+    width: 18px;
+    height: 18px;
+}
+
+.segment-btn:hover {
+    color: var(--text-primary);
+}
+
+.segment-btn.active {
+    background-color: var(--bg-primary);
+    color: var(--accent-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* View Content Containers */
+.view-content {
+    display: none;
+}
+
+.view-content.active {
+    display: block;
 }
 
 .passage-display {
@@ -865,6 +1008,43 @@ body.dark-mode .tradition-badge.tradition-mainline {
     display: flex;
     gap: var(--spacing-sm);
     justify-content: flex-end;
+}
+
+/* Keyword Passages Modal */
+.keyword-passages-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.keyword-passage-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.keyword-passage-btn:hover {
+    background-color: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+    transform: translateX(4px);
+}
+
+.keyword-passage-btn .icon-sm {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 /* ===================================
