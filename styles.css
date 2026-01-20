@@ -164,7 +164,7 @@ p {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     position: sticky;
-    top: 57px;
+    top: 25px;
     z-index: 99;
 }
 
