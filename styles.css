@@ -255,7 +255,7 @@ body.dark-mode .main-header {
     backdrop-filter: blur(40px) saturate(180%);
     border-top: 0;
     position: fixed;
-    bottom: 0;
+    bottom: 65px;
     left: 0;
     right: 0;
     z-index: 100;
