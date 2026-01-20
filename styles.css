@@ -248,6 +248,7 @@ body.dark-mode .main-header {
    =================================== */
 
 .tab-navigation {
+    height: 65px
     display: flex;
     justify-content: space-around;
     background-color: rgba(139, 38, 53, 0.75);
@@ -255,7 +256,7 @@ body.dark-mode .main-header {
     backdrop-filter: blur(40px) saturate(180%);
     border-top: 0;
     position: fixed;
-    bottom: 65px;
+    bottom:0;
     left: 0;
     right: 0;
     z-index: 100;
