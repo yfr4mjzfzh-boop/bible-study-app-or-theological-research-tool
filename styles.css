@@ -248,21 +248,20 @@ body.dark-mode .main-header {
    =================================== */
 
 .tab-navigation {
-    height:20px;
+    height:65px;
     box sizing:border-box;
     display: flex;
     justify-content: space-around;
-    background-color: rgba(139, 38, 53, 0.75);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    backdrop-filter: blur(40px) saturate(180%);
-    border-top:0;
+    aligh-items: center;
+    background-color: rgba(139, 38, 53, 0.5);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
     border-radius:40px
     position: fixed;
-    bottom:15px;
+    bottom: 20px;
     left: 15px;
     right: 15px;
-    z-index: 100;
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    z-index: 1000;
     padding-left: env(safe-area-inset-left, 0);
     padding-right: env(safe-area-inset-right, 0);
     overflow:hidden;
