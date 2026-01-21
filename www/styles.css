@@ -139,21 +139,21 @@ p {
    =================================== */
 
 .main-header {
-    /* Ultra-translucent glass morphism with gradient */
+    /* More transparent with richer burgundy color */
     background: linear-gradient(
         180deg,
-        rgba(139, 38, 53, 0.35) 0%,
-        rgba(139, 38, 53, 0.3) 50%,
-        rgba(139, 38, 53, 0.25) 100%
+        rgba(139, 38, 53, 0.5) 0%,
+        rgba(139, 38, 53, 0.45) 50%,
+        rgba(139, 38, 53, 0.4) 100%
     );
-    /* Maximum blur and saturation for liquid glass effect */
-    -webkit-backdrop-filter: blur(80px) saturate(200%) brightness(1.05);
-    backdrop-filter: blur(80px) saturate(200%) brightness(1.05);
-    /* Subtle glass border and shadow */
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+    /* Ultra blur for liquid glass effect */
+    -webkit-backdrop-filter: blur(100px) saturate(180%) brightness(1.1);
+    backdrop-filter: blur(100px) saturate(180%) brightness(1.1);
+    /* Glassy border and shadows */
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
     box-shadow:
-        0 0 30px rgba(139, 38, 53, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 0 30px rgba(139, 38, 53, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
         inset 0 -1px 0 rgba(0, 0, 0, 0.05);
     position: fixed;
     top: 0;
@@ -168,20 +168,20 @@ p {
     padding-right: max(var(--spacing-md), env(safe-area-inset-right));
 }
 
-/* Dark mode: iOS 26 black glass style with even more translucency */
+/* Dark mode: iOS 26 black glass style */
 body.dark-mode .main-header {
     background: linear-gradient(
         180deg,
-        rgba(0, 0, 0, 0.45) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
-        rgba(0, 0, 0, 0.35) 100%
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.55) 50%,
+        rgba(0, 0, 0, 0.5) 100%
     );
-    -webkit-backdrop-filter: blur(80px) saturate(200%) brightness(0.85);
-    backdrop-filter: blur(80px) saturate(200%) brightness(0.85);
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(100px) saturate(180%) brightness(0.9);
+    backdrop-filter: blur(100px) saturate(180%) brightness(0.9);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
     box-shadow:
-        0 0 30px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 30px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
         inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -317,27 +317,28 @@ body.dark-mode .main-header {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    /* Ultra-translucent glass morphism with gradient */
+    /* More transparent with richer burgundy color */
     background: linear-gradient(
         135deg,
-        rgba(139, 38, 53, 0.35) 0%,
-        rgba(139, 38, 53, 0.3) 50%,
-        rgba(139, 38, 53, 0.25) 100%
+        rgba(139, 38, 53, 0.5) 0%,
+        rgba(139, 38, 53, 0.45) 50%,
+        rgba(139, 38, 53, 0.4) 100%
     );
-    /* Maximum blur and saturation for liquid glass effect */
-    -webkit-backdrop-filter: blur(80px) saturate(200%) brightness(1.05);
-    backdrop-filter: blur(80px) saturate(200%) brightness(1.05);
+    /* Ultra blur for liquid glass effect */
+    -webkit-backdrop-filter: blur(100px) saturate(180%) brightness(1.1);
+    backdrop-filter: blur(100px) saturate(180%) brightness(1.1);
     /* Floating pill shape */
     border-radius: 40px;
-    /* Subtle glass border and shadow */
-    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    /* Glassy border and shadows */
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
     box-shadow:
-        0 10px 40px rgba(139, 38, 53, 0.3),
-        0 5px 15px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 10px 40px rgba(139, 38, 53, 0.35),
+        0 5px 15px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
         inset 0 -1px 0 rgba(0, 0, 0, 0.05);
     position: fixed;
-    bottom: max(20px, env(safe-area-inset-bottom, 0));
+    /* CHANGED: Brought closer to bottom from 20px → 8px */
+    bottom: max(8px, env(safe-area-inset-bottom, 0));
     left: 15px;
     right: 15px;
     z-index: 1000;
@@ -363,17 +364,17 @@ body.dark-mode .main-header {
 body.dark-mode .tab-navigation {
     background: linear-gradient(
         135deg,
-        rgba(0, 0, 0, 0.45) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
-        rgba(0, 0, 0, 0.35) 100%
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.55) 50%,
+        rgba(0, 0, 0, 0.5) 100%
     );
-    -webkit-backdrop-filter: blur(80px) saturate(200%) brightness(0.85);
-    backdrop-filter: blur(80px) saturate(200%) brightness(0.85);
-    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(100px) saturate(180%) brightness(0.9);
+    backdrop-filter: blur(100px) saturate(180%) brightness(0.9);
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
     box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.6),
-        0 5px 15px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 10px 40px rgba(0, 0, 0, 0.7),
+        0 5px 15px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
         inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -424,8 +425,8 @@ body.dark-mode .tab-navigation {
     padding: var(--spacing-lg);
     /* Account for fixed header at top */
     padding-top: calc(var(--header-height) + env(safe-area-inset-top, 0) + var(--spacing-lg));
-    /* Account for floating pill tabs at bottom (65px height + 20px bottom margin + spacing) */
-    padding-bottom: calc(65px + 20px + var(--spacing-2xl));
+    /* Account for floating pill tabs at bottom (65px height + 8px bottom margin + spacing) */
+    padding-bottom: calc(65px + 8px + var(--spacing-2xl));
     min-height: 100dvh;
 }
 
@@ -1365,6 +1366,9 @@ body.dark-mode .tradition-badge.tradition-mainline {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    /* FIXED: Add padding to avoid dynamic island */
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
     border-left: 1px solid var(--border-color);
 }
 
