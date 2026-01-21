@@ -49,7 +49,7 @@
     --transition-slow: 350ms ease;
 
     /* Header dimensions for dynamic positioning */
-    --header-height: 60px;
+    --header-height: 90px;
     --tab-height: 65px;
 }
 
@@ -425,8 +425,8 @@ body.dark-mode .tab-navigation {
     max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-lg);
-    /* Account for fixed header at top - increased to clear the glassy header */
-    padding-top: calc(var(--header-height) + env(safe-area-inset-top, 0) + var(--spacing-xl) + var(--spacing-lg));
+    /* Account for fixed header at top - generous padding to ensure clearance */
+    padding-top: calc(var(--header-height) + env(safe-area-inset-top, 0) + 20px);
     /* Account for floating pill tabs at bottom (65px height + 8px bottom margin + spacing) */
     padding-bottom: calc(65px + 8px + var(--spacing-2xl));
     min-height: 100dvh;
