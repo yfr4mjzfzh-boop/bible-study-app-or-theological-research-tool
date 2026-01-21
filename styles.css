@@ -337,6 +337,8 @@ body.dark-mode .main-header {
         inset 0 1px 0 rgba(255, 255, 255, 0.25),
         inset 0 -1px 0 rgba(0, 0, 0, 0.05);
     position: fixed;
+    /* CRITICAL: Ensure it's at bottom, not top */
+    top: auto !important;
     /* CHANGED: Brought closer to bottom from 20px → 8px */
     bottom: max(8px, env(safe-area-inset-bottom, 0));
     left: 15px;
@@ -1626,9 +1628,7 @@ body.dark-mode .sidebar {
         padding-right: max(var(--spacing-md), env(safe-area-inset-right));
     }
 
-    .tab-navigation {
-        top: calc(var(--header-height) + env(safe-area-inset-top));
-    }
+    /* REMOVED: Old tab-navigation top positioning - now uses bottom */
 
     .main-content {
         padding-left: max(var(--spacing-lg), env(safe-area-inset-left));
