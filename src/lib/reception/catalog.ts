@@ -1003,6 +1003,165 @@ function langeNtChapters(have: Set<string>): CatalogEntry[] {
   return out;
 }
 
+
+function barnesNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, code, hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `barnes-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      const entry = e(
+        id,
+        "Albert Barnes",
+        "Notes on the New Testament",
+        "reformed",
+        `${name} ${ch}`,
+        `https://biblehub.com/commentaries/barnes/${hub}/${ch}.htm`,
+        [tag, "barnes"],
+        [bookId],
+        [ch],
+      );
+      entry.altUrl = `https://archive.sacred-texts.com/bib/cmt/barnes/${code}${pad3(ch)}.htm`;
+      out.push(entry);
+    }
+  }
+  return out;
+}
+
+function maclarenNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `maclaren-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Alexander MacLaren",
+          "Expositions of Holy Scripture",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/maclaren/${hub}/${ch}.htm`,
+          [tag, "maclaren"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function vwsNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, code, hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `vws-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      const entry = e(
+        id,
+        "Marvin Vincent",
+        "Word Studies in the New Testament",
+        "reformed",
+        `${name} ${ch}`,
+        `https://biblehub.com/commentaries/vws/${hub}/${ch}.htm`,
+        [tag, "vws"],
+        [bookId],
+        [ch],
+      );
+      entry.altUrl = `https://archive.sacred-texts.com/bib/cmt/vws/${code}${pad3(ch)}.htm`;
+      out.push(entry);
+    }
+  }
+  return out;
+}
+
+/** BibliaPlus book path: Hub slug with underscores → hyphens (1_corinthians → 1-corinthians). */
+function bibliaplusBookSlug(hub: string): string {
+  return hub.replace(/_/g, "-");
+}
+
+function hawkerNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    const bookSlug = bibliaplusBookSlug(hub);
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `hawker-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Robert Hawker",
+          "Poor Man's Commentary",
+          "reformed",
+          `${name} ${ch}`,
+          `https://www.bibliaplus.org/en/commentaries/96/hawkers-poor-mans-commentary/${bookSlug}/${ch}/1`,
+          [tag, "hawker"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function trappNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    const bookSlug = bibliaplusBookSlug(hub);
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `trapp-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "John Trapp",
+          "Complete Commentary",
+          "puritan",
+          `${name} ${ch}`,
+          `https://www.bibliaplus.org/en/commentaries/192/john-trapp-complete-commentary/${bookSlug}/${ch}/1`,
+          [tag, "trapp"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function burkittNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    const bookSlug = bibliaplusBookSlug(hub);
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `burkitt-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "William Burkitt",
+          "Expository Notes",
+          "puritan",
+          `${name} ${ch}`,
+          `https://www.bibliaplus.org/en/commentaries/494/william-burkitts-expository-notes/${bookSlug}/${ch}/1`,
+          [tag, "burkitt"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
 export const CATALOG: CatalogEntry[] = (() => {
   const have = new Set(HAND.map((x) => x.id));
   const out = [...HAND];
@@ -1013,6 +1172,12 @@ export const CATALOG: CatalogEntry[] = (() => {
     pooleNtChapters,
     jfbNtChapters,
     langeNtChapters,
+    barnesNtChapters,
+    maclarenNtChapters,
+    vwsNtChapters,
+    hawkerNtChapters,
+    trappNtChapters,
+    burkittNtChapters,
   ]) {
     const more = gen(have);
     for (const x of more) have.add(x.id);

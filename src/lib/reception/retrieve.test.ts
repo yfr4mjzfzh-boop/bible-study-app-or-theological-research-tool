@@ -569,6 +569,44 @@ describe("NT chapter-1 mapping", () => {
     assert.ok(scoreEntry(genevaRom, tokens, "ROM", 8) > 0);
     assert.equal(scoreEntry(gillJohn, tokens, "ROM", 8), 0);
   });
+
+  it("indexes wave2 Hub + bibliaplus chapter pages and no Scofield", () => {
+    const chapters = [
+      { bookId: "MAT" as const, chapter: 5, stem: "matthew" },
+      { bookId: "ROM" as const, chapter: 8, stem: "romans" },
+      { bookId: "JHN" as const, chapter: 3, stem: "john" },
+    ];
+    for (const c of chapters) {
+      for (const prefix of ["barnes", "maclaren", "vws", "hawker", "trapp", "burkitt"] as const) {
+        const id = `${prefix}-${c.stem}-${c.chapter}`;
+        const row = CATALOG.find((e) => e.id === id);
+        assert.ok(row, `${id} in CATALOG`);
+        assert.ok(row.books?.includes(c.bookId));
+        assert.ok(row.chapters?.includes(c.chapter));
+      }
+      const hits = mapCatalog({
+        question: "",
+        bookId: c.bookId,
+        chapter: c.chapter,
+        limit: 12,
+      });
+      const ids = hits.map((h) => h.id);
+      assert.ok(
+        ids.some((id) => id.startsWith("barnes-") || id.startsWith("maclaren-") || id.startsWith("vws-")),
+        `expected Hub wave2 hit for ${c.bookId} ${c.chapter}, got ${ids.join(",")}`,
+      );
+    }
+    assert.equal(
+      CATALOG.filter((e) => /scofield|darby/i.test(e.id) || /scofield|darby/i.test(e.voice)).length,
+      0,
+    );
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("barnes-")).length >= 250);
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("hawker-")).length >= 250);
+    const burkitt = CATALOG.find((e) => e.id === "burkitt-matthew-5");
+    assert.ok(burkitt?.url.includes("/commentaries/494/"));
+    const hawker1co = CATALOG.find((e) => e.id === "hawker-1corinthians-1");
+    assert.ok(hawker1co?.url.includes("/1-corinthians/1/1"));
+  });
 });
 
 describe("html extract", () => {
