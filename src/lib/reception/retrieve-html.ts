@@ -211,12 +211,34 @@ export function isSubstantiveQuote(text: string): boolean {
 }
 
 export function paragraphsFromHtml(html: string): string[] {
-  const clean = sanitizeHtml(html);
+  // BibleHub chapter pages put the verse ref in .versenum and the lemma in
+  // .verse; both are short <div>s that used to be dropped before the note.
+  // Glue them so paragraphMentionsVerse can see "Matthew 5:3" on the note.
+  const withHubLabels = html.replace(
+    /<div\b[^>]*class=["'][^"']*versenum[^"']*["'][^>]*>([\s\S]*?)<\/div>\s*<div\b[^>]*class=["'][^"']*verse[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
+    (_m, numHtml: string, verseHtml: string) =>
+      `<p>${numHtml} ${verseHtml}</p><p>`,
+  );
+  const clean = sanitizeHtml(withHubLabels);
   const chunks = clean.split(/<\/p>|<br\s*\/?>|<\/div>|<\/h[1-6]>/i);
   const out: string[] = [];
   const seen = new Set<string>();
+  let pendingLabel = "";
   for (const chunk of chunks) {
     let text = htmlToText(chunk);
+    const trimmed = text.trim();
+    // Orphan Hub / CCEL verse headings that did not match the paired rewrite.
+    if (
+      trimmed.length < 80 &&
+      /^(?:[1-3]?\s*[A-Za-z][A-Za-z\s]+)?\d{1,3}:\d{1,3}\s*$/.test(trimmed)
+    ) {
+      pendingLabel = trimmed;
+      continue;
+    }
+    if (pendingLabel) {
+      text = `${pendingLabel}. ${text}`.trim();
+      pendingLabel = "";
+    }
     if (text.length < 80) continue;
     if (text.length > 2200) {
       text = truncateAtSentence(text, 2200);
@@ -287,11 +309,55 @@ export function paragraphIsGillLemmaNote(text: string, query: string): boolean {
 }
 
 /**
+ * True when the paragraph opens with the early distinctive tokens of the
+ * selected verse text. Shared beatitude endings ("kingdom of heaven") must
+ * not make Matt 5:10 look like Matt 5:3 — only the first few content tokens.
+ */
+export function paragraphOpensWithVerseLemma(text: string, query: string): boolean {
+  const qToks = tokenize(query);
+  if (qToks.length < 3) return false;
+  const need = qToks.slice(0, Math.min(4, qToks.length));
+  const head = text.trim().slice(0, 200).toLowerCase();
+  let hits = 0;
+  for (const t of need) if (head.includes(t)) hits += 1;
+  return hits >= Math.min(3, need.length) && hits >= need.length - 1;
+}
+
+/** Verse ref, Gill lemma, or Hub opening-lemma — the extract treats this verse. */
+export function paragraphTreatsVerse(
+  text: string,
+  chapter: number | undefined,
+  verse: number | undefined,
+  query: string,
+  verseEnd?: number | null,
+): boolean {
+  if (chapter != null && verse != null) {
+    const last = Math.max(verse, verseEnd ?? verse);
+    for (let v = verse; v <= last; v++) {
+      if (paragraphMentionsVerse(text, chapter, v)) return true;
+    }
+  }
+  if (paragraphIsGillLemmaNote(text, query)) return true;
+  return paragraphOpensWithVerseLemma(text, query);
+}
+
+function paragraphLooksVerseLabeled(text: string, chapter?: number): boolean {
+  const trimmed = text.trim();
+  if (/^\d{1,3}\s*[.:)\]]/.test(trimmed)) return true;
+  if (/\b(?:ver(?:s|se|ses)?|vv?)\.?\s*\d{1,3}/i.test(trimmed)) return true;
+  if (chapter != null && new RegExp(`\\b${chapter}:\\d{1,3}`).test(trimmed)) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Paragraph selection that knows which verse it is looking for. A page can
  * cover a whole chapter (Henry) or a neighbouring pericope (Calvin on CCEL is
  * split by pericope, so a chapter-level row can land on the wrong page); the
  * marker bonus keeps the lemma paragraph ahead of a merely word-similar one.
- * Falls back to plain token scoring when no paragraph names the verse.
+ * When verse-true hits exist, drop neighbours. Falls back to token scoring
+ * only when the page has no verse labels at all.
  */
 export function pickVerseParagraphs(
   paragraphs: string[],
@@ -304,32 +370,31 @@ export function pickVerseParagraphs(
   if (chapter == null || verse == null) {
     return pickParagraphs(paragraphs, query, limit);
   }
-  // With a range selected, a paragraph naming any verse in it is on target.
-  // Scoring only the first verse would rank commentary on 9:15 below an
-  // unrelated paragraph when the reader had selected 9:14-16.
-  const last = Math.max(verse, verseEnd ?? verse);
   const tokens = tokenize(query);
-  const hits = paragraphs
+  const scored = paragraphs
     .map((p) => {
-      if (isBoilerplate(p) || !isSubstantiveQuote(p)) return { p, score: 0 };
+      if (isBoilerplate(p) || !isSubstantiveQuote(p)) {
+        return { p, score: 0, treats: false };
+      }
       const lower = p.toLowerCase();
       let score = 0;
       for (const t of tokens) if (lower.includes(t)) score += 1;
-      for (let v = verse; v <= last; v++) {
-        if (paragraphMentionsVerse(p, chapter, v)) {
-          score += 6;
-          break;
-        }
-      }
-      if (paragraphIsGillLemmaNote(p, query)) score += 6;
-      return { p, score };
+      const treats = paragraphTreatsVerse(p, chapter, verse, query, verseEnd);
+      if (treats) score += 6;
+      return { p, score, treats };
     })
     .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((x) => x.p);
+    .sort((a, b) => b.score - a.score);
 
-  if (hits.length) return hits;
+  const treated = scored.filter((x) => x.treats).slice(0, limit).map((x) => x.p);
+  if (treated.length) return treated;
+
+  // Page has verse labels for neighbours but none for the target — drop rather
+  // than surfacing a Matt 5:10 note for Matt 5:3.
+  if (paragraphs.some((p) => paragraphLooksVerseLabeled(p, chapter))) {
+    return [];
+  }
+
   return pickParagraphs(paragraphs, query, limit);
 }
 

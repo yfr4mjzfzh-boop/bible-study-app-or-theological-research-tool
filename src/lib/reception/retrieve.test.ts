@@ -7,6 +7,7 @@ import {
   pickParagraphs,
   pickVerseParagraphs,
   paragraphMentionsVerse,
+  paragraphTreatsVerse,
   parseRetrieved,
   byteCapFor,
   ensureReservedCards,
@@ -930,6 +931,19 @@ describe("verse-anchored paragraph selection", () => {
   });
 
   it("falls back to token scoring when no paragraph names the verse", () => {
+    const unlabeled =
+      "The Apostle shows that the election of God is free and depends on his calling alone, not on works.";
+    const picked = pickVerseParagraphs(
+      [unlabeled, UNRELATED],
+      9,
+      11,
+      "election calling",
+      2,
+    );
+    assert.ok(picked.length > 0);
+  });
+
+  it("drops labelled neighbour verses instead of falling back to them", () => {
     const picked = pickVerseParagraphs(
       [VERSE_4, UNRELATED],
       9,
@@ -937,7 +951,7 @@ describe("verse-anchored paragraph selection", () => {
       "Israelites anguish",
       2,
     );
-    assert.ok(picked.length > 0);
+    assert.equal(picked.length, 0, "verse-4 lemma must not fill a verse-11 ask");
   });
 
   it("behaves like pickParagraphs when no verse is supplied", () => {
@@ -946,6 +960,38 @@ describe("verse-anchored paragraph selection", () => {
       pickVerseParagraphs(paras, undefined, undefined, "election", 2),
       pickParagraphs(paras, "election", 2),
     );
+  });
+
+  it("Matt 5:3 must not return a Matt 5:10-only chunk", () => {
+    const v3 =
+      "Matthew 5:3. Blessed are the poor in spirit - The word blessed means happy, referring to that which produces felicity. Poor in spirit is to have a humble opinion of ourselves.";
+    const v10 =
+      "Matthew 5:10. Blessed are they which are persecuted for righteousness sake - To persecute means literally to pursue; follow after, as one does a flying enemy.";
+    const v10lemma =
+      "Blessed are they which are persecuted for righteousness' sake: for theirs is the kingdom of heaven.";
+    const query =
+      "Blessed are the poor in spirit: for theirs is the kingdom of heaven";
+    const picked = pickVerseParagraphs([v10, v10lemma, v3], 5, 3, query, 3);
+    assert.ok(picked.length >= 1);
+    assert.ok(
+      picked.every((p) => /poor in spirit/i.test(p)),
+      `got ${picked.map((p) => p.slice(0, 60))}`,
+    );
+    assert.ok(!picked.some((p) => /persecut/i.test(p) && !/poor in spirit/i.test(p)));
+    assert.equal(paragraphTreatsVerse(v3, 5, 3, query), true);
+    assert.equal(paragraphTreatsVerse(v10, 5, 3, query), false);
+  });
+
+  it("Rom 8:28 lands providence language from that verse note", () => {
+    const v28 =
+      "Romans 8:28. And we know that all things work together for good - The providence of God overrules every event so that it shall work for the good of his people.";
+    const v1 =
+      "Romans 8:1. There is therefore now no condemnation to them which are in Christ Jesus.";
+    const query =
+      "And we know that all things work together for good to them that love God";
+    const picked = pickVerseParagraphs([v1, v28], 8, 28, query, 2);
+    assert.equal(picked[0], v28);
+    assert.ok(/work together for good|providence/i.test(picked[0]));
   });
 });
 
@@ -1551,5 +1597,47 @@ describe("reserved seats survive to cards", () => {
     assert.ok(withGill.some((c) => c.voice === "John Peter Lange"));
     const gill = withGill.find((c) => c.voice === "John Gill");
     assert.ok(gill?.quote.includes("Gill on the verse"));
+  });
+
+  it("does not force a reserved card when the extract is wrong-verse", () => {
+    const wrong =
+      "Matthew 5:10. Blessed are they which are persecuted for righteousness sake - To persecute means literally to pursue after an enemy on account of religion.";
+    const extracts = [
+      {
+        entry: {
+          id: "barnes-matthew-5",
+          voice: "Albert Barnes",
+          work: "Notes",
+          tradition: "reformed" as const,
+          locus: "Matthew 5",
+          url: "https://biblehub.com/commentaries/barnes/matthew/5.htm",
+          tags: ["matthew", "barnes"],
+          books: ["MAT"],
+          chapters: [5],
+        },
+        url: "https://biblehub.com/commentaries/barnes/matthew/5.htm",
+        paragraphs: [wrong],
+      },
+    ];
+    const cards = [
+      {
+        voice: "John Chrysostom",
+        work: "Homilies",
+        tradition: "eastern-patristic" as const,
+        quote: "Blessed are the poor in spirit is the first foundation of the kingdom, not a passing mention.",
+        citation: "Homily 15",
+        url: "https://www.newadvent.org/fathers/200115.htm",
+        source: "generated" as const,
+        grounded: true,
+      },
+    ];
+    const query = "Blessed are the poor in spirit: for theirs is the kingdom of heaven";
+    const filled = ensureReservedCards(cards, extracts, {
+      chapter: 5,
+      verse: 3,
+      query,
+    });
+    assert.equal(filled.length, 1);
+    assert.ok(!filled.some((c) => c.voice === "Albert Barnes"));
   });
 });

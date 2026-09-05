@@ -7,6 +7,7 @@ import {
   isBoilerplate,
   isEmbeddedScripture,
   isSubstantiveQuote,
+  paragraphTreatsVerse,
   truncateAtSentence,
 } from "./retrieve-html.ts";
 import { retrieveExtracts } from "./retrieve-net.ts";
@@ -128,7 +129,17 @@ function cardsFromExtracts(extracts: FetchedExtract[]): SourceCard[] {
   return cards;
 }
 
-const RESERVED_ID_PREFIXES = ["gill-", "geneva-", "lange-"] as const;
+const RESERVED_ID_PREFIXES = [
+  "gill-",
+  "geneva-",
+  "lange-",
+  "barnes-",
+  "maclaren-",
+  "vws-",
+  "hawker-",
+  "trapp-",
+  "burkitt-",
+] as const;
 
 function isReservedExtract(ex: FetchedExtract): boolean {
   return RESERVED_ID_PREFIXES.some((p) => ex.entry.id.startsWith(p));
@@ -140,14 +151,43 @@ function cardCoversExtract(card: SourceCard, ex: FetchedExtract): boolean {
   return card.url === ex.url || card.url === ex.entry.url || card.url === ex.entry.altUrl;
 }
 
-/** Keep reserved first-wave voices on the card set after Gemini or the 4-card extract cap. */
+function extractTreatsTarget(
+  ex: FetchedExtract,
+  target?: {
+    chapter?: number;
+    verse?: number | null;
+    verseEnd?: number | null;
+    query?: string;
+  },
+): boolean {
+  if (target?.chapter == null || target?.verse == null) return true;
+  const query = target.query ?? "";
+  return ex.paragraphs.some((p) =>
+    paragraphTreatsVerse(
+      p,
+      target.chapter,
+      target.verse ?? undefined,
+      query,
+      target.verseEnd,
+    ),
+  );
+}
+
+/** Keep reserved voices on the desk only when the extract treats the selected verse. */
 export function ensureReservedCards(
   cards: SourceCard[],
   extracts: FetchedExtract[],
+  target?: {
+    chapter?: number;
+    verse?: number | null;
+    verseEnd?: number | null;
+    query?: string;
+  },
 ): SourceCard[] {
   const out = cards.slice();
   for (const ex of extracts) {
     if (!isReservedExtract(ex)) continue;
+    if (!extractTreatsTarget(ex, target)) continue;
     if (out.some((c) => cardCoversExtract(c, ex))) continue;
     const card = cardFromExtract(ex);
     if (card) out.push(card);
@@ -265,8 +305,14 @@ export async function assembleFromSources(opts: {
 
   // Unvalidated page paragraphs. Offered only when the librarian never ran —
   // no key, or the call failed — and always labelled as unchecked.
+  const reserveTarget = {
+    chapter: opts.chapter,
+    verse: opts.verse,
+    verseEnd: opts.verseEnd,
+    query: [opts.question, opts.verseText].filter(Boolean).join(" "),
+  };
   const withReserved = (cards: SourceCard[]) =>
-    focused ? cards : ensureReservedCards(cards, extracts);
+    focused ? cards : ensureReservedCards(cards, extracts, reserveTarget);
 
   const unchecked = {
     cards: focused ? [] : withReserved(cardsFromExtracts(extracts)),

@@ -10,6 +10,9 @@ export {
   pickParagraphs,
   pickVerseParagraphs,
   paragraphMentionsVerse,
+  paragraphTreatsVerse,
+  paragraphOpensWithVerseLemma,
+  paragraphIsGillLemmaNote,
 } from "./retrieve-html.ts";
 export { fetchEntry, retrieveExtracts, byteCapFor } from "./retrieve-net.ts";
 export {
