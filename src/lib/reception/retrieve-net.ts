@@ -123,6 +123,20 @@ export async function fetchEntry(
   return null;
 }
 
+
+const WAVE2_ID_PREFIXES = [
+  "barnes-",
+  "maclaren-",
+  "vws-",
+  "hawker-",
+  "trapp-",
+  "burkitt-",
+] as const;
+
+function isWave2Id(id: string): boolean {
+  return WAVE2_ID_PREFIXES.some((p) => id.startsWith(p));
+}
+
 export async function retrieveExtracts(opts: {
   question: string;
   bookId?: string;
@@ -137,13 +151,28 @@ export async function retrieveExtracts(opts: {
   const focused = Boolean(opts.question.trim());
   const limit = focused ? 8 : 7;
   const exclude = new Set((opts.excludeUrls ?? []).filter(Boolean));
+  // Desk empty-Inquire: map a few past the fetch cap so reserved wave-2
+  // seats that rank just outside `limit` can still be pulled onto take.
+  const mapLimit = exclude.size ? limit + 6 : focused ? limit : limit + 4;
   const mapped = mapCatalog({
     ...opts,
-    limit: exclude.size ? limit + 6 : limit,
+    limit: mapLimit,
   }).filter(
     (e) => !exclude.has(e.url) && !(e.altUrl && exclude.has(e.altUrl)),
   );
-  const take = mapped.slice(0, limit);
+  let take = mapped.slice(0, limit);
+  if (!focused && opts.bookId && opts.chapter != null) {
+    const wave2InTake = take.filter((e) => isWave2Id(e.id)).length;
+    if (wave2InTake < 2) {
+      const extras = mapped.filter(
+        (e) => isWave2Id(e.id) && !take.some((t) => t.id === e.id),
+      );
+      // Cap extra fetches at +2 so Gemini cost stays near the desk limit.
+      for (const extra of extras.slice(0, 2 - wave2InTake)) {
+        take.push(extra);
+      }
+    }
+  }
   const found = await Promise.all(
     take.map((e) =>
       fetchEntry(e, query, {

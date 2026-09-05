@@ -548,6 +548,61 @@ describe("NT chapter-1 mapping", () => {
     }
   });
 
+  it("empty Inquire limit 7 seats wave-2 voices on Matt 5 / Rom 8 / John 3", async () => {
+    const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
+    attachWeakNtCatalog();
+    const WAVE2 = ["barnes-", "maclaren-", "vws-", "hawker-", "trapp-", "burkitt-"] as const;
+    const cases = [
+      {
+        bookId: "MAT" as const,
+        chapter: 5,
+        verse: 3 as number | undefined,
+        verseText:
+          "Blessed are the poor in spirit: for theirs is the kingdom of heaven",
+      },
+      {
+        bookId: "ROM" as const,
+        chapter: 8,
+        verse: 28 as number | undefined,
+        verseText: "And we know that all things work together for good",
+      },
+      {
+        bookId: "JHN" as const,
+        chapter: 3,
+        verse: 16 as number | undefined,
+        verseText: "For God so loved the world, that he gave his only begotten Son",
+      },
+    ];
+    const distinct = new Set<string>();
+    for (const c of cases) {
+      const hits = mapCatalog({
+        question: "",
+        bookId: c.bookId,
+        chapter: c.chapter,
+        verse: c.verse,
+        verseText: c.verseText,
+        limit: 7,
+      });
+      const ids = hits.map((h) => h.id);
+      for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
+        assert.ok(
+          ids.some((id) => id.startsWith(prefix)),
+          `expected ${prefix}* alongside wave-2 for ${c.bookId} ${c.chapter}, got ${ids.join(",")}`,
+        );
+      }
+      const wave2Hits = ids.filter((id) => WAVE2.some((p) => id.startsWith(p)));
+      assert.ok(
+        wave2Hits.length >= 1,
+        `expected >=1 wave-2 id for ${c.bookId} ${c.chapter}, got ${ids.join(",")}`,
+      );
+      for (const id of wave2Hits) distinct.add(id.split("-")[0]!);
+    }
+    assert.ok(
+      distinct.size >= 3,
+      `expected >=3 distinct wave-2 voices across sample verses, got ${[...distinct].join(",")}`,
+    );
+  });
+
   it("Gill and Geneva chapter pages keep sacred-texts primary with BibleHub altUrl", () => {
     const gill = CATALOG.find((e) => e.id === "gill-matthew-5");
     const geneva = CATALOG.find((e) => e.id === "geneva-matthew-5");

@@ -1376,15 +1376,27 @@ export function mapCatalog(opts: {
   // Chapter pages first so Argument/intro rows are not the only hit.
   // One page per voice here so three Calvin slices cannot crowd Henry out.
   // At desk limits (>=7: empty Inquire / focused), reserve Gill/Geneva/Lange
-  // then interleave remaining first-wave with the rest so those three cannot
-  // be starved. Default mapCatalog(limit 5) keeps score order for Henry/Calvin tests.
+  // then seat wave-2 (Barnes/MacLaren/VWS/Hawker/Trapp/Burkitt) alongside,
+  // then interleave remaining wave pages with classics so first-wave reserved
+  // seats are never starved. Default mapCatalog(limit 5) keeps score order
+  // for Henry/Calvin tests.
   if (hasChapterPage) {
     const WAVE1_RE = /^(gill|geneva|poole|jfb|lange)-/;
-    const RESERVED = ["gill-", "geneva-", "lange-"] as const;
+    const WAVE2_RE = /^(barnes|maclaren|vws|hawker|trapp|burkitt)-/;
+    const RESERVED_WAVE1 = ["gill-", "geneva-", "lange-"] as const;
+    const RESERVED_WAVE2 = [
+      "barnes-",
+      "maclaren-",
+      "vws-",
+      "hawker-",
+      "trapp-",
+      "burkitt-",
+    ] as const;
+    const isWaveId = (id: string) => WAVE1_RE.test(id) || WAVE2_RE.test(id);
     const chapterRanked = ranked.filter((r) => chapterMatch(r.entry));
     const deskLimit = limit >= 7 && Boolean(opts.bookId) && opts.chapter != null;
     if (deskLimit) {
-      for (const prefix of RESERVED) {
+      for (const prefix of RESERVED_WAVE1) {
         if (picked.length >= limit) break;
         const hit = chapterRanked.find(
           (r) => r.entry.id.startsWith(prefix) && !voices.has(r.entry.voice),
@@ -1393,19 +1405,35 @@ export function mapCatalog(opts: {
         voices.add(hit.entry.voice);
         picked.push(hit.entry);
       }
+      // Seat wave-2 after wave1; leave at least one seat for a classic page.
+      const wave2Budget = Math.min(
+        3,
+        Math.max(0, limit - picked.length - 1),
+      );
+      let wave2Seated = 0;
+      for (const prefix of RESERVED_WAVE2) {
+        if (wave2Seated >= wave2Budget || picked.length >= limit) break;
+        const hit = chapterRanked.find(
+          (r) => r.entry.id.startsWith(prefix) && !voices.has(r.entry.voice),
+        );
+        if (!hit) continue;
+        voices.add(hit.entry.voice);
+        picked.push(hit.entry);
+        wave2Seated++;
+      }
       const remaining = chapterRanked.filter(
         (r) => !picked.some((e) => e.id === r.entry.id),
       );
-      const wave1 = remaining.filter((r) => WAVE1_RE.test(r.entry.id));
-      const rest = remaining.filter((r) => !WAVE1_RE.test(r.entry.id));
+      const wave = remaining.filter((r) => isWaveId(r.entry.id));
+      const rest = remaining.filter((r) => !isWaveId(r.entry.id));
       let iRest = 0;
       let iWave = 0;
       let takeRest = true;
       while (
         picked.length < limit &&
-        (iRest < rest.length || iWave < wave1.length)
+        (iRest < rest.length || iWave < wave.length)
       ) {
-        const pool = takeRest ? rest : wave1;
+        const pool = takeRest ? rest : wave;
         let i = takeRest ? iRest : iWave;
         let added = false;
         while (i < pool.length) {
@@ -1424,7 +1452,9 @@ export function mapCatalog(opts: {
         }
         takeRest = !takeRest;
       }
-      for (const prefix of RESERVED) {
+      // Hard guarantee only for first-wave reserved seats. Wave-2 already
+      // received a budgeted pass; do not displace classics to force more.
+      for (const prefix of RESERVED_WAVE1) {
         if (picked.some((e) => e.id.startsWith(prefix))) continue;
         const miss = chapterRanked.find(
           (r) => r.entry.id.startsWith(prefix) && r.score > 0,
@@ -1438,11 +1468,14 @@ export function mapCatalog(opts: {
         let replaceAt = -1;
         for (let i = picked.length - 1; i >= 0; i--) {
           const e = picked[i];
-          if (WAVE1_RE.test(e.id)) continue;
-          if (RESERVED.some((p) => e.id.startsWith(p))) continue;
+          if (RESERVED_WAVE1.some((p) => e.id.startsWith(p))) continue;
           if (e.voice === miss.entry.voice) continue;
-          replaceAt = i;
-          break;
+          // Prefer displacing a classic over a wave-2 seat.
+          if (!isWaveId(e.id)) {
+            replaceAt = i;
+            break;
+          }
+          if (WAVE2_RE.test(e.id) && replaceAt < 0) replaceAt = i;
         }
         if (replaceAt < 0) continue;
         voices.delete(picked[replaceAt].voice);
