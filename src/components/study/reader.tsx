@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, Fragment } from "react";
-import { ArrowUp, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { BIBLE_BOOKS, bookName, getBook } from "@/lib/bible/books";
 import type { Chapter } from "@/lib/bible/types";
 import { splitDropCap } from "@/lib/bible/drop-cap";
@@ -245,14 +245,22 @@ export function Reader({
               </header>
 
               {sections.length > 1 ? (
-                <nav
-                  aria-label={t(locale, "inThisChapter")}
-                  className="mb-8 rounded-md border border-rule bg-surface/80 px-4 py-3"
-                >
-                  <p className="mb-2 text-2xs font-semibold tracking-[0.16em] text-faint uppercase">
-                    {t(locale, "inThisChapter")}
-                  </p>
-                  <ul className="space-y-0.5">
+                <details className="tl-contents">
+                  <summary>
+                    <span className="text-2xs font-semibold tracking-[0.16em] text-faint uppercase">
+                      {t(locale, "inThisChapter")}
+                    </span>
+                    <span className="font-serif text-xs text-faint tabular-nums">
+                      {sections.length}
+                    </span>
+                    <ChevronDown
+                      size={14}
+                      strokeWidth={1.75}
+                      className="tl-contents-chv ml-auto text-faint"
+                      aria-hidden
+                    />
+                  </summary>
+                  <ul>
                     {sections.map((s) => (
                       <li key={s.verse}>
                         <button
@@ -270,7 +278,7 @@ export function Reader({
                             }
                           }}
                           className={cn(
-                            "flex min-h-10 w-full items-baseline gap-2 rounded-xs px-1 text-left text-sm transition-colors duration-150 ease-out",
+                            "flex min-h-11 w-full items-baseline gap-2 px-1 text-left text-sm transition-colors duration-150 ease-out",
                             selected === s.verse
                               ? "font-medium text-lamp"
                               : "text-ink hover:text-lamp",
@@ -286,7 +294,7 @@ export function Reader({
                       </li>
                     ))}
                   </ul>
-                </nav>
+                </details>
               ) : null}
 
               <div className="bible-prose font-serif text-[length:var(--reading-size,20px)] leading-[1.8] text-ink">
