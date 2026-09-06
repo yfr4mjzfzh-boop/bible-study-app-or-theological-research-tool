@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~15:15 ET)
+# Theos Logos — living handoff (updated 2026-09-06 ~15:30 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -33,7 +33,7 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 Desk seats 9.
 
 ## Lectern polish — READY (preview, phone only)
-Mobile (max-width 639px) Hairline Folio / Night Lectern: laid-paper grain, night lamp as a room, quieter verse lamps, first source-slip lands, closed-folio empty desk, colophon citations, oxblood hair on the sheet. Desktop website left quiet. Do not promote unless Rardo says promote.
+Mobile (max-width 639px) Hairline Folio / Night Lectern: laid-paper grain, night lamp as a room, quieter verse lamps, first source-slip lands, oxblood hair on the sheet. **Empty desk is on the reader** (bottom: oxblood hair + “Mark a verse.”) when nothing is selected — not inside the sheet, which only exists after a tap. Desktop website left quiet. Do not promote unless Rardo says promote.
 
 ## Highlight — READY (preview, not live)
 When a verse (or range) is selected, a highlighter sits in the desk chrome. Tap it to keep a dotted oxblood underline on that verse. Tap again to lift it. Persists in localStorage (`theos-logos-highlights-v1`). Does not steal reserved reception seats. Do not promote unless Rardo says promote.
