@@ -416,6 +416,7 @@ export function StudyWorkspace() {
     setLibraryOpen,
     setTypeOpen,
     setReceptionOpen,
+    setReceptionFull,
     setReceptionPinned,
     setVerse,
     tapVerse,

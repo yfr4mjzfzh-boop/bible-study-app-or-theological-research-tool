@@ -282,7 +282,6 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
       <button
         className="tl-dim absolute inset-0"
         data-open={open ? "true" : "false"}
-        data-peek={open ? "true" : undefined}
         tabIndex={open ? 0 : -1}
         aria-label={t(locale, "closeLibrary")}
         onClick={() => setOpen(false)}
@@ -292,7 +291,7 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
         aria-modal="true"
         aria-label={t(locale, "contents")}
         data-open={open ? "true" : "false"}
-        className="tl-drawer relative z-10 flex h-full w-[calc(100%-2.75rem)] max-w-md flex-col border-r border-rule bg-paper shadow-soft"
+        className="tl-drawer relative z-10 flex h-full w-[min(28rem,calc(100%-2.75rem))] max-w-md flex-col border-r border-rule bg-paper shadow-soft"
       >
         <header className="border-b border-rule bg-surface px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
           <div className="flex items-start justify-between gap-3">

@@ -78,3 +78,35 @@ describe("study selection tap (BUG-1)", () => {
     assert.deepEqual(libraryPick(3, 5, 5, false), { start: 3, end: 4 });
   });
 });
+
+describe("TOC / marked chip clear-if-same (BUG-2 / BUG-3)", () => {
+  /** Mirrors reader TOC + empty-desk chip handlers: clear sole, else setVerse. */
+  function tocOrChipTap(
+    selectedVerse: number | null,
+    selectedEndVerse: number | null,
+    n: number,
+  ): number | null {
+    if (
+      selectedVerse === n &&
+      (selectedEndVerse == null || selectedEndVerse === n)
+    ) {
+      return null;
+    }
+    return n;
+  }
+
+  it("BUG-2: retap same TOC heading clears selection", () => {
+    assert.equal(tocOrChipTap(null, null, 12), 12);
+    assert.equal(tocOrChipTap(12, null, 12), null);
+    assert.equal(tocOrChipTap(12, null, 18), 18);
+  });
+
+  it("BUG-3: retap same marked chip clears selection", () => {
+    assert.equal(tocOrChipTap(3, null, 3), null);
+    assert.equal(tocOrChipTap(3, null, 7), 7);
+  });
+
+  it("does not treat multi-verse range start as sole clear", () => {
+    assert.equal(tocOrChipTap(3, 5, 3), 3);
+  });
+});
