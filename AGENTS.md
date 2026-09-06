@@ -1,5 +1,9 @@
 # Agent Guidelines & Project Context
 
+
+> **AI pickup:** read [`HANDOFF.md`](./HANDOFF.md) + [`BUGS-PLAN.md`](./BUGS-PLAN.md) first (Chief Boss numbering by *symptom*; overnight Grok remapped IDs — ignore those).
+>
+
 > **Note for AI Assistants (Grok, Google AI Studio, Claude, Cursor, Copilot, etc.):**
 > The author vibe-codes this project across multiple AI tools and environments. Please read this file to ensure seamless cross-environment collaboration and avoid regressing setup or infrastructure across platforms.
 

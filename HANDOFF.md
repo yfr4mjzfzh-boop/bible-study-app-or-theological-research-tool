@@ -1,34 +1,50 @@
-# HANDOFF — Theos Logos (living)
+# Theos Logos — living handoff (updated 2026-09-05 ~23:21 ET)
 
-Last beat: 2026-09-06 02:56 UTC  
-Branch: `scholar-desk` (GitHub default). Vercel production branch is `main`.  
-Promote: Rardo standing go — merge/promote on QC PASS, no second ask.  
-Skip: BUG-4 until product call.
+**Grok / any AI: start here.** Also at repo root: `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
+Box copy (Chief Boss): `/home/box/agent-data/projects/theos-logos/HANDOFF.md`
+Skill: `theos-logos-handoff`
 
-## Current
+## Pipeline
+Librarian → Chief Boss analyzes → Rardo approves → DEV BRO / Grok codes.
+Ban Scofield/Darby. Standing promote: QC PASS → promote (Rardo trust).
 
-Bug polish pack **PASS** (except skipped 4). **Production LIVE** at
-https://theos-logos-official.vercel.app — SHA `3908d51`
-(`dpl_5UErYtv2PsTtTX1GDAAZNwmiqsWs`, target production).
+## Status beat ~23:21 ET
+DEV BRO landing authoritative repo-root `HANDOFF.md` + `BUGS-PLAN.md` + `AGENTS.md` pointer, then coding OPEN rows 6→7→8→2→3→9→10.
 
-Pushes to `scholar-desk` stay preview. Production ships when `main` is
-updated to the same SHA (or via `vercel promote` if a CLI token is present).
+## Production (LIVE)
+- `main` ≈ `3908d51` · https://theos-logos-official.vercel.app
+- `scholar-desk` tip may be ahead (docs / in-flight fixes)
 
-Order: **BUG-1 → 6 → 7,8 → 2 → 3 → 9**
+## CRITICAL — bug ID remap
+Overnight Grok **renumbered** bugs. **Chief Boss numbers below are authoritative.** Map by *symptom*, not by Grok’s HANDOFF table.
 
-| # | Status | Note |
-|---|---|---|
-| 1 | **PASS** | Retap sole verse clears. `4c6adfd` |
-| 6 | **PASS** | Library verse grid uses reader tap grammar. `020e8c3` |
-| 7,8 | **PASS** | Oxblood `#821111` locked in meta + JS. No Day/Night pair. |
-| 2 | **PASS** | Treatise outline no longer poses as John 1:1. `11b8a51` |
-| 3 | **PASS** | Desk chrome drag snappier (COMMIT 56 / FLING 0.55). Mid still pan-y. |
-| 9 | **PASS** | Stronger lamplight ends + slightly louder selected wash. |
-| 4 | **SKIP** | Product call. |
+| ID | Symptom (do this) | Status |
+|----|-------------------|--------|
+| BUG-1 | Retap selected verse clears selection | **DONE** `4c6adf` |
+| BUG-6 | Tap outside library drawer closes it (fix dim `pointer-events`) | **OPEN** — still `pointer-events: none` when open |
+| BUG-7 | Mobile: way to dismiss drawer without only X (dim peek or swipe+Escape) | **OPEN** |
+| BUG-8 | Drawer open/close ~480–520ms, slide-out not opacity pop | **OPEN** |
+| BUG-2 | Chapter “In this chapter” TOC retap clears | **OPEN** |
+| BUG-3 | Marked-verse chips in empty desk retap clears | **OPEN** |
+| BUG-9 | Appearance/type menu exit animation (don’t `return null` instantly) | **OPEN** |
+| BUG-10 | Reception desk X exit slide before unmount | **OPEN** |
+| BUG-4 | More wave-3 voices on 7-seat desk | **HELD** (product) |
+| BUG-5 | Live neighbor-bleed → fixtures | ongoing |
 
-## QC
+**Ship remaining:** BUG-6 → 7 → 8 → 2 → 3 → 9 → 10. Then QC → promote.
 
-- `node --experimental-strip-types --test src/lib/bible/range.test.ts src/lib/study-selection.test.ts src/lib/reception/retrieve.test.ts src/lib/reception/synthesize.test.ts`
-- Pack SHA `3908d51` is production.
+## Already shipped (extras — keep)
+Treatise outline ≠ John 1:1 · wave-4 Pulpit/Meyer/EGT · library grid `tapVerse` · oxblood PWA lock · desk drag / lamplight polish
 
-See `BUGS-PLAN.md`.
+## Plans
+See `BUGS-PLAN.md` (same folder / repo root). Prefer Chief Boss symptom text over any remapped overnight board.
+
+## If picking up cold
+1. Read **this** `HANDOFF.md` first (repo root or box path above)
+2. Read `BUGS-PLAN.md`
+3. Continue first **OPEN** row in the table
+4. Update both files every beat
+5. Don’t implement BUG-4 without Rardo
+
+## Agents
+Chief `6cb083e0-3dcc-447a-b4ae-5926ffd27b69` · DEV BRO `6cb78f64-9c3c-4e88-ad43-47ab14d8762d` · Librarian `ebaa57c2-233a-4351-89f1-3b44132e8df7` · Quintilius `bc147065-b693-4f40-913c-202caed80a1d`
