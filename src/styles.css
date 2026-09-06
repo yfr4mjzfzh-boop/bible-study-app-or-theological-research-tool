@@ -455,34 +455,9 @@ html.dark .tl-shell {
   scroll-padding-bottom: var(--read-bottom);
 }
 
-.tl-read:not([data-pick="true"]) {
-  padding-bottom: calc(5.25rem + var(--read-bottom));
-  scroll-padding-bottom: calc(5.25rem + var(--read-bottom));
-}
-
 .tl-read[data-pick="true"] {
   padding-bottom: calc(var(--pick-stack) + 1.25rem);
   scroll-padding-bottom: calc(var(--pick-stack) + 1.25rem);
-}
-
-.tl-idle-folio {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  pointer-events: none;
-  padding: 0.35rem 1.25rem max(1.15rem, env(safe-area-inset-bottom));
-  padding-left: max(1.25rem, env(safe-area-inset-left));
-  padding-right: max(1.25rem, env(safe-area-inset-right));
-}
-
-.tl-idle-hair {
-  display: block;
-  width: 2.25rem;
-  height: 2px;
-  margin-bottom: 0.55rem;
-  background: var(--color-oxblood);
 }
 
 .tl-dim {

@@ -441,15 +441,6 @@ export function Reader({
       >
         <ArrowUp size={16} />
       </button>
-
-      {chapter && selected == null ? (
-        <div className="tl-idle-folio" aria-live="polite">
-          <span className="tl-idle-hair" aria-hidden />
-          <p className="font-display text-lg font-semibold tracking-tight text-ink">
-            {t(locale, "markVerse")}
-          </p>
-        </div>
-      ) : null}
     </div>
   );
 }
