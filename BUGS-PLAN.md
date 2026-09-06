@@ -58,4 +58,5 @@ Do not implement. Do not guess.
 - 2026-09-06 02:32 BUG-2 shipped `11b8a51` (outline dump, numbered as 2 to match pack).
 - 2026-09-06 02:42 Boards moved into the repo. BUG-6 next.
 - 2026-09-06 02:47 BUG-7/8, 3, 9 shipped. Pack complete except skipped 4.
+- 2026-09-06 02:56 Production LIVE `3908d51` (`dpl_5UErYtv2PsTtTX1GDAAZNwmiqsWs`) via force-push of scholar-desk onto Vercel production branch `main`. CLI had no Vercel token; MCP has no promote. User: refresh/reinstall PWA for oxblood lock. BUG-4 still skip.
 
