@@ -13,7 +13,7 @@ UI pack landed on `scholar-desk` (BUG-6→7→8→2→3→9→10). **NEXT=QC.** 
 
 ## Production (LIVE)
 - `main` ≈ `3908d51` · https://theos-logos-official.vercel.app
-- `scholar-desk` tip ahead — await QC before promote
+- `scholar-desk` tip `c1194c2` (code `1db4965`) — await QC before promote
 
 ## CRITICAL — bug ID remap
 Overnight Grok **renumbered** bugs. **Chief Boss numbers below are authoritative.** Map by *symptom*, not by Grok’s HANDOFF table.
@@ -21,7 +21,7 @@ Overnight Grok **renumbered** bugs. **Chief Boss numbers below are authoritative
 | ID | Symptom (do this) | Status |
 |----|-------------------|--------|
 | BUG-1 | Retap selected verse clears selection | **DONE** `4c6adf` |
-| BUG-6 | Tap outside library drawer closes it (fix dim `pointer-events`) | **DONE** `1db4965` |
+| BUG-6 | Tap outside library drawer closes it (fix dim `pointer-events`) | **DONE** `1db4965`/`c1194c2` |
 | BUG-7 | Mobile: way to dismiss drawer without only X (dim peek or swipe+Escape) | **DONE** |
 | BUG-8 | Drawer open/close ~480–520ms, slide-out not opacity pop | **DONE** |
 | BUG-2 | Chapter “In this chapter” TOC retap clears | **DONE** |

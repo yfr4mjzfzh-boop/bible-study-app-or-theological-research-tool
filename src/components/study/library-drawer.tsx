@@ -282,6 +282,7 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
       <button
         className="tl-dim absolute inset-0"
         data-open={open ? "true" : "false"}
+        data-peek={open ? "true" : undefined}
         tabIndex={open ? 0 : -1}
         aria-label={t(locale, "closeLibrary")}
         onClick={() => setOpen(false)}
