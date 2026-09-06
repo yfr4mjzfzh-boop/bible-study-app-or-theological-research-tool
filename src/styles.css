@@ -62,6 +62,7 @@
   --motion-fast: 250ms;
   --motion-medium: 350ms;
   --motion-slow: 400ms;
+  --motion-drawer: 500ms;
   --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -385,12 +386,12 @@
   background: color-mix(in oklab, #1c1917 38%, transparent);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--motion-slow) var(--ease-smooth-out);
+  transition: opacity var(--motion-drawer) var(--ease-smooth-out);
 }
 
 .tl-dim[data-open="true"] {
   opacity: var(--dim-o, 1);
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .tl-dim[data-peek="true"] {
@@ -402,18 +403,16 @@
 }
 
 .tl-drawer {
+  /* Slide-first: no opacity fade (avoids X/close pop). Dim handles veil. */
   transform: translateX(-100%);
-  opacity: 0;
-  transition:
-    transform var(--motion-medium) var(--ease-smooth-out),
-    opacity var(--motion-medium) var(--ease-smooth-out);
+  opacity: 1;
+  transition: transform var(--motion-drawer) var(--ease-smooth-out);
   overflow-x: hidden;
+  will-change: transform;
 }
 
 .tl-drawer[data-open="true"] {
   transform: translateX(0);
-  opacity: 1;
-  transition-duration: var(--motion-slow);
 }
 
 .tl-sheet {
@@ -421,8 +420,8 @@
   opacity: 0;
   pointer-events: none;
   transition:
-    transform var(--motion-slow) var(--ease-smooth-out),
-    opacity var(--motion-medium) var(--ease-smooth-out);
+    transform var(--motion-drawer) var(--ease-smooth-out),
+    opacity var(--motion-drawer) var(--ease-smooth-out);
 }
 
 .tl-sheet[data-open="true"] {
@@ -488,16 +487,27 @@
 
 .tl-menu {
   transform-origin: top left;
-  animation: tl-menu-in var(--motion-fast) var(--ease-smooth-out);
+  opacity: 0;
+  transform: scale(var(--motion-scale-menu)) translateY(-4px);
+  pointer-events: none;
+  transition:
+    opacity var(--motion-medium) var(--ease-smooth-out),
+    transform var(--motion-medium) var(--ease-smooth-out);
 }
 
-@keyframes tl-menu-in {
-  from {
-    opacity: 0;
-    transform: scale(var(--motion-scale-menu)) translateY(-4px);
+.tl-menu[data-open="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* Mobile bottom sheet: slide up/down rather than scale from top-left. */
+@media (max-width: 639px) {
+  .tl-menu {
+    transform-origin: bottom center;
+    transform: translateY(12px);
   }
-  to {
-    opacity: 1;
+  .tl-menu[data-open="true"] {
     transform: none;
   }
 }
@@ -903,6 +913,7 @@
   .tl-pick,
   .tl-pick-ref,
   .tl-lamp-in,
+  .tl-drawer,
   .tl-sheet,
   .tl-sheet-up,
   .tl-menu,

@@ -76,6 +76,7 @@ export function Reader({
   const tapVerse = useStudy((s) => s.tapVerse);
   const pickVerse = useStudy((s) => s.pickVerse);
   const setVerse = useStudy((s) => s.setVerse);
+  const clearSelection = useStudy((s) => s.clearSelection);
   const nextChapter = useStudy((s) => s.nextChapter);
   const prevChapter = useStudy((s) => s.prevChapter);
   const notesRev = useStudy((s) => s.notesRev);
@@ -247,7 +248,18 @@ export function Reader({
                       <li key={s.verse}>
                         <button
                           type="button"
-                          onClick={() => setVerse(s.verse)}
+                          onClick={() => {
+                            // Clear-if-same (BUG-2): retap sole section clears.
+                            // Otherwise jump via setVerse — do not grow a range.
+                            if (
+                              selected === s.verse &&
+                              (selectedEnd == null || selectedEnd === s.verse)
+                            ) {
+                              clearSelection();
+                            } else {
+                              setVerse(s.verse);
+                            }
+                          }}
                           className={cn(
                             "flex min-h-10 w-full items-baseline gap-2 rounded-xs px-1 text-left text-sm transition-colors duration-150 ease-out",
                             selected === s.verse

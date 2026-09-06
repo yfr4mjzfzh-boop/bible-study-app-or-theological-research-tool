@@ -5,6 +5,8 @@ import { useStudy } from "@/lib/study-store";
 import { cn } from "@/lib/utils";
 import { useSlidingPill } from "./sliding-pill";
 
+const EXIT_MS = 320;
+
 export function TypeMenu() {
   const open = useStudy((s) => s.typeOpen);
   const setOpen = useStudy((s) => s.setTypeOpen);
@@ -15,8 +17,10 @@ export function TypeMenu() {
   const locale = useStudy((s) => s.locale);
   const setLocale = useStudy((s) => s.setLocale);
   const [installable, setInstallable] = useState(false);
-  const [localeRef, localeInk] = useSlidingPill(locale, open);
-  const [lampRef, lampInk] = useSlidingPill(theme, open);
+  const [mounted, setMounted] = useState(open);
+  const [visible, setVisible] = useState(open);
+  const [localeRef, localeInk] = useSlidingPill(locale, visible);
+  const [lampRef, lampInk] = useSlidingPill(theme, visible);
 
   useEffect(() => {
     const sync = () => setInstallable(canInstallPwa());
@@ -24,7 +28,37 @@ export function TypeMenu() {
     return subscribePwa(sync);
   }, []);
 
-  if (!open) return null;
+  // Keep mounted through exit so .tl-menu[data-open] can animate out (BUG-9).
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setVisible(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        if (inner) cancelAnimationFrame(inner);
+      };
+    }
+    setVisible(false);
+    const timer = window.setTimeout(() => setMounted(false), EXIT_MS);
+    return () => window.clearTimeout(timer);
+  }, [open]);
+
+  useEffect(() => {
+    if (!visible) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [visible, setOpen]);
+
+  if (!mounted) return null;
 
   const lamps = [
     { id: "light" as const, label: t(locale, "day") },
@@ -36,15 +70,22 @@ export function TypeMenu() {
   return (
     <>
       <button
-        className="fixed inset-0 z-40"
+        type="button"
+        className={cn(
+          "fixed inset-0 z-40",
+          !visible && "pointer-events-none",
+        )}
         aria-label={t(locale, "closeAppearance")}
+        tabIndex={visible ? 0 : -1}
         onClick={() => setOpen(false)}
       />
       <div
         className="tl-menu fixed inset-x-0 bottom-0 z-50 w-full overflow-hidden rounded-t-xl border-t border-rule bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-soft sm:absolute sm:inset-x-auto sm:bottom-auto sm:top-[calc(100%+6px)] sm:left-0 sm:w-72 sm:rounded-lg sm:border sm:pb-4"
-        data-open="true"
+        data-open={visible ? "true" : "false"}
         role="dialog"
         aria-label={t(locale, "theDesk")}
+        aria-hidden={!visible}
+        inert={!visible ? true : undefined}
       >
         <div
           className="flex justify-center pt-0.5 pb-3 sm:hidden"

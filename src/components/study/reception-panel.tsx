@@ -535,7 +535,17 @@ export function ReceptionPanel({
                       <button
                         key={n}
                         type="button"
-                        onClick={() => setVerse(n)}
+                        onClick={() => {
+                          // Clear-if-same (BUG-3): retap marked chip clears.
+                          if (
+                            selectedVerse === n &&
+                            (selectedEndVerse == null || selectedEndVerse === n)
+                          ) {
+                            clearSelection();
+                          } else {
+                            setVerse(n);
+                          }
+                        }}
                         className={cn(
                           "min-h-11 rounded-md border px-3 text-sm font-semibold transition-colors",
                           isGenOnly

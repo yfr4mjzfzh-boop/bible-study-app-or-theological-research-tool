@@ -72,6 +72,9 @@ export function StudyWorkspace() {
   >("hidden");
   const [sheetDrag, setSheetDrag] = useState(0);
   const [sheetDragging, setSheetDragging] = useState(false);
+  // xl side desk: keep mounted through exit slide (BUG-10)
+  const [deskShown, setDeskShown] = useState(false);
+  const [deskOpen, setDeskOpen] = useState(false);
   const sheetRef = useRef<HTMLElement>(null);
   const sheetStateRef = useRef(sheetState);
   sheetStateRef.current = sheetState;
@@ -127,7 +130,7 @@ export function StudyWorkspace() {
     if (want === "hidden") {
       setSheetState("hidden");
       setSheetDrag(0);
-      const t = window.setTimeout(() => setSheetShown(false), 280);
+      const t = window.setTimeout(() => setSheetShown(false), 320);
       return () => window.clearTimeout(t);
     }
     setSheetShown(true);
@@ -144,6 +147,25 @@ export function StudyWorkspace() {
       setSheetDragging(false);
     }
   }, [sheetShown]);
+
+  // BUG-10: xl reception overlay — mount for enter, stay for exit slide.
+  useEffect(() => {
+    const wantDesk = receptionOpen && !docked;
+    if (wantDesk) {
+      setDeskShown(true);
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setDeskOpen(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        if (inner) cancelAnimationFrame(inner);
+      };
+    }
+    setDeskOpen(false);
+    const t = window.setTimeout(() => setDeskShown(false), 520);
+    return () => window.clearTimeout(t);
+  }, [receptionOpen, docked]);
 
   useEffect(() => {
     if (!sheetShown) return;
@@ -360,11 +382,29 @@ export function StudyWorkspace() {
         return;
       }
       if (e.key === "Escape") {
-        setLibraryOpen(false);
-        setTypeOpen(false);
-        setReceptionPinned(false);
-        setReceptionOpen(false);
-        setVerse(null);
+        // Close topmost overlay first (library / type / reception), then clear.
+        const st = useStudy.getState();
+        if (st.libraryOpen) {
+          e.preventDefault();
+          setLibraryOpen(false);
+          return;
+        }
+        if (st.typeOpen) {
+          e.preventDefault();
+          setTypeOpen(false);
+          return;
+        }
+        if (st.receptionFull || st.receptionOpen) {
+          e.preventDefault();
+          setReceptionFull(false);
+          setReceptionOpen(false);
+          setReceptionPinned(false);
+          return;
+        }
+        if (st.selectedVerse != null) {
+          e.preventDefault();
+          setVerse(null);
+        }
       }
     };
     window.addEventListener("keydown", onKey);
@@ -450,18 +490,21 @@ export function StudyWorkspace() {
           </div>
         ) : null}
 
-        {receptionOpen && !docked ? (
+        {deskShown ? (
           <div className="pointer-events-none absolute inset-0 z-20 hidden xl:flex">
             <button
               type="button"
               className="tl-dim min-w-0 flex-1"
-              data-open="true"
+              data-open={deskOpen ? "true" : "false"}
               aria-label={t(locale, "closeReception")}
+              tabIndex={deskOpen ? 0 : -1}
               onClick={closeReception}
             />
             <aside
               className="tl-sheet flex h-full w-full max-w-md flex-col border-l border-rule bg-paper shadow-soft"
-              data-open="true"
+              data-open={deskOpen ? "true" : "false"}
+              aria-hidden={!deskOpen}
+              inert={!deskOpen ? true : undefined}
             >
               <ReceptionPanel chapter={shownChapter} onClose={closeReception} />
             </aside>
