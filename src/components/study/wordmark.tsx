@@ -15,13 +15,12 @@ export function Wordmark({
       <img
         src="/seal.png"
         alt=""
-        width={40}
-        height={40}
+        width={36}
+        height={36}
         className={cn(
-          "size-10 shrink-0 object-cover shadow-[0_1px_2px_rgba(28,25,23,0.22)]",
-          active && "ring-1 ring-oxblood/45",
+          "tl-seal size-9 shrink-0 object-cover",
+          active && "ring-1 ring-oxblood/40",
         )}
-        style={{ borderRadius: 6 }}
         draggable={false}
       />
       <span className={compact ? "hidden min-w-0 text-left sm:block" : "min-w-0 text-left"}>

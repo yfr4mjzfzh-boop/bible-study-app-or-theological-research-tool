@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~19:20 ET)
+# Theos Logos — living handoff (updated 2026-09-06 ~19:50 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -33,7 +33,7 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 Desk seats 9.
 
 ## Seal — READY (preview)
-Leather cover + gold TL-cross is the mark. Wordmark, favicon, apple-touch, Android 192/512 + maskable. Source `brand/cover-source.jpg`. Regen: `python3 scripts/render-cover-icons.py`. Do not promote unless Rardo says promote.
+Leather cover stays the home-screen icon. In the bar it is a flat oxblood stamp with the gold TL-cross (no 3D leather, no shadow) so it sits with the type. Regen: `python3 scripts/render-cover-icons.py`. Do not promote unless Rardo says promote.
 
 ## In this chapter — READY (preview)
 Collapsed by default, label only (“In this chapter”). Opens as a folio: height ease + staggered heading rise. BUG-2 retap-clear stays. Do not promote unless Rardo says promote.

@@ -416,6 +416,11 @@
   border-left: 2px solid var(--color-lamp);
 }
 
+.tl-seal {
+  border-radius: 5px;
+  background: var(--color-oxblood);
+}
+
 .tl-shell {
   position: absolute;
   inset: 0;

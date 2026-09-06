@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rasterize the leather-cover seal into PWA / iOS / Android / in-app icons."""
+"""Rasterize the leather-cover seal into PWA icons and a flat in-app stamp."""
 
 from pathlib import Path
 
@@ -9,6 +9,10 @@ from PIL import Image, ImageFilter
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "brand" / "cover-source.jpg"
 PUBLIC = ROOT / "public"
+
+OXBLOOD = (0x82, 0x11, 0x11)
+GOLD_HI = (0xC9, 0xA1, 0x5B)
+GOLD_LO = (0x8C, 0x60, 0x2A)
 
 
 def load_square() -> tuple[Image.Image, tuple[int, int, int]]:
@@ -40,6 +44,54 @@ def load_square() -> tuple[Image.Image, tuple[int, int, int]]:
     return Image.fromarray(crop), leather
 
 
+def _morph(mask: np.ndarray, max_k: int, min_k: int, max_k2: int) -> np.ndarray:
+    img = Image.fromarray((mask.astype(np.uint8) * 255))
+    if max_k:
+        img = img.filter(ImageFilter.MaxFilter(max_k))
+    if min_k:
+        img = img.filter(ImageFilter.MinFilter(min_k))
+    if max_k2:
+        img = img.filter(ImageFilter.MaxFilter(max_k2))
+    return np.array(img) > 127
+
+
+def stamp(master: Image.Image, size: int) -> Image.Image:
+    """Oxblood tile + gold TL-cross. For the top bar, not the home screen."""
+    a = np.array(master)
+    h, w = a.shape[:2]
+    z = 0.50
+    m = int(h * (1 - z) / 2)
+    inner = a[m : h - m, m : w - m].copy().astype(np.float32)
+    rr, gg, bb = inner[:, :, 0], inner[:, :, 1], inner[:, :, 2]
+    lu = inner.mean(axis=2)
+    gold = (lu > 72) & (rr > bb + 20) & (gg > 44)
+    gold = _morph(gold, 3, 5, 3)
+
+    ox = np.array(OXBLOOD, dtype=np.float32)
+    hi = np.array(GOLD_HI, dtype=np.float32)
+    lo = np.array(GOLD_LO, dtype=np.float32)
+    field_lu = np.median(lu[~gold]) if (~gold).any() else 40
+    grain = np.clip((lu - field_lu) / 90.0, -0.18, 0.18)
+    field = ox[None, None, :] + grain[:, :, None] * np.array([22.0, 6.0, 5.0])
+    field = np.clip(field, 0, 255)
+
+    if gold.any():
+        gmin, gmax = np.percentile(lu[gold], [10, 90])
+        t = np.clip((lu - gmin) / max(gmax - gmin, 1), 0, 1)
+        foil = lo[None, None, :] * (1 - t[:, :, None]) + hi[None, None, :] * t[:, :, None]
+        foil = hi[None, None, :] * 0.4 + foil * 0.6
+    else:
+        foil = hi[None, None, :] * np.ones_like(inner)
+
+    out = np.where(gold[:, :, None], foil, field).astype(np.uint8)
+    im = Image.fromarray(out)
+    im = im.filter(ImageFilter.GaussianBlur(0.45))
+    im = im.resize((size, size), Image.Resampling.LANCZOS)
+    if size <= 192:
+        im = im.filter(ImageFilter.UnsharpMask(radius=0.9, percent=85, threshold=3))
+    return im
+
+
 def fit(master: Image.Image, leather: tuple[int, int, int], size: int, pad: float = 0.0) -> Image.Image:
     canvas = Image.new("RGB", (size, size), leather)
     inner = max(1, int(round(size * (1 - 2 * pad))))
@@ -57,19 +109,21 @@ def main() -> None:
     master, leather = load_square()
     PUBLIC.mkdir(exist_ok=True)
     (PUBLIC / "__grok").mkdir(exist_ok=True)
+    stamp(master, 192).save(PUBLIC / "seal.png", "PNG", optimize=True)
+    print("wrote", PUBLIC / "seal.png")
     jobs = [
-        (192, 0.0, PUBLIC / "seal.png"),
         (512, 0.0, PUBLIC / "icon-512.png"),
         (192, 0.0, PUBLIC / "icon-192.png"),
         (180, 0.0, PUBLIC / "apple-touch-icon.png"),
         (180, 0.0, PUBLIC / "__grok" / "icon-180.png"),
         (512, 0.14, PUBLIC / "icon-512-maskable.png"),
-        (32, 0.0, PUBLIC / "favicon.png"),
-        (48, 0.0, PUBLIC / "favicon-48.png"),
     ]
     for size, pad, path in jobs:
         fit(master, leather, size, pad).save(path, "PNG", optimize=True)
         print("wrote", path)
+    stamp(master, 32).save(PUBLIC / "favicon.png", "PNG", optimize=True)
+    stamp(master, 48).save(PUBLIC / "favicon-48.png", "PNG", optimize=True)
+    print("wrote", PUBLIC / "favicon.png")
 
 
 if __name__ == "__main__":
