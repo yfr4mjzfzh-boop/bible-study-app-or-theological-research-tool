@@ -73,6 +73,7 @@ export function Reader({
 }) {
   const selected = useStudy((s) => s.selectedVerse);
   const selectedEnd = useStudy((s) => s.selectedEndVerse);
+  const tapVerse = useStudy((s) => s.tapVerse);
   const pickVerse = useStudy((s) => s.pickVerse);
   const setVerse = useStudy((s) => s.setVerse);
   const nextChapter = useStudy((s) => s.nextChapter);
@@ -298,8 +299,11 @@ export function Reader({
                         onMouseDown={(e) => {
                           if (e.shiftKey) e.preventDefault();
                         }}
-                        onClick={() => {
-                          pickVerse(v.verse);
+                        onClick={(e) => {
+                          // Shift grows the passage (pick). Normal taps use
+                          // applyVerseTap so retapping the sole verse clears.
+                          if (e.shiftKey) pickVerse(v.verse);
+                          else tapVerse(v.verse, { ifTooLong: "jump" });
                         }}
                         onKeyDown={(e) => {
                           if (e.key !== "Enter" && e.key !== " ") return;

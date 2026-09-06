@@ -54,6 +54,7 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
   const setChapter = useStudy((s) => s.setChapter);
   const jumpTo = useStudy((s) => s.jumpTo);
   const tapVerse = useStudy((s) => s.tapVerse);
+  const clearSelection = useStudy((s) => s.clearSelection);
   const notesRev = useStudy((s) => s.notesRev);
   const locale = useStudy((s) => s.locale);
   const [query, setQuery] = useState("");
@@ -494,6 +495,12 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
                   onPick={(n, extend) => {
                     if (extend) {
                       tapVerse(n);
+                    } else if (
+                      selectedVerse === n &&
+                      (selectedEndVerse == null || selectedEndVerse === n)
+                    ) {
+                      // Retap sole selected verse — same clear as reader / desk X.
+                      clearSelection();
                     } else {
                       jumpTo(bookId, chapter, n);
                     }

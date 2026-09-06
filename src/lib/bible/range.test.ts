@@ -33,6 +33,13 @@ describe("applyVerseTap", () => {
     assert.equal(applyVerseTap(r(16, 16), 16).range, null);
   });
 
+  it("BUG-1: select verse 3 then retap clears (selectedVerse → null)", () => {
+    const first = applyVerseTap(null, 3);
+    assert.deepEqual(first.range, r(3, 3));
+    const second = applyVerseTap(first.range, 3);
+    assert.equal(second.range, null);
+  });
+
   it("trims from the end when the last verse is tapped", () => {
     assert.deepEqual(applyVerseTap(r(14, 16), 16).range, r(14, 15));
   });

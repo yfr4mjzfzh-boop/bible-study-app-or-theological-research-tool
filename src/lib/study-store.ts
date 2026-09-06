@@ -223,14 +223,17 @@ export const useStudy = create<StudyState>((set, get) => ({
         : { start: selectedVerse, end: selectedEndVerse ?? selectedVerse };
     const outcome = applyVerseTap(current, verse, opts);
     if (outcome.refused) return outcome.refused;
+    // Retapping the sole selected verse clears like the desk X.
+    if (outcome.range == null) {
+      get().clearSelection();
+      return null;
+    }
     set({
-      selectedVerse: outcome.range?.start ?? null,
+      selectedVerse: outcome.range.start,
       // A single verse keeps end null so every existing single-verse code
       // path, cache key included, behaves exactly as it did before ranges.
       selectedEndVerse:
-        outcome.range && outcome.range.end !== outcome.range.start
-          ? outcome.range.end
-          : null,
+        outcome.range.end !== outcome.range.start ? outcome.range.end : null,
     });
     return null;
   },
