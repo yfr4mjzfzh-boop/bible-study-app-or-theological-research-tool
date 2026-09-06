@@ -54,7 +54,7 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
   const setChapter = useStudy((s) => s.setChapter);
   const jumpTo = useStudy((s) => s.jumpTo);
   const tapVerse = useStudy((s) => s.tapVerse);
-  const clearSelection = useStudy((s) => s.clearSelection);
+  const pickVerse = useStudy((s) => s.pickVerse);
   const notesRev = useStudy((s) => s.notesRev);
   const locale = useStudy((s) => s.locale);
   const [query, setQuery] = useState("");
@@ -493,17 +493,10 @@ export function LibraryDrawer({ verseCount = 0 }: { verseCount?: number }) {
                   layout="grid"
                   label={t(locale, "verses")}
                   onPick={(n, extend) => {
-                    if (extend) {
-                      tapVerse(n);
-                    } else if (
-                      selectedVerse === n &&
-                      (selectedEndVerse == null || selectedEndVerse === n)
-                    ) {
-                      // Retap sole selected verse — same clear as reader / desk X.
-                      clearSelection();
-                    } else {
-                      jumpTo(bookId, chapter, n);
-                    }
+                    // Same grammar as the reader: shift grows, a plain tap
+                    // applies applyVerseTap (retap-clear, trim, jump-if-long).
+                    if (extend) pickVerse(n);
+                    else tapVerse(n, { ifTooLong: "jump" });
                     setOpen(false);
                   }}
                 />

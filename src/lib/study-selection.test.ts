@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { applyVerseTap } from "./bible/range.ts";
+import { applyVersePick, applyVerseTap } from "./bible/range.ts";
 
 /**
  * Mirrors study-store tapVerse → selectedVerse mapping so BUG-1 stays
@@ -50,5 +50,31 @@ describe("study selection tap (BUG-1)", () => {
       5,
     ).range;
     assert.deepEqual(trimmed, { start: 3, end: 4 });
+  });
+
+  it("BUG-6: library plain tap uses applyVerseTap, not a jump that skips trim/clear", () => {
+    // Mirror library-drawer onPick: extend → pick (grow); else tap (grammar).
+    function libraryPick(
+      selectedVerse: number | null,
+      selectedEndVerse: number | null,
+      verse: number,
+      extend: boolean,
+    ): { start: number; end: number } | null {
+      const current =
+        selectedVerse == null
+          ? null
+          : { start: selectedVerse, end: selectedEndVerse ?? selectedVerse };
+      if (extend) {
+        return applyVersePick(current, verse);
+      }
+      const outcome = applyVerseTap(current, verse, { ifTooLong: "jump" });
+      if (outcome.refused) return current;
+      return outcome.range;
+    }
+
+    assert.deepEqual(libraryPick(null, null, 3, false), { start: 3, end: 3 });
+    assert.equal(libraryPick(3, null, 3, false), null);
+    assert.deepEqual(libraryPick(3, null, 5, false), { start: 3, end: 5 });
+    assert.deepEqual(libraryPick(3, 5, 5, false), { start: 3, end: 4 });
   });
 });
