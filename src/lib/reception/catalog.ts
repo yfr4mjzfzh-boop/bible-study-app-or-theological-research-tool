@@ -1162,6 +1162,511 @@ function burkittNtChapters(have: Set<string>): CatalogEntry[] {
   return out;
 }
 
+function cambridgeNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `cambridge-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Cambridge Bible",
+          "Cambridge Bible for Schools and Colleges",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/cambridge/${hub}/${ch}.htm`,
+          [tag, "cambridge"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function ellicottNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `ellicott-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Charles Ellicott",
+          "Commentary for English Readers",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/ellicott/${hub}/${ch}.htm`,
+          [tag, "ellicott"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function owenHebrewsChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (let ch = 1; ch <= 13; ch++) {
+    const id = `owen-hebrews-${ch}`;
+    if (have.has(id)) continue;
+    out.push(
+      e(
+        id,
+        "John Owen",
+        "Exposition of the Epistle to the Hebrews",
+        "puritan",
+        `Hebrews ${ch}`,
+        `https://www.bibliaplus.org/en/commentaries/446/john-owens-exposition-of-the-epistle-to-the-hebrews7-vols/hebrews/${ch}`,
+        ["hebrews", "owen", "puritan"],
+        ["HEB"],
+        [ch],
+      ),
+    );
+  }
+  return out;
+}
+
+function kretzmannNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    const bookSlug = bibliaplusBookSlug(hub);
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `kretzmann-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Paul Kretzmann",
+          "Popular Commentary of the Bible",
+          "lutheran",
+          `${name} ${ch}`,
+          `https://www.bibliaplus.org/en/commentaries/114/kretzmanns-popular-commentary-of-the-bible/${bookSlug}/${ch}`,
+          [tag, "kretzmann", "lutheran"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+/** Luther Epistle Postils (Bible Hub library) — lectionary grain from published Text: lines. */
+const LUTHER_EPISTLE_POSTILS: Array<{
+  id: string;
+  slug: string;
+  vol: "ii" | "iii";
+  locus: string;
+  bookId: string;
+  chapter: number;
+  verses: [number, number];
+}> = [
+  { id: "luther-epistle-rom12-1", slug: "first_sunday_after_epiphany", vol: "ii", locus: "Romans 12:1-6", bookId: "ROM", chapter: 12, verses: [1, 6] },
+  { id: "luther-epistle-rom12-6", slug: "second_sunday_after_epiphany", vol: "ii", locus: "Romans 12:6-16", bookId: "ROM", chapter: 12, verses: [6, 16] },
+  { id: "luther-epistle-rom12-16", slug: "third_sunday_after_epiphany", vol: "ii", locus: "Romans 12:16-21", bookId: "ROM", chapter: 12, verses: [16, 21] },
+  { id: "luther-epistle-rom13-8", slug: "fourth_sunday_after_epiphany", vol: "ii", locus: "Romans 13:8-10", bookId: "ROM", chapter: 13, verses: [8, 10] },
+  { id: "luther-epistle-col3-12", slug: "fifth_sunday_after_epiphany", vol: "ii", locus: "Colossians 3:12-17", bookId: "COL", chapter: 3, verses: [12, 17] },
+  { id: "luther-epistle-1co9-24", slug: "third_sunday_before_lent", vol: "ii", locus: "1 Corinthians 9:24–10:5", bookId: "1CO", chapter: 9, verses: [24, 27] },
+  { id: "luther-epistle-2co11-19", slug: "second_sunday_before_lent", vol: "ii", locus: "2 Corinthians 11:19–12:9", bookId: "2CO", chapter: 11, verses: [19, 33] },
+  { id: "luther-epistle-1co13", slug: "sunday_before_lent", vol: "ii", locus: "1 Corinthians 13", bookId: "1CO", chapter: 13, verses: [1, 13] },
+  { id: "luther-epistle-2co6-1", slug: "first_sunday_in_lent", vol: "ii", locus: "2 Corinthians 6:1-10", bookId: "2CO", chapter: 6, verses: [1, 10] },
+  { id: "luther-epistle-1th4-1", slug: "second_sunday_in_lent", vol: "ii", locus: "1 Thessalonians 4:1-7", bookId: "1TH", chapter: 4, verses: [1, 7] },
+  { id: "luther-epistle-eph5-1", slug: "third_sunday_in_lent", vol: "ii", locus: "Ephesians 5:1-9", bookId: "EPH", chapter: 5, verses: [1, 9] },
+  { id: "luther-epistle-gal4-21", slug: "fourth_sunday_in_lent", vol: "ii", locus: "Galatians 4:21-31", bookId: "GAL", chapter: 4, verses: [21, 31] },
+  { id: "luther-epistle-heb9-11", slug: "fifth_sunday_in_lent", vol: "ii", locus: "Hebrews 9:11-15", bookId: "HEB", chapter: 9, verses: [11, 15] },
+  { id: "luther-epistle-php2-5", slug: "palm_sunday", vol: "ii", locus: "Philippians 2:5-11", bookId: "PHP", chapter: 2, verses: [5, 11] },
+  { id: "luther-epistle-1co5-6", slug: "easter_sunday", vol: "ii", locus: "1 Corinthians 5:6-8", bookId: "1CO", chapter: 5, verses: [6, 8] },
+  { id: "luther-epistle-act10-34", slug: "easter_monday", vol: "ii", locus: "Acts 10:34-43", bookId: "ACT", chapter: 10, verses: [34, 43] },
+  { id: "luther-epistle-act13-26", slug: "easter_tuesday", vol: "ii", locus: "Acts 13:26-39", bookId: "ACT", chapter: 13, verses: [26, 39] },
+  { id: "luther-epistle-col3-1", slug: "easter_wednesday_also_suited_to", vol: "ii", locus: "Colossians 3:1-7", bookId: "COL", chapter: 3, verses: [1, 7] },
+  { id: "luther-epistle-1jn5-4", slug: "sunday_after_easter", vol: "ii", locus: "1 John 5:4-12", bookId: "1JN", chapter: 5, verses: [4, 12] },
+  { id: "luther-epistle-1pe2-20", slug: "second_sunday_after_easter", vol: "ii", locus: "1 Peter 2:20-25", bookId: "1PE", chapter: 2, verses: [20, 25] },
+  { id: "luther-epistle-1pe2-11", slug: "third_sunday_after_easter", vol: "ii", locus: "1 Peter 2:11-20", bookId: "1PE", chapter: 2, verses: [11, 20] },
+  { id: "luther-epistle-1co15-20", slug: "third_sunday_after_easter_second", vol: "ii", locus: "1 Corinthians 15:20-28", bookId: "1CO", chapter: 15, verses: [20, 28] },
+  { id: "luther-epistle-1co15-35", slug: "fourth_sunday_after_easter", vol: "ii", locus: "1 Corinthians 15:35-50", bookId: "1CO", chapter: 15, verses: [35, 50] },
+  { id: "luther-epistle-jas1-16", slug: "fourth_sunday_after_easter_second", vol: "ii", locus: "James 1:16-21", bookId: "JAS", chapter: 1, verses: [16, 21] },
+  { id: "luther-epistle-1co15-51", slug: "fifth_sunday_after_easter", vol: "ii", locus: "1 Corinthians 15:51-58", bookId: "1CO", chapter: 15, verses: [51, 58] },
+  { id: "luther-epistle-act1-1", slug: "ascension_day", vol: "ii", locus: "Acts 1:1-11", bookId: "ACT", chapter: 1, verses: [1, 11] },
+  { id: "luther-epistle-1pe4-7", slug: "sunday_after_ascension_day", vol: "ii", locus: "1 Peter 4:7-11", bookId: "1PE", chapter: 4, verses: [7, 11] },
+  { id: "luther-epistle-act2-1", slug: "pentecost", vol: "ii", locus: "Acts 2:1-13", bookId: "ACT", chapter: 2, verses: [1, 13] },
+  { id: "luther-epistle-act2-14", slug: "pentecost_monday", vol: "ii", locus: "Acts 2:14-28", bookId: "ACT", chapter: 2, verses: [14, 28] },
+  { id: "luther-epistle-act2-29", slug: "pentecost_tuesday", vol: "ii", locus: "Acts 2:29-36", bookId: "ACT", chapter: 2, verses: [29, 36] },
+  { id: "luther-epistle-rom11-33", slug: "trinity_sunday_the_article_of", vol: "iii", locus: "Romans 11:33-36", bookId: "ROM", chapter: 11, verses: [33, 36] },
+  { id: "luther-epistle-1jn4-16", slug: "first_sunday_after_trinity_god", vol: "iii", locus: "1 John 4:16-21", bookId: "1JN", chapter: 4, verses: [16, 21] },
+  { id: "luther-epistle-1jn3-13", slug: "second_sunday_after_trinity_exhortation", vol: "iii", locus: "1 John 3:13-18", bookId: "1JN", chapter: 3, verses: [13, 18] },
+  { id: "luther-epistle-1pe5-5", slug: "third_sunday_after_trinity_humility", vol: "iii", locus: "1 Peter 5:5-11", bookId: "1PE", chapter: 5, verses: [5, 11] },
+  { id: "luther-epistle-rom8-18", slug: "fourth_sunday_after_trinity_consolation", vol: "iii", locus: "Romans 8:18-22", bookId: "ROM", chapter: 8, verses: [18, 22] },
+  { id: "luther-epistle-1pe3-8", slug: "fifth_sunday_after_trinity_exhortation", vol: "iii", locus: "1 Peter 3:8-15", bookId: "1PE", chapter: 3, verses: [8, 15] },
+  { id: "luther-epistle-rom6-3", slug: "sixth_sunday_after_trinity_exhortation", vol: "iii", locus: "Romans 6:3-11", bookId: "ROM", chapter: 6, verses: [3, 11] },
+  { id: "luther-epistle-rom6-19", slug: "seventh_sunday_after_trinity_exhortation", vol: "iii", locus: "Romans 6:19-23", bookId: "ROM", chapter: 6, verses: [19, 23] },
+  { id: "luther-epistle-rom8-12", slug: "eighth_sunday_after_trinity_living", vol: "iii", locus: "Romans 8:12-17", bookId: "ROM", chapter: 8, verses: [12, 17] },
+  { id: "luther-epistle-1co10-6", slug: "ninth_sunday_after_trinity_carnal", vol: "iii", locus: "1 Corinthians 10:6-13", bookId: "1CO", chapter: 10, verses: [6, 13] },
+  { id: "luther-epistle-1co12-1", slug: "tenth_sunday_after_trinity_spiritual", vol: "iii", locus: "1 Corinthians 12:1-11", bookId: "1CO", chapter: 12, verses: [1, 11] },
+  { id: "luther-epistle-1co15-1", slug: "eleventh_sunday_after_trinity_pauls", vol: "iii", locus: "1 Corinthians 15:1-10", bookId: "1CO", chapter: 15, verses: [1, 10] },
+  { id: "luther-epistle-2co3-4", slug: "twelfth_sunday_after_trinity_gospel", vol: "iii", locus: "2 Corinthians 3:4-11", bookId: "2CO", chapter: 3, verses: [4, 11] },
+  { id: "luther-epistle-gal3-15", slug: "thirteenth_sunday_after_trinity_gods", vol: "iii", locus: "Galatians 3:15-22", bookId: "GAL", chapter: 3, verses: [15, 22] },
+  { id: "luther-epistle-gal5-16", slug: "fourteenth_sunday_after_trinity_works", vol: "iii", locus: "Galatians 5:16-24", bookId: "GAL", chapter: 5, verses: [16, 24] },
+  { id: "luther-epistle-gal5-25", slug: "fifteenth_sunday_after_trinity_church", vol: "iii", locus: "Galatians 5:25–6:10", bookId: "GAL", chapter: 5, verses: [25, 26] },
+  { id: "luther-epistle-eph3-13", slug: "sixteenth_sunday_after_trinity_pauls", vol: "iii", locus: "Ephesians 3:13-21", bookId: "EPH", chapter: 3, verses: [13, 21] },
+  { id: "luther-epistle-eph4-1", slug: "seventeenth_sunday_after_trinity_the", vol: "iii", locus: "Ephesians 4:1-6", bookId: "EPH", chapter: 4, verses: [1, 6] },
+  { id: "luther-epistle-1co1-4", slug: "eighteenth_sunday_after_trinity_treasure", vol: "iii", locus: "1 Corinthians 1:4-9", bookId: "1CO", chapter: 1, verses: [4, 9] },
+  { id: "luther-epistle-eph4-22", slug: "nineteenth_sunday_after_trinity_duty", vol: "iii", locus: "Ephesians 4:22-28", bookId: "EPH", chapter: 4, verses: [22, 28] },
+  { id: "luther-epistle-eph5-15", slug: "twentieth_sunday_after_trinity_the", vol: "iii", locus: "Ephesians 5:15-21", bookId: "EPH", chapter: 5, verses: [15, 21] },
+  { id: "luther-epistle-eph6-10", slug: "twenty_first_sunday_after_trinity", vol: "iii", locus: "Ephesians 6:10-17", bookId: "EPH", chapter: 6, verses: [10, 17] },
+  { id: "luther-epistle-php1-3", slug: "twenty_second_sunday_after_trinity", vol: "iii", locus: "Philippians 1:3-11", bookId: "PHP", chapter: 1, verses: [3, 11] },
+  { id: "luther-epistle-php3-17", slug: "twenty_third_sunday_after_trinity", vol: "iii", locus: "Philippians 3:17-21", bookId: "PHP", chapter: 3, verses: [17, 21] },
+  { id: "luther-epistle-col1-3", slug: "twenty_fourth_sunday_after_trinity", vol: "iii", locus: "Colossians 1:3-14", bookId: "COL", chapter: 1, verses: [3, 14] },
+  { id: "luther-epistle-1th4-13", slug: "twenty_fifth_sunday_after_trinity", vol: "iii", locus: "1 Thessalonians 4:13-18", bookId: "1TH", chapter: 4, verses: [13, 18] },
+  { id: "luther-epistle-2th1-3", slug: "twenty_sixth_sunday_after_trinity", vol: "iii", locus: "2 Thessalonians 1:3-10", bookId: "2TH", chapter: 1, verses: [3, 10] },
+  { id: "luther-epistle-2pe3-3", slug: "twenty_seventh_sunday_after_trinity", vol: "iii", locus: "2 Peter 3:3-7", bookId: "2PE", chapter: 3, verses: [3, 7] },
+];
+
+function lutherEpistlePostils(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const row of LUTHER_EPISTLE_POSTILS) {
+    if (have.has(row.id)) continue;
+    const entry = e(
+      row.id,
+      "Martin Luther",
+      "Epistle Sermons (Postils)",
+      "lutheran",
+      row.locus,
+      `https://biblehub.com/library/luther/epistle_sermons_vol_${row.vol}/${row.slug}.htm`,
+      ["luther", "postil", "epistle", row.bookId.toLowerCase()],
+      [row.bookId],
+      [row.chapter],
+    );
+    entry.verses = row.verses;
+    out.push(entry);
+  }
+  return out;
+}
+
+/** Cyril on John — CCEL pearse mirror; tertullian alt. Book→chapter ranges from Pusey lemmas. */
+const CYRIL_JOHN_BOOKS: Array<{ nn: string; book: number; chapters: number[] }> = [
+  { nn: "01", book: 1, chapters: [1] },
+  { nn: "02", book: 2, chapters: [1, 2, 3] },
+  { nn: "03", book: 3, chapters: [4, 5] },
+  { nn: "04", book: 4, chapters: [6] },
+  { nn: "05", book: 5, chapters: [7] },
+  { nn: "06", book: 6, chapters: [8, 9] },
+  { nn: "07", book: 7, chapters: [10, 11] },
+  { nn: "08", book: 8, chapters: [12] },
+  { nn: "09", book: 9, chapters: [12, 13] },
+  { nn: "10", book: 10, chapters: [14, 15, 16] },
+  { nn: "11", book: 11, chapters: [16, 17] },
+  { nn: "12", book: 12, chapters: [18, 19, 20, 21] },
+];
+
+function cyrilJohnBooks(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const row of CYRIL_JOHN_BOOKS) {
+    const id = `cyril-john-book${row.book}`;
+    if (have.has(id)) continue;
+    const entry = e(
+      id,
+      "Cyril of Alexandria",
+      `Commentary on John, Book ${row.book}`,
+      "patristic",
+      `John Book ${row.book}`,
+      `https://www.ccel.org/ccel/pearse/morefathers/files/cyril_on_john_${row.nn}_book${row.book}.htm`,
+      ["john", "cyril", "patristic"],
+      ["JHN"],
+      row.chapters,
+    );
+    entry.altUrl = `https://www.tertullian.org/fathers/cyril_on_john_${row.nn}_book${row.book}.htm`;
+    out.push(entry);
+  }
+  return out;
+}
+
+const CYRIL_LUKE_FILES: Array<{
+  nn: string;
+  a: string;
+  b: string;
+  chapters: number[];
+}> = [
+  { nn: "01", a: "01", b: "11", chapters: [1, 2, 3] },
+  { nn: "02", a: "12", b: "25", chapters: [4, 5] },
+  { nn: "03", a: "26", b: "38", chapters: [6] },
+  { nn: "04", a: "39", b: "46", chapters: [7, 8] },
+  { nn: "05", a: "47", b: "56", chapters: [8, 9] },
+  { nn: "06", a: "57", b: "65", chapters: [9] },
+  { nn: "07", a: "66", b: "80", chapters: [10] },
+  { nn: "08", a: "81", b: "88", chapters: [11] },
+  { nn: "09", a: "89", b: "98", chapters: [12] },
+  { nn: "10", a: "99", b: "109", chapters: [13, 14, 15] },
+  { nn: "11", a: "110", b: "123", chapters: [16, 17] },
+  { nn: "12", a: "124", b: "134", chapters: [18, 19] },
+  { nn: "13", a: "135", b: "145", chapters: [18, 19, 20, 21] },
+  { nn: "14", a: "146", b: "156", chapters: [22, 23, 24] },
+];
+
+function cyrilLukeSermons(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const row of CYRIL_LUKE_FILES) {
+    const id = `cyril-luke-sermons-${row.a}-${row.b}`;
+    if (have.has(id)) continue;
+    // Skip colliding with hand-curated cyril-luke-18 (same sermons_135_145 URL).
+    if (row.nn === "13" && have.has("cyril-luke-18")) continue;
+    const entry = e(
+      id,
+      "Cyril of Alexandria",
+      "Commentary on the Gospel of Saint Luke",
+      "patristic",
+      `Luke sermons ${Number(row.a)}–${Number(row.b)}`,
+      `https://www.ccel.org/ccel/pearse/morefathers/files/cyril_on_luke_${row.nn}_sermons_${row.a}_${row.b}.htm`,
+      ["luke", "cyril", "patristic"],
+      ["LUK"],
+      row.chapters,
+    );
+    entry.altUrl = `https://www.tertullian.org/fathers/cyril_on_luke_${row.nn}_sermons_${row.a}_${row.b}.htm`;
+    out.push(entry);
+  }
+  return out;
+}
+
+/** Augustine Homilies on 1 John — fill remaining New Advent 170201… pages. */
+const AUGUSTINE_1JN_HOMILIES: Array<{ n: number; chapter: number }> = [
+  { n: 1, chapter: 1 },
+  { n: 2, chapter: 2 },
+  { n: 3, chapter: 2 },
+  { n: 4, chapter: 3 },
+  { n: 5, chapter: 3 },
+  { n: 6, chapter: 3 },
+  { n: 7, chapter: 4 },
+  { n: 8, chapter: 4 },
+  { n: 9, chapter: 5 },
+  { n: 10, chapter: 5 },
+];
+
+function augustine1JohnHomilies(have: Set<string>): CatalogEntry[] {
+  // HAND already has 170201; weak-nt covers 170202/04/07/10. Fill the gaps only.
+  const skipHomilies = new Set([1, 2, 4, 7, 10]);
+  const out: CatalogEntry[] = [];
+  for (const row of AUGUSTINE_1JN_HOMILIES) {
+    if (skipHomilies.has(row.n)) continue;
+    const id = `augustine-1jn-h${row.n}`;
+    if (have.has(id)) continue;
+    const url = `https://www.newadvent.org/fathers/1702${String(row.n).padStart(2, "0")}.htm`;
+    out.push(
+      e(
+        id,
+        "Augustine",
+        `Homilies on the First Epistle of John ${row.n}`,
+        "patristic",
+        `Homily ${row.n}`,
+        url,
+        ["john", "love", "augustine", "1john"],
+        ["1JN"],
+        [row.chapter],
+      ),
+    );
+  }
+  return out;
+}
+
+/** Augustine Selected NT Sermons (NPNF) — book/chapter from New Advent bible links. */
+const AUGUSTINE_NT_SERMONS: Array<[number, string, number]> = [
+  [1, "MAT", 5],
+  [2, "MAT", 3],
+  [3, "MAT", 5],
+  [4, "MAT", 5],
+  [5, "MAT", 5],
+  [6, "MAT", 6],
+  [7, "MAT", 6],
+  [8, "MAT", 6],
+  [9, "MAT", 6],
+  [10, "MAT", 6],
+  [11, "MAT", 7],
+  [12, "MAT", 8],
+  [13, "MAT", 8],
+  [14, "MAT", 10],
+  [15, "MAT", 10],
+  [16, "MAT", 11],
+  [17, "MAT", 11],
+  [18, "MAT", 11],
+  [19, "MAT", 19],
+  [20, "MAT", 11],
+  [21, "MAT", 12],
+  [22, "MAT", 12],
+  [23, "MAT", 13],
+  [24, "MAT", 13],
+  [25, "MAT", 14],
+  [26, "MAT", 14],
+  [27, "MAT", 15],
+  [28, "MAT", 17],
+  [29, "MAT", 17],
+  [30, "MAT", 17],
+  [31, "MAT", 18],
+  [32, "MAT", 18],
+  [33, "MAT", 17],
+  [34, "MAT", 19],
+  [35, "MAT", 19],
+  [36, "MAT", 19],
+  [37, "MAT", 20],
+  [38, "MAT", 20],
+  [39, "MAT", 21],
+  [40, "MAT", 22],
+  [41, "MAT", 22],
+  [42, "MAT", 22],
+  [43, "MAT", 25],
+  [44, "MAT", 25],
+  [45, "MRK", 8],
+  [46, "MRK", 8],
+  [47, "MRK", 13],
+  [48, "LUK", 7],
+  [49, "LUK", 7],
+  [50, "LUK", 9],
+  [51, "LUK", 10],
+  [52, "LUK", 10],
+  [53, "LUK", 10],
+  [54, "LUK", 10],
+  [55, "LUK", 11],
+  [56, "LUK", 11],
+  [57, "LUK", 12],
+  [58, "LUK", 12],
+  [59, "LUK", 12],
+  [60, "LUK", 13],
+  [61, "LUK", 13],
+  [62, "LUK", 14],
+  [63, "LUK", 16],
+  [64, "LUK", 17],
+  [65, "LUK", 18],
+  [66, "LUK", 24],
+  [67, "JHN", 1],
+  [68, "JHN", 1],
+  [69, "JHN", 1],
+  [70, "JHN", 1],
+  [71, "JHN", 1],
+  [72, "JHN", 1],
+  [73, "JHN", 2],
+  [74, "JHN", 5],
+  [75, "JHN", 5],
+  [76, "JHN", 5],
+  [77, "JHN", 5],
+  [78, "JHN", 5],
+  [79, "JHN", 5],
+  [80, "JHN", 6],
+  [81, "JHN", 6],
+  [82, "JHN", 6],
+  [83, "JHN", 7],
+  [84, "JHN", 8],
+  [85, "JHN", 9],
+  [86, "JHN", 9],
+  [87, "JHN", 10],
+  [88, "JHN", 10],
+  [89, "JHN", 10],
+  [90, "JHN", 12],
+  [91, "JHN", 14],
+  [92, "JHN", 14],
+  [93, "JHN", 16],
+  [94, "JHN", 16],
+  [95, "JHN", 16],
+  [96, "JHN", 21],
+  [97, "JHN", 21],
+];
+
+function augustineNtSermons(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [n, bookId, chapter] of AUGUSTINE_NT_SERMONS) {
+    const id = `augustine-nt-sermon-${n}`;
+    if (have.has(id)) continue;
+    out.push(
+      e(
+        id,
+        "Augustine",
+        `Sermons on the New Testament ${n}`,
+        "patristic",
+        `Sermon ${n}`,
+        `https://www.newadvent.org/fathers/1603${String(n).padStart(2, "0")}.htm`,
+        ["augustine", "sermon", bookId.toLowerCase()],
+        [bookId],
+        [chapter],
+      ),
+    );
+  }
+  return out;
+}
+
+/** Augustine Harmony of the Gospels — New Advent 1602{book}{ch}.htm children. */
+const AUGUSTINE_HARMONY_BOOKS: Array<{ book: number; chapters: number[] }> = [
+  { book: 1, chapters: Array.from({ length: 35 }, (_, i) => i + 1) },
+  { book: 2, chapters: Array.from({ length: 81 }, (_, i) => i) }, // includes 0 preface
+  { book: 3, chapters: Array.from({ length: 26 }, (_, i) => i) },
+  { book: 4, chapters: Array.from({ length: 11 }, (_, i) => i) },
+];
+
+function augustineHarmonyGospels(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const row of AUGUSTINE_HARMONY_BOOKS) {
+    for (const ch of row.chapters) {
+      const id = `augustine-harmony-${row.book}-${ch}`;
+      if (have.has(id)) continue;
+      const pad = String(ch).padStart(2, "0");
+      out.push(
+        e(
+          id,
+          "Augustine",
+          `Harmony of the Gospels ${row.book}.${ch}`,
+          "patristic",
+          `Harmony ${row.book}.${ch}`,
+          `https://www.newadvent.org/fathers/1602${row.book}${pad}.htm`,
+          ["augustine", "harmony", "gospel", "matthew", "mark", "luke", "john"],
+          ["MAT", "MRK", "LUK", "JHN"],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function theodoretRomans(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  const parts: Array<{ part: "01" | "02"; chapters: number[] }> = [
+    { part: "01", chapters: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+    { part: "02", chapters: [10, 11, 12, 13, 14, 15, 16] },
+  ];
+  for (const row of parts) {
+    const id = `theodoret-romans-${row.part}`;
+    if (have.has(id)) continue;
+    const entry = e(
+      id,
+      "Theodoret of Cyrus",
+      "Commentary on Romans",
+      "patristic",
+      `Romans (part ${Number(row.part)})`,
+      `https://tertullian.org/fathers/theodoret_commentary_on_romans_${row.part}.htm`,
+      ["romans", "theodoret", "patristic"],
+      ["ROM"],
+      row.chapters,
+    );
+    entry.altUrl = `https://www.tertullian.org/fathers/theodoret_commentary_on_romans_${row.part}.htm`;
+    out.push(entry);
+  }
+  return out;
+}
+
+/**
+ * Victorinus Apocalypse is one New Advent page (0712.htm) with "From the Nth
+ * Chapter" markers. Duplicate URL rows are banned (fetch-slot waste), so the
+ * chapter split lives on the single weak-nt row `victorinus-revelation-more`
+ * (all REV chapters). This generator is a no-op reserved for future alt hosts.
+ */
+function victorinusRevelationChapters(_have: Set<string>): CatalogEntry[] {
+  return [];
+}
+
+
 export const CATALOG: CatalogEntry[] = (() => {
   const have = new Set(HAND.map((x) => x.id));
   const out = [...HAND];
@@ -1178,6 +1683,18 @@ export const CATALOG: CatalogEntry[] = (() => {
     hawkerNtChapters,
     trappNtChapters,
     burkittNtChapters,
+    cambridgeNtChapters,
+    ellicottNtChapters,
+    owenHebrewsChapters,
+    kretzmannNtChapters,
+    lutherEpistlePostils,
+    cyrilJohnBooks,
+    cyrilLukeSermons,
+    augustine1JohnHomilies,
+    augustineNtSermons,
+    augustineHarmonyGospels,
+    theodoretRomans,
+    victorinusRevelationChapters,
   ]) {
     const more = gen(have);
     for (const x of more) have.add(x.id);
@@ -1377,12 +1894,15 @@ export function mapCatalog(opts: {
   // One page per voice here so three Calvin slices cannot crowd Henry out.
   // At desk limits (>=7: empty Inquire / focused), reserve Gill/Geneva/Lange
   // then seat wave-2 (Barnes/MacLaren/VWS/Hawker/Trapp/Burkitt) alongside,
+  // then preferred wave-3 (Cambridge/Ellicott/Kretzmann/Cyril John),
   // then interleave remaining wave pages with classics so first-wave reserved
   // seats are never starved. Default mapCatalog(limit 5) keeps score order
   // for Henry/Calvin tests.
   if (hasChapterPage) {
     const WAVE1_RE = /^(gill|geneva|poole|jfb|lange)-/;
     const WAVE2_RE = /^(barnes|maclaren|vws|hawker|trapp|burkitt)-/;
+    const WAVE3_RE =
+      /^(cambridge|ellicott|owen|kretzmann|luther-epistle|cyril-john|cyril-luke-sermons|augustine-1jn-h|augustine-nt-sermon|augustine-harmony|theodoret|victorinus-rev)-/;
     const RESERVED_WAVE1 = ["gill-", "geneva-", "lange-"] as const;
     const RESERVED_WAVE2 = [
       "barnes-",
@@ -1392,7 +1912,15 @@ export function mapCatalog(opts: {
       "trapp-",
       "burkitt-",
     ] as const;
-    const isWaveId = (id: string) => WAVE1_RE.test(id) || WAVE2_RE.test(id);
+    // Prefer these when desk seats are scarce (limit 7).
+    const PREFERRED_WAVE3 = [
+      "cambridge-",
+      "ellicott-",
+      "kretzmann-",
+      "cyril-john-",
+    ] as const;
+    const isWaveId = (id: string) =>
+      WAVE1_RE.test(id) || WAVE2_RE.test(id) || WAVE3_RE.test(id);
     const chapterRanked = ranked.filter((r) => chapterMatch(r.entry));
     const deskLimit = limit >= 7 && Boolean(opts.bookId) && opts.chapter != null;
     if (deskLimit) {
@@ -1420,6 +1948,22 @@ export function mapCatalog(opts: {
         voices.add(hit.entry.voice);
         picked.push(hit.entry);
         wave2Seated++;
+      }
+      // Prefer a wave-3 seat when spare room remains after wave-1/2.
+      const wave3Budget = Math.min(
+        1,
+        Math.max(0, limit - picked.length - 1),
+      );
+      let wave3Seated = 0;
+      for (const prefix of PREFERRED_WAVE3) {
+        if (wave3Seated >= wave3Budget || picked.length >= limit) break;
+        const hit = chapterRanked.find(
+          (r) => r.entry.id.startsWith(prefix) && !voices.has(r.entry.voice),
+        );
+        if (!hit) continue;
+        voices.add(hit.entry.voice);
+        picked.push(hit.entry);
+        wave3Seated++;
       }
       const remaining = chapterRanked.filter(
         (r) => !picked.some((e) => e.id === r.entry.id),
@@ -1481,6 +2025,36 @@ export function mapCatalog(opts: {
         voices.delete(picked[replaceAt].voice);
         voices.add(miss.entry.voice);
         picked[replaceAt] = miss.entry;
+      }
+      // Guarantee one preferred wave-3 seat by displacing a classic only.
+      const hasPreferredWave3 = picked.some((e) =>
+        PREFERRED_WAVE3.some((p) => e.id.startsWith(p)),
+      );
+      if (!hasPreferredWave3) {
+        const miss = PREFERRED_WAVE3.map((prefix) =>
+          chapterRanked.find(
+            (r) => r.entry.id.startsWith(prefix) && r.score > 0,
+          ),
+        ).find(Boolean);
+        if (miss && !voices.has(miss.entry.voice)) {
+          let replaceAt = -1;
+          for (let i = picked.length - 1; i >= 0; i--) {
+            const e = picked[i];
+            if (RESERVED_WAVE1.some((p) => e.id.startsWith(p))) continue;
+            if (WAVE2_RE.test(e.id)) continue;
+            if (isWaveId(e.id)) continue;
+            replaceAt = i;
+            break;
+          }
+          if (replaceAt >= 0) {
+            voices.delete(picked[replaceAt].voice);
+            voices.add(miss.entry.voice);
+            picked[replaceAt] = miss.entry;
+          } else if (picked.length < limit) {
+            voices.add(miss.entry.voice);
+            picked.push(miss.entry);
+          }
+        }
       }
     } else {
       for (const r of chapterRanked) {

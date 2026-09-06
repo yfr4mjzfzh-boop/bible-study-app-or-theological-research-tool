@@ -20,6 +20,8 @@ const HOSTS = new Set([
   "www.archive.sacred-texts.com",
   "www.bibliaplus.org",
   "bibliaplus.org",
+  "tertullian.org",
+  "www.tertullian.org",
 ]);
 
 const FETCH_MS = 10_000;
@@ -30,7 +32,7 @@ const MAX_BYTES = 180_000;
  * sits well past the default cap, so the passage never reached the librarian.
  */
 const MAX_BYTES_LONG_PAGE = 600_000;
-const LONG_PAGE_HOSTS = new Set(["www.newadvent.org", "newadvent.org", "biblehub.com", "www.biblehub.com"]);
+const LONG_PAGE_HOSTS = new Set(["www.newadvent.org", "newadvent.org", "biblehub.com", "www.biblehub.com", "ccel.org", "www.ccel.org", "tertullian.org", "www.tertullian.org"]);
 
 export function byteCapFor(url: string): number {
   try {
@@ -133,8 +135,36 @@ const WAVE2_ID_PREFIXES = [
   "burkitt-",
 ] as const;
 
+const WAVE3_ID_PREFIXES = [
+  "cambridge-",
+  "ellicott-",
+  "owen-",
+  "kretzmann-",
+  "luther-epistle-",
+  "cyril-john-",
+  "cyril-luke-sermons-",
+  "augustine-1jn-h",
+  "augustine-nt-sermon-",
+  "augustine-harmony-",
+  "theodoret-",
+  "victorinus-rev-",
+] as const;
+
 function isWave2Id(id: string): boolean {
   return WAVE2_ID_PREFIXES.some((p) => id.startsWith(p));
+}
+
+function isWave3Id(id: string): boolean {
+  return WAVE3_ID_PREFIXES.some((p) => id.startsWith(p));
+}
+
+function isPreferredWave3Id(id: string): boolean {
+  return (
+    id.startsWith("cambridge-") ||
+    id.startsWith("ellicott-") ||
+    id.startsWith("kretzmann-") ||
+    id.startsWith("cyril-john-")
+  );
 }
 
 export async function retrieveExtracts(opts: {
@@ -153,7 +183,7 @@ export async function retrieveExtracts(opts: {
   const exclude = new Set((opts.excludeUrls ?? []).filter(Boolean));
   // Desk empty-Inquire: map a few past the fetch cap so reserved wave-2
   // seats that rank just outside `limit` can still be pulled onto take.
-  const mapLimit = exclude.size ? limit + 6 : focused ? limit : limit + 4;
+  const mapLimit = exclude.size ? limit + 6 : focused ? limit : limit + 5;
   const mapped = mapCatalog({
     ...opts,
     limit: mapLimit,
@@ -169,6 +199,15 @@ export async function retrieveExtracts(opts: {
       );
       // Cap extra fetches at +2 so Gemini cost stays near the desk limit.
       for (const extra of extras.slice(0, 2 - wave2InTake)) {
+        take.push(extra);
+      }
+    }
+    const wave3InTake = take.filter((e) => isPreferredWave3Id(e.id)).length;
+    if (wave3InTake < 1) {
+      const extras = mapped.filter(
+        (e) => isPreferredWave3Id(e.id) && !take.some((t) => t.id === e.id),
+      );
+      for (const extra of extras.slice(0, 1)) {
         take.push(extra);
       }
     }

@@ -663,6 +663,84 @@ describe("NT chapter-1 mapping", () => {
     const hawker1co = CATALOG.find((e) => e.id === "hawker-1corinthians-1");
     assert.ok(hawker1co?.url.includes("/1-corinthians/1/1"));
   });
+
+  it("indexes wave3 Protestants and patristics; Scofield/Darby stay 0", () => {
+    assert.ok(CATALOG.find((e) => e.id === "cambridge-matthew-5"));
+    assert.ok(CATALOG.find((e) => e.id === "ellicott-romans-8"));
+    assert.ok(CATALOG.find((e) => e.id === "owen-hebrews-1"));
+    assert.ok(CATALOG.find((e) => e.id === "kretzmann-john-3"));
+    assert.ok(CATALOG.find((e) => e.id === "luther-epistle-rom8-12"));
+    assert.ok(CATALOG.find((e) => e.id === "cyril-john-book2"));
+    assert.ok(CATALOG.find((e) => e.id === "cyril-luke-sermons-01-11"));
+    assert.ok(CATALOG.find((e) => e.id === "augustine-1jn-h6"));
+    assert.ok(CATALOG.find((e) => e.id === "augustine-nt-sermon-3"));
+    assert.ok(CATALOG.find((e) => e.id === "augustine-harmony-1-1"));
+    assert.ok(CATALOG.find((e) => e.id === "theodoret-romans-01"));
+    assert.ok(CATALOG.find((e) => e.id === "theodoret-romans-02"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("cambridge-")).length >= 250);
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("kretzmann-")).length >= 250);
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("owen-hebrews-")).length, 13);
+    assert.equal(
+      CATALOG.filter((e) => /scofield|darby/i.test(e.id) || /scofield|darby/i.test(e.voice)).length,
+      0,
+    );
+  });
+
+  it("empty Inquire limit 7 keeps wave1+2 and seats preferred wave-3", async () => {
+    const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
+    attachWeakNtCatalog();
+    const WAVE2 = ["barnes-", "maclaren-", "vws-", "hawker-", "trapp-", "burkitt-"] as const;
+    const WAVE3_PREF = ["cambridge-", "ellicott-", "kretzmann-", "cyril-john-"] as const;
+    const cases = [
+      {
+        bookId: "MAT" as const,
+        chapter: 5,
+        verse: 3 as number | undefined,
+        verseText:
+          "Blessed are the poor in spirit: for theirs is the kingdom of heaven",
+      },
+      {
+        bookId: "ROM" as const,
+        chapter: 8,
+        verse: 28 as number | undefined,
+        verseText: "And we know that all things work together for good",
+      },
+      {
+        bookId: "JHN" as const,
+        chapter: 3,
+        verse: 16 as number | undefined,
+        verseText: "For God so loved the world, that he gave his only begotten Son",
+      },
+    ];
+    let wave3Ok = 0;
+    for (const c of cases) {
+      const hits = mapCatalog({
+        question: "",
+        bookId: c.bookId,
+        chapter: c.chapter,
+        verse: c.verse,
+        verseText: c.verseText,
+        limit: 7,
+      });
+      const ids = hits.map((h) => h.id);
+      for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
+        assert.ok(
+          ids.some((id) => id.startsWith(prefix)),
+          `expected ${prefix}* for ${c.bookId} ${c.chapter}, got ${ids.join(",")}`,
+        );
+      }
+      assert.ok(
+        ids.some((id) => WAVE2.some((p) => id.startsWith(p))),
+        `expected >=1 wave-2 for ${c.bookId} ${c.chapter}, got ${ids.join(",")}`,
+      );
+      if (ids.some((id) => WAVE3_PREF.some((p) => id.startsWith(p)))) wave3Ok++;
+    }
+    assert.ok(
+      wave3Ok >= 1,
+      `expected >=1 preferred wave-3 seat across sample verses`,
+    );
+  });
+
 });
 
 describe("html extract", () => {
@@ -1542,8 +1620,10 @@ describe("reserved seats survive to cards", () => {
     assert.equal(byteCapFor("https://www.biblehub.com/commentaries/lange/romans/8.htm"), 600_000);
     assert.equal(byteCapFor("https://biblehub.com/commentaries/gill/john/3.htm"), 600_000);
     assert.equal(byteCapFor("https://www.newadvent.org/fathers/1302.htm"), 600_000);
-    assert.equal(byteCapFor("https://ccel.org/ccel/calvin/calcom38.iv.html"), 180_000);
-    assert.equal(byteCapFor("https://www.ccel.org/ccel/calvin/calcom38.iv.html"), 180_000);
+    assert.equal(byteCapFor("https://ccel.org/ccel/calvin/calcom38.iv.html"), 600_000);
+    assert.equal(byteCapFor("https://www.ccel.org/ccel/calvin/calcom38.iv.html"), 600_000);
+    assert.equal(byteCapFor("https://tertullian.org/fathers/theodoret_commentary_on_romans_01.htm"), 600_000);
+    assert.equal(byteCapFor("https://godrules.net/library/calvin/calvin.htm"), 180_000);
   });
 
   it("appends a missing reserved extract after a 4-card stack dropped it", () => {

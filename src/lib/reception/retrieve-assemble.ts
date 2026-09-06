@@ -139,6 +139,15 @@ const RESERVED_ID_PREFIXES = [
   "hawker-",
   "trapp-",
   "burkitt-",
+  "cambridge-",
+  "ellicott-",
+  "owen-",
+  "kretzmann-",
+  "luther-epistle-",
+  "cyril-john-",
+  "cyril-luke-sermons-",
+  "theodoret-",
+  "victorinus-rev-",
 ] as const;
 
 function isReservedExtract(ex: FetchedExtract): boolean {
