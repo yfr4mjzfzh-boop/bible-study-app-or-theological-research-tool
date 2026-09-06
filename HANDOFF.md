@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~17:22 ET)
+# Theos Logos — living handoff (updated 2026-09-06 ~17:55 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -33,7 +33,7 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 Desk seats 9.
 
 ## In this chapter — READY (preview)
-Collapsed by default. Hairline row + heading count; open for the list. BUG-2 retap-clear stays. Do not promote unless Rardo says promote.
+Collapsed by default, label only (“In this chapter”). Opens as a folio: height ease + staggered heading rise. BUG-2 retap-clear stays. Do not promote unless Rardo says promote.
 
 ## Lectern polish — READY (preview, phone only)
 Mobile (max-width 639px) Hairline Folio / Night Lectern: laid-paper grain, night lamp as a room, quieter verse lamps, first source-slip lands, oxblood hair on the sheet. Idle “Mark a verse.” on the reader was pulled (Rardo). Empty desk is unused paper. Desktop website left quiet. Do not promote unless Rardo says promote.

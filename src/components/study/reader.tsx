@@ -90,6 +90,7 @@ export function Reader({
   const touch = useRef<{ x: number; y: number } | null>(null);
   const topAnim = useRef<{ id: number | null }>({ id: null });
   const [showTop, setShowTop] = useState(false);
+  const [tocOpen, setTocOpen] = useState(false);
   const showFab = showTop && selected == null;
   const range =
     selected == null ? null : { start: selected, end: selectedEnd ?? selected };
@@ -127,6 +128,7 @@ export function Reader({
     }
     el.scrollTop = 0;
     setShowTop(false);
+    setTocOpen(false);
   }, [chapter?.reference, chapter?.bookId, chapter?.chapter]);
 
   useEffect(() => {
@@ -245,56 +247,70 @@ export function Reader({
               </header>
 
               {sections.length > 1 ? (
-                <details className="tl-contents">
-                  <summary>
+                <nav
+                  className="tl-contents"
+                  data-open={tocOpen ? "true" : "false"}
+                  aria-label={t(locale, "inThisChapter")}
+                >
+                  <button
+                    type="button"
+                    className="tl-contents-sum"
+                    aria-expanded={tocOpen}
+                    onClick={() => setTocOpen((o) => !o)}
+                  >
                     <span className="text-2xs font-semibold tracking-[0.16em] text-faint uppercase">
                       {t(locale, "inThisChapter")}
-                    </span>
-                    <span className="font-serif text-xs text-faint tabular-nums">
-                      {sections.length}
                     </span>
                     <ChevronDown
                       size={14}
                       strokeWidth={1.75}
-                      className="tl-contents-chv ml-auto text-faint"
+                      className="tl-contents-chv text-faint"
                       aria-hidden
                     />
-                  </summary>
-                  <ul>
-                    {sections.map((s) => (
-                      <li key={s.verse}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            // Clear-if-same (BUG-2): retap sole section clears.
-                            // Otherwise jump via setVerse — do not grow a range.
-                            if (
-                              selected === s.verse &&
-                              (selectedEnd == null || selectedEnd === s.verse)
-                            ) {
-                              clearSelection();
-                            } else {
-                              setVerse(s.verse);
-                            }
-                          }}
-                          className={cn(
-                            "flex min-h-11 w-full items-baseline gap-2 px-1 text-left text-sm transition-colors duration-150 ease-out",
-                            selected === s.verse
-                              ? "font-medium text-lamp"
-                              : "text-ink hover:text-lamp",
-                          )}
+                  </button>
+                  <div
+                    className="tl-contents-body"
+                    inert={!tocOpen ? true : undefined}
+                  >
+                    <ul>
+                      {sections.map((s, i) => (
+                        <li
+                          key={s.verse}
+                          style={{ ["--i" as string]: Math.min(i, 8) }}
                         >
-                          <span className="w-6 shrink-0 font-serif text-xs text-faint tabular-nums">
-                            {s.verse}
-                          </span>
-                          <span className="font-display tracking-tight">
-                            {s.title}
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // Clear-if-same (BUG-2): retap sole section clears.
+                              // Otherwise jump via setVerse — do not grow a range.
+                              if (
+                                selected === s.verse &&
+                                (selectedEnd == null || selectedEnd === s.verse)
+                              ) {
+                                clearSelection();
+                              } else {
+                                setVerse(s.verse);
+                              }
+                            }}
+                            className={cn(
+                              "flex min-h-11 w-full items-baseline gap-2 px-1 text-left text-sm transition-colors duration-150 ease-out",
+                              selected === s.verse
+                                ? "font-medium text-lamp"
+                                : "text-ink hover:text-lamp",
+                            )}
+                          >
+                            <span className="w-6 shrink-0 font-serif text-xs text-faint tabular-nums">
+                              {s.verse}
+                            </span>
+                            <span className="font-display tracking-tight">
+                              {s.title}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </nav>
               ) : null}
 
               <div className="bible-prose font-serif text-[length:var(--reading-size,20px)] leading-[1.8] text-ink">
