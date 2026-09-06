@@ -167,6 +167,10 @@ function isPreferredWave3Id(id: string): boolean {
   );
 }
 
+function isPreferredWave4Id(id: string): boolean {
+  return id.startsWith("pulpit-");
+}
+
 export async function retrieveExtracts(opts: {
   question: string;
   bookId?: string;
@@ -206,6 +210,15 @@ export async function retrieveExtracts(opts: {
     if (wave3InTake < 1) {
       const extras = mapped.filter(
         (e) => isPreferredWave3Id(e.id) && !take.some((t) => t.id === e.id),
+      );
+      for (const extra of extras.slice(0, 1)) {
+        take.push(extra);
+      }
+    }
+    const wave4InTake = take.filter((e) => isPreferredWave4Id(e.id)).length;
+    if (wave4InTake < 1) {
+      const extras = mapped.filter(
+        (e) => isPreferredWave4Id(e.id) && !take.some((t) => t.id === e.id),
       );
       for (const extra of extras.slice(0, 1)) {
         take.push(extra);

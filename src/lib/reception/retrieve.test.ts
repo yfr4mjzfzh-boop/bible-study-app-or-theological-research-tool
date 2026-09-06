@@ -742,6 +742,43 @@ describe("NT chapter-1 mapping", () => {
     );
   });
 
+  it("indexes wave4 Pulpit Meyer EGT chapter pages; Scofield/Darby stay 0", () => {
+    assert.ok(CATALOG.find((e) => e.id === "pulpit-romans-8"));
+    assert.ok(CATALOG.find((e) => e.id === "meyer-john-1"));
+    assert.ok(CATALOG.find((e) => e.id === "egt-matthew-5"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("pulpit-")).length >= 250);
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("meyer-")).length >= 250);
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("egt-")).length >= 250);
+    const pulpit = CATALOG.find((e) => e.id === "pulpit-romans-8");
+    assert.ok(pulpit?.url.includes("/commentaries/pulpit/romans/8.htm"));
+    const meyer = CATALOG.find((e) => e.id === "meyer-john-1");
+    assert.equal(meyer?.tradition, "lutheran");
+    assert.equal(
+      CATALOG.filter((e) => /scofield|darby/i.test(e.id) || /scofield|darby/i.test(e.voice)).length,
+      0,
+    );
+  });
+
+  it("empty Inquire may seat Pulpit when a spare remains; never drops wave1", async () => {
+    const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
+    attachWeakNtCatalog();
+    const hits = mapCatalog({
+      question: "",
+      bookId: "ROM",
+      chapter: 8,
+      verse: 28,
+      verseText: "And we know that all things work together for good",
+      limit: 7,
+    });
+    const ids = hits.map((h) => h.id);
+    for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
+      assert.ok(
+        ids.some((id) => id.startsWith(prefix)),
+        `wave4 must not drop ${prefix}*, got ${ids.join(",")}`,
+      );
+    }
+  });
+
 });
 
 describe("html extract", () => {

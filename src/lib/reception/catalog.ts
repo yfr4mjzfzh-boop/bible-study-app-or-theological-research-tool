@@ -1212,6 +1212,81 @@ function ellicottNtChapters(have: Set<string>): CatalogEntry[] {
   return out;
 }
 
+function pulpitNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `pulpit-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Pulpit Commentary",
+          "The Pulpit Commentary",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/pulpit/${hub}/${ch}.htm`,
+          [tag, "pulpit"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function meyerNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `meyer-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Heinrich Meyer",
+          "Critical and Exegetical Commentary on the New Testament",
+          "lutheran",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/meyer/${hub}/${ch}.htm`,
+          [tag, "meyer"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function egtNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `egt-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Expositor's Greek Testament",
+          "The Expositor's Greek Testament",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/egt/${hub}/${ch}.htm`,
+          [tag, "egt", "nicoll"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
 function owenHebrewsChapters(have: Set<string>): CatalogEntry[] {
   const out: CatalogEntry[] = [];
   for (let ch = 1; ch <= 13; ch++) {
@@ -1685,6 +1760,9 @@ export const CATALOG: CatalogEntry[] = (() => {
     burkittNtChapters,
     cambridgeNtChapters,
     ellicottNtChapters,
+    pulpitNtChapters,
+    meyerNtChapters,
+    egtNtChapters,
     owenHebrewsChapters,
     kretzmannNtChapters,
     lutherEpistlePostils,
@@ -1903,6 +1981,7 @@ export function mapCatalog(opts: {
     const WAVE2_RE = /^(barnes|maclaren|vws|hawker|trapp|burkitt)-/;
     const WAVE3_RE =
       /^(cambridge|ellicott|owen|kretzmann|luther-epistle|cyril-john|cyril-luke-sermons|augustine-1jn-h|augustine-nt-sermon|augustine-harmony|theodoret|victorinus-rev)-/;
+    const WAVE4_RE = /^(pulpit|meyer|egt)-/;
     const RESERVED_WAVE1 = ["gill-", "geneva-", "lange-"] as const;
     const RESERVED_WAVE2 = [
       "barnes-",
@@ -1919,8 +1998,12 @@ export function mapCatalog(opts: {
       "kretzmann-",
       "cyril-john-",
     ] as const;
+    const PREFERRED_WAVE4 = ["pulpit-"] as const;
     const isWaveId = (id: string) =>
-      WAVE1_RE.test(id) || WAVE2_RE.test(id) || WAVE3_RE.test(id);
+      WAVE1_RE.test(id) ||
+      WAVE2_RE.test(id) ||
+      WAVE3_RE.test(id) ||
+      WAVE4_RE.test(id);
     const chapterRanked = ranked.filter((r) => chapterMatch(r.entry));
     const deskLimit = limit >= 7 && Boolean(opts.bookId) && opts.chapter != null;
     if (deskLimit) {
@@ -1964,6 +2047,23 @@ export function mapCatalog(opts: {
         voices.add(hit.entry.voice);
         picked.push(hit.entry);
         wave3Seated++;
+      }
+      // Wave-4 (Pulpit/Meyer/EGT) only if a seat remains. No promote:
+      // do not displace wave-1/2/3.
+      const wave4Budget = Math.min(
+        1,
+        Math.max(0, limit - picked.length - 1),
+      );
+      let wave4Seated = 0;
+      for (const prefix of PREFERRED_WAVE4) {
+        if (wave4Seated >= wave4Budget || picked.length >= limit) break;
+        const hit = chapterRanked.find(
+          (r) => r.entry.id.startsWith(prefix) && !voices.has(r.entry.voice),
+        );
+        if (!hit) continue;
+        voices.add(hit.entry.voice);
+        picked.push(hit.entry);
+        wave4Seated++;
       }
       const remaining = chapterRanked.filter(
         (r) => !picked.some((e) => e.id === r.entry.id),
