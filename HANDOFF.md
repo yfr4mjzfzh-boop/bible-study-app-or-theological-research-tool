@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~09:30 ET)
+# Theos Logos — living handoff (updated 2026-09-06 ~09:35 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -13,7 +13,13 @@ Reception desk scroll-down no longer slides cards left/sticks.
 Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; scrollLeft reset on reception scroller.
 **Do not regress.**
 
-## Wave-5B — IMPLEMENTING (this beat)
+## Wave-5B — READY (preview, await QC)
+- SHA `49b850b` · dpl `dpl_FipQn9ZWrXRVW2e61tK1iDudg41X` · target **null** (preview)
+- Preview: https://theos-logos-official-a38blvazz-castanedag2001-1468.vercel.app
+- Branch alias: https://theos-logos-official-git-scholar-desk-castanedag2001-1468.vercel.app
+- Inspector: https://vercel.com/castanedag2001-1468/theos-logos-official/FipQn9ZWrXRVW2e61tK1iDudg41X
+- retrieve.test.ts 88/88 pass. Not promoted. Do not push `main`.
+
 Catalog index only. Not preferred / not guaranteed. Spare interleave like Meyer/EGT. Desk seats stay 9. Wave-1 reserved seats stay.
 
 | Source | Host / shape | Rows | Notes |
@@ -36,4 +42,4 @@ Banned: Scofield / Darby / Kelly / Bellett / Pink / Stier = 0.
 ## BUG-5 — ongoing
 
 ## STOP
-Await Vercel preview READY on `scholar-desk`. **Do not promote. Do not push `main`.** Next: Rardo says **promote** = production.
+WAVE-5B preview READY. **Do not promote. Do not push `main`.** Next: Rardo says **promote** = production.
