@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~11:35 ET)
+# Theos Logos — living handoff (updated 2026-09-06 ~13:50 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -32,7 +32,11 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 ## BUG-4 — DONE (live)
 Desk seats 9.
 
+## Highlight — READY (preview, not live)
+When a verse (or range) is selected, a highlighter sits in the desk chrome. Tap it to keep a dotted oxblood underline on that verse. Tap again to lift it. Persists in localStorage (`theos-logos-highlights-v1`). Does not steal reserved reception seats. Do not promote unless Rardo says promote.
+
 ## BUG-5 — ongoing
 
 ## STOP
-Wave-5B is live. Next: BUG-5, or a new wave only if Rardo names it.
+Wave-5B is live. Highlight is on scholar-desk preview — **do not promote** until Rardo says so.
+Next: BUG-5, or a new wave only if Rardo names it.

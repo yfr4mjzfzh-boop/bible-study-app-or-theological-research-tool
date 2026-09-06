@@ -13,6 +13,8 @@ describe("i18n", () => {
     assert.equal(t("es", "inThisChapter"), "En este capítulo");
     assert.equal(t("es", "verses"), "Versículos");
     assert.equal(t("es", "verseHits"), "Escritura");
-    assert.equal(traditionLabel("es", "patristic"), "Patrística");
+    assert.equal(t("en", "highlightVerse"), "Highlight");
+    assert.equal(t("es", "highlightVerse"), "Resaltar");
+    assert.equal(t("en", "unhighlightVerse"), "Remove highlight");
   });
 });

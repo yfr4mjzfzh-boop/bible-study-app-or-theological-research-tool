@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, ChevronUp, Loader2, Maximize2, Minimize2, PanelRight, PanelRightClose, RotateCcw, Trash2, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Highlighter, Loader2, Maximize2, Minimize2, PanelRight, PanelRightClose, RotateCcw, Trash2, X } from "lucide-react";
 import { gatherCommentaries, synthesizeFromCards } from "@/lib/reception/ask";
 import {
   additionalSourceCards,
@@ -18,6 +18,10 @@ import { formatReference } from "@/lib/bible/reference";
 import { bookName, getBook } from "@/lib/bible/books";
 import { t } from "@/lib/i18n";
 import { localizeCaution } from "@/lib/i18n-sources";
+import {
+  rangeIsHighlighted,
+  toggleHighlights,
+} from "@/lib/study/highlights";
 import type { Chapter, DeskSynthesis, LexiconResult, ReceptionResult, SourceCard as Card } from "@/lib/bible/types";
 import { useStudy } from "@/lib/study-store";
 import { cn } from "@/lib/utils";
@@ -72,6 +76,8 @@ export function ReceptionPanel({
   const dismissDisclaimer = useStudy((s) => s.dismissDisclaimer);
   const touchNotes = useStudy((s) => s.touchNotes);
   const notesRev = useStudy((s) => s.notesRev);
+  const highlightsRev = useStudy((s) => s.highlightsRev);
+  const touchHighlights = useStudy((s) => s.touchHighlights);
   const receptionPinned = useStudy((s) => s.receptionPinned);
   const setReceptionPinned = useStudy((s) => s.setReceptionPinned);
   const setReceptionOpen = useStudy((s) => s.setReceptionOpen);
@@ -90,6 +96,15 @@ export function ReceptionPanel({
   const [lexicon, setLexicon] = useState<LexiconResult | null>(null);
 
   const verse = chapter?.verses.find((v) => v.verse === selectedVerse) ?? null;
+  const highlighted = useMemo(() => {
+    if (!chapter || selectedVerse == null) return false;
+    return rangeIsHighlighted(
+      chapter.bookId,
+      chapter.chapter,
+      selectedVerse,
+      selectedEndVerse ?? selectedVerse,
+    );
+  }, [chapter, selectedVerse, selectedEndVerse, highlightsRev]);
   const reference =
     chapter == null
       ? ""
@@ -407,6 +422,36 @@ export function ReceptionPanel({
             </h2>
           </div>
           <div className="flex shrink-0 items-center">
+            {selectedVerse != null && chapter ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const end = selectedEndVerse ?? selectedVerse;
+                  const verses: number[] = [];
+                  for (let v = selectedVerse; v <= end; v++) verses.push(v);
+                  toggleHighlights(chapter.bookId, chapter.chapter, verses);
+                  touchHighlights();
+                }}
+                className={cn(
+                  "flex size-11 items-center justify-center rounded-md hover:bg-paper",
+                  highlighted ? "text-oxblood" : "text-muted hover:text-ink",
+                )}
+                aria-pressed={highlighted}
+                aria-label={
+                  highlighted
+                    ? t(locale, "unhighlightVerse")
+                    : t(locale, "highlightVerse")
+                }
+                title={
+                  highlighted
+                    ? t(locale, "unhighlightVerse")
+                    : t(locale, "highlightHint")
+                }
+              >
+                <Highlighter size={18} strokeWidth={highlighted ? 2.2 : 1.75} />
+              </button>
+            ) : null}
             <button
               type="button"
               onClick={() => setReceptionPinned(!receptionPinned)}

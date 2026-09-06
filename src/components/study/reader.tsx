@@ -6,6 +6,7 @@ import { splitDropCap } from "@/lib/bible/drop-cap";
 import { inRange } from "@/lib/bible/range";
 import { t } from "@/lib/i18n";
 import { markedVerses } from "@/lib/reception/notes";
+import { highlightedVerses } from "@/lib/study/highlights";
 import { useStudy } from "@/lib/study-store";
 import { cn } from "@/lib/utils";
 
@@ -80,6 +81,7 @@ export function Reader({
   const nextChapter = useStudy((s) => s.nextChapter);
   const prevChapter = useStudy((s) => s.prevChapter);
   const notesRev = useStudy((s) => s.notesRev);
+  const highlightsRev = useStudy((s) => s.highlightsRev);
   const locale = useStudy((s) => s.locale);
   const bookId = useStudy((s) => s.bookId);
   const chapterNum = useStudy((s) => s.chapter);
@@ -107,6 +109,13 @@ export function Reader({
         ? new Set(markedVerses(chapter.bookId, chapter.chapter))
         : new Set<number>(),
     [chapter, notesRev],
+  );
+  const highlightedSet = useMemo(
+    () =>
+      chapter
+        ? new Set(highlightedVerses(chapter.bookId, chapter.chapter))
+        : new Set<number>(),
+    [chapter, highlightsRev],
   );
 
   useEffect(() => {
@@ -286,6 +295,7 @@ export function Reader({
                   const isRangeStart = range != null && v.verse === range.start;
                   const isRangeEnd = range != null && v.verse === range.end;
                   const noted = notedSet.has(v.verse);
+                  const lit = highlightedSet.has(v.verse);
                   const drop = i === 0 ? splitDropCap(v.text) : null;
                   return (
                     <Fragment key={v.verse}>
@@ -328,6 +338,7 @@ export function Reader({
                         )}
                         data-range-start={isRangeStart ? "true" : undefined}
                         data-range-end={isRangeEnd ? "true" : undefined}
+                        data-highlight={lit ? "true" : undefined}
                       >
                         {drop ? (
                           <>

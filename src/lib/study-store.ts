@@ -88,6 +88,7 @@ interface StudyState extends Persisted {
   receptionOpen: boolean;
   receptionFull: boolean;
   notesRev: number;
+  highlightsRev: number;
   setBook: (bookId: string, chapter?: number) => void;
   setChapter: (chapter: number) => void;
   jumpTo: (bookId: string, chapter: number, verse?: number) => void;
@@ -110,6 +111,7 @@ interface StudyState extends Persisted {
   setReceptionFull: (full: boolean) => void;
   setReceptionPinned: (pinned: boolean) => void;
   touchNotes: () => void;
+  touchHighlights: () => void;
   dismissDisclaimer: () => void;
   hydrate: () => void;
 }
@@ -148,6 +150,7 @@ export const useStudy = create<StudyState>((set, get) => ({
   receptionFull: false,
   receptionPinned: false,
   notesRev: 0,
+  highlightsRev: 0,
   hydrate: () => {
     const p = load();
     set(p);
@@ -302,6 +305,7 @@ export const useStudy = create<StudyState>((set, get) => ({
     persist(get());
   },
   touchNotes: () => set({ notesRev: get().notesRev + 1 }),
+  touchHighlights: () => set({ highlightsRev: get().highlightsRev + 1 }),
   dismissDisclaimer: () => {
     set({ disclaimerSeen: true });
     persist(get());

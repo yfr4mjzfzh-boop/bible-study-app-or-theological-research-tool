@@ -341,6 +341,50 @@
   margin-left: 0.34em;
 }
 
+.tl-verse[data-highlight="true"] {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--color-oxblood) 82%,
+    var(--color-lamp)
+  );
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 0.1em;
+}
+
+.dark .tl-verse[data-highlight="true"] {
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--color-lamp) 72%,
+    var(--color-oxblood)
+  );
+}
+
+.tl-first-verse[data-highlight="true"] {
+  text-decoration: none;
+}
+
+.tl-first-verse[data-highlight="true"] .tl-verse-ink {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--color-oxblood) 82%,
+    var(--color-lamp)
+  );
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 0.1em;
+}
+
+.dark .tl-first-verse[data-highlight="true"] .tl-verse-ink {
+  text-decoration-color: color-mix(
+    in oklab,
+    var(--color-lamp) 72%,
+    var(--color-oxblood)
+  );
+}
+
 .tl-first-verse[data-range-start="true"]::before {
   position: absolute;
   left: 0.08em;
