@@ -820,7 +820,9 @@
   scrollbar-width: thin;
   scrollbar-color: color-mix(in oklab, var(--color-faint) 70%, transparent)
     transparent;
+  overflow-x: hidden;
   overscroll-behavior: contain;
+  overscroll-behavior-x: none;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   overflow-anchor: none;

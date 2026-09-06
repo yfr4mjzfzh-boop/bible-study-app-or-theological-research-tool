@@ -16,7 +16,7 @@ export function SourceCard({
   const locale = useStudy((s) => s.locale);
   const shown = localizeCard(card, locale);
   return (
-    <article className="group tl-slip px-4 pt-4 pb-3.5 tl-chapter">
+    <article className="group tl-slip min-w-0 max-w-full px-4 pt-4 pb-3.5 tl-chapter">
       <header className="mb-3 flex items-baseline justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-[13px] font-semibold leading-tight tracking-[0.14em] text-ink uppercase">
@@ -64,7 +64,7 @@ export function SourceCard({
           {shown.contextBridge}
         </p>
       ) : null}
-      <blockquote className="border-l border-oxblood py-0.5 pr-1 pl-3 font-serif text-base leading-relaxed text-ink italic">
+      <blockquote className="min-w-0 break-words border-l border-oxblood py-0.5 pr-1 pl-3 font-serif text-base leading-relaxed text-ink italic [overflow-wrap:anywhere] [word-break:break-word]">
         “{shown.quote}”
       </blockquote>
       {shown.note && shown.note !== shown.contextBridge ? (
