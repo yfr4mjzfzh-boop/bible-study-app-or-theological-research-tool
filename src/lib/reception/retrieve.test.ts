@@ -12,6 +12,7 @@ import {
   byteCapFor,
   ensureReservedCards,
   validateReceptionOutput,
+  verseTrueLocus,
 } from "./retrieve.ts";
 
 describe("primary-source mapping", () => {
@@ -1046,7 +1047,8 @@ describe("verse-anchored paragraph selection", () => {
     assert.equal(paragraphMentionsVerse("11. For the children", 9, 11), true);
     assert.equal(paragraphMentionsVerse("Ver. 11. Though they", 9, 11), true);
     assert.equal(paragraphMentionsVerse("Verses 9-13 treat election", 9, 11), true);
-    assert.equal(paragraphMentionsVerse("See Romans 9:11 on this", 9, 11), true);
+    assert.equal(paragraphMentionsVerse("See Romans 9:11 on this", 9, 11), false);
+    assert.equal(paragraphMentionsVerse("Romans 9:11. On this the apostle rests election.", 9, 11), true);
     assert.equal(paragraphMentionsVerse("Romans 9:6-13 is one argument", 9, 11), true);
     assert.equal(paragraphMentionsVerse("4. Who are Israelites", 9, 11), false);
     assert.equal(paragraphMentionsVerse("111 is not a verse here", 9, 11), false);
@@ -1774,5 +1776,188 @@ describe("reserved seats survive to cards", () => {
     });
     assert.equal(filled.length, 1);
     assert.ok(!filled.some((c) => c.voice === "Albert Barnes"));
+  });
+});
+
+describe("verse-perfect extracts", () => {
+  const MAT53 =
+    "Blessed are the poor in spirit: for theirs is the kingdom of heaven";
+  const ROM828 =
+    "And we know that all things work together for good to them that love God";
+  const JHN316 =
+    "For God so loved the world, that he gave his only begotten Son";
+
+  it("Rom 8:28 Barnes neighbour lean: picks providence note, not 8:27/8:33 cross-refs", () => {
+    const intro =
+      "This chapter is precious. (5) it gives the assurance that all things shall work together for good, Romans 8:28-30. (6) it ministers consolation from God justifying the believer.";
+    const v27 =
+      "And he that searcheth the hearts - God. To search the heart is one of his attributes; Jeremiah 17:10. Knoweth what is the mind of the Spirit — Note Romans 8:28 briefly.";
+    const v28 =
+      "Romans 8:28. And we know - This verse introduces another source of consolation drawn from the fact that all things are under the direction of an infinitely wise Being, whose providence overrules every event for the good of his people.";
+    const v33 =
+      "Who shall lay anything to the charge - This expression is taken from courts of law. Note, Romans 8:28. As they are the chosen of God, they are dear to him.";
+    const picked = pickVerseParagraphs([intro, v27, v33, v28], 8, 28, ROM828, 2);
+    assert.equal(picked.length, 1);
+    assert.equal(picked[0], v28);
+    assert.ok(/providence|infinitely wise|work together|all things are under/i.test(picked[0]));
+    assert.equal(paragraphTreatsVerse(v28, 8, 28, ROM828), true);
+    assert.equal(paragraphTreatsVerse(v27, 8, 28, ROM828), false);
+    assert.equal(paragraphTreatsVerse(v33, 8, 28, ROM828), false);
+    assert.equal(paragraphTreatsVerse(intro, 8, 28, ROM828), false);
+  });
+
+  it("Matt 5:3 Hub labels: target note wins; 5:10 neighbour dropped", () => {
+    const v3 =
+      "Matthew 5:3. Blessed are the poor in spirit - The word blessed means happy, referring to that which produces felicity. Poor in spirit is to have a humble opinion of ourselves.";
+    const v10 =
+      "Matthew 5:10. Blessed are they which are persecuted for righteousness sake - To persecute means literally to pursue; follow after, as one does a flying enemy.";
+    const v10mid =
+      "Matthew 5:10. Blessed are they which are persecuted,.... Not for crimes, and yet the saints are happy; for theirs is the kingdom of heaven: the same blessedness as the poor in spirit, ver. 3.";
+    const picked = pickVerseParagraphs([v10, v10mid, v3], 5, 3, MAT53, 3);
+    assert.equal(picked.length, 1);
+    assert.equal(picked[0], v3);
+    assert.equal(paragraphTreatsVerse(v10mid, 5, 3, MAT53), false);
+  });
+
+  it("John 3:16 Gill: only the loved-the-world lemma, not 3:15/3:17 neighbours", () => {
+    const v15 =
+      "John 3:15. That whosoever believeth in him,.... Whether Jew or Gentile, a greater or a lesser sinner, and of whatsoever state and condition, shall not perish but have eternal life.";
+    const v16 =
+      "John 3:16. For God so loved the world,.... The Persic version reads men: but not every man in the world is here meant, or all the individuals of mankind without exception.";
+    const v17 =
+      "John 3:17. For God sent not his Son into the world,.... God did send his Son into the world in the likeness of sinful flesh, being made of a woman, yet not to condemn the world.";
+    const picked = pickVerseParagraphs([v15, v17, v16], 3, 16, JHN316, 3);
+    assert.equal(picked.length, 1);
+    assert.equal(picked[0], v16);
+    assert.equal(paragraphTreatsVerse(v15, 3, 16, JHN316), false);
+    assert.equal(paragraphTreatsVerse(v17, 3, 16, JHN316), false);
+  });
+
+  it("Heb / Rev / 1 John heading labels are detected", () => {
+    assert.equal(
+      paragraphMentionsVerse(
+        "Hebrews 1:1. God, who at sundry times and in divers manners spake in time past unto the fathers by the prophets,",
+        1,
+        1,
+      ),
+      true,
+    );
+    assert.equal(
+      paragraphMentionsVerse(
+        "Rev. 1:1 The Revelation of Jesus Christ, which God gave unto him, to shew unto his servants things which must shortly come to pass.",
+        1,
+        1,
+      ),
+      true,
+    );
+    assert.equal(
+      paragraphMentionsVerse(
+        "1 John 4:8. He that loveth not knoweth not God; for God is love, and this love is the ground of our fellowship.",
+        4,
+        8,
+      ),
+      true,
+    );
+    assert.equal(
+      paragraphMentionsVerse(
+        "Vs. 8 He that loveth not knoweth not God; for God is love in truth and deed toward the brethren.",
+        4,
+        8,
+      ),
+      true,
+    );
+    assert.equal(
+      paragraphMentionsVerse(
+        "(8) He that loveth not knoweth not God; for God is love, which the apostle presses on the church.",
+        4,
+        8,
+      ),
+      true,
+    );
+  });
+
+  it("prefer empty over wrong-neighbour when the page has other verse labels", () => {
+    const picked = pickVerseParagraphs(
+      [
+        "Hebrews 1:2. Hath in these last days spoken unto us by his Son - Whom he hath appointed heir of all things.",
+        "Hebrews 1:5. For unto which of the angels said he at any time, Thou art my Son - This day have I begotten thee.",
+      ],
+      1,
+      1,
+      "God, who at sundry times and in divers manners spake in time past unto the fathers by the prophets",
+      2,
+    );
+    assert.equal(picked.length, 0, "Heb 1:2/1:5 must not fill a Heb 1:1 ask");
+  });
+
+  it("mid-paragraph cross-refs do not count as treating the verse", () => {
+    assert.equal(
+      paragraphMentionsVerse(
+        "Note, Romans 8:28. As they are the chosen of God, they are dear to him and will be saved.",
+        8,
+        28,
+      ),
+      false,
+    );
+    assert.equal(
+      paragraphMentionsVerse(
+        "From verse 3 to the 10th inclusive, our Lord respects the whole body of his true disciples and followers.",
+        5,
+        3,
+      ),
+      false,
+    );
+  });
+
+  it("verse-true cards cite the verse, not a vague chapter-only locus", () => {
+    assert.equal(verseTrueLocus("Romans 8", 8, 28), "Romans 8:28");
+    assert.equal(verseTrueLocus("Matthew 5", 5, 3), "Matthew 5:3");
+    assert.equal(verseTrueLocus("John 3", 3, 16), "John 3:16");
+    assert.equal(verseTrueLocus("Romans 8:28", 8, 28), "Romans 8:28");
+    assert.equal(verseTrueLocus("Homily 15", 5, 3), "Homily 15");
+    assert.equal(verseTrueLocus("Romans 8", 8, 28, 30), "Romans 8:28-30");
+
+    const extract = {
+      entry: {
+        id: "barnes-romans-8",
+        voice: "Albert Barnes",
+        work: "Notes",
+        tradition: "reformed" as const,
+        locus: "Romans 8",
+        url: "https://biblehub.com/commentaries/barnes/romans/8.htm",
+        tags: ["romans", "barnes"],
+        books: ["ROM"],
+        chapters: [8],
+      },
+      url: "https://biblehub.com/commentaries/barnes/romans/8.htm",
+      paragraphs: [
+        "Romans 8:28. And we know - This verse introduces another source of consolation drawn from providence, for all things work together for good to them that love God.",
+      ],
+    };
+    const filled = ensureReservedCards([], [extract], {
+      chapter: 8,
+      verse: 28,
+      query: ROM828,
+    });
+    assert.equal(filled.length, 1);
+    assert.match(filled[0].citation, /Romans 8:28/);
+    assert.equal(/Romans 8(?!:)/.test(filled[0].citation.split("\u00b7")[0] ?? filled[0].citation), false);
+  });
+
+  it("Hub versenum rewrite glues the ref onto the following note", () => {
+    const html = `
+      <div class="versenum"><a href="/romans/8-28.htm">Romans 8:28</a></div>
+      <div class="verse">And we know that all things work together for good.</div>
+      And we know - This verse introduces another source of consolation drawn from the providence of God over every event for his people.
+      <div class="versenum"><a href="/romans/8-29.htm">Romans 8:29</a></div>
+      <div class="verse">For whom he did foreknow, he also did predestinate.</div>
+      For whom he did foreknow - The word used here means that God knew them as his own with affection.
+    `;
+    const paras = paragraphsFromHtml(html);
+    const picked = pickVerseParagraphs(paras, 8, 28, ROM828, 2);
+    assert.ok(picked.length >= 1);
+    assert.ok(picked.every((p) => paragraphTreatsVerse(p, 8, 28, ROM828)));
+    assert.ok(picked.some((p) => /^Romans 8:28\b/.test(p) && /providence|consolation/i.test(p)));
+    assert.ok(!picked.some((p) => /foreknow|predestinate/i.test(p) && !/8:28/.test(p.slice(0, 20))));
   });
 });

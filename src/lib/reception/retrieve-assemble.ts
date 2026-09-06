@@ -93,7 +93,38 @@ export function extractsPrompt(
   return [focus, localeLine, "", ...blocks].join("\n\n");
 }
 
-function cardFromExtract(ex: FetchedExtract): SourceCard | null {
+export type VerseTarget = {
+  chapter?: number;
+  verse?: number | null;
+  verseEnd?: number | null;
+  query?: string;
+};
+
+/**
+ * When an extract is verse-true, prefer a verse-level citation over a vague
+ * chapter-only locus ("Romans 8" → "Romans 8:28"). Leave already-verse loci
+ * and non-chapter works ("Homily 15", "Enchiridion 98") alone.
+ */
+export function verseTrueLocus(
+  locus: string,
+  chapter: number,
+  verse: number,
+  verseEnd?: number | null,
+): string {
+  const trimmed = locus.trim();
+  if (!trimmed) return trimmed;
+  if (/:\s*\d/.test(trimmed)) return trimmed;
+  if (new RegExp(`(^|\\s)${chapter}$`).test(trimmed)) {
+    const end = verseEnd != null && verseEnd > verse ? `-${verseEnd}` : "";
+    return `${trimmed}:${verse}${end}`;
+  }
+  return trimmed;
+}
+
+function cardFromExtract(
+  ex: FetchedExtract,
+  target?: VerseTarget,
+): SourceCard | null {
   const validPara = ex.paragraphs.find(
     (p) =>
       !isBoilerplate(p) &&
@@ -102,12 +133,25 @@ function cardFromExtract(ex: FetchedExtract): SourceCard | null {
   );
   if (!validPara) return null;
   const quote = truncateAtSentence(validPara, 520);
+  let locus = ex.entry.locus;
+  if (
+    target?.chapter != null &&
+    target?.verse != null &&
+    extractTreatsTarget(ex, target)
+  ) {
+    locus = verseTrueLocus(
+      locus,
+      target.chapter,
+      target.verse,
+      target.verseEnd,
+    );
+  }
   return {
     voice: ex.entry.voice,
     work: ex.entry.work,
     tradition: ex.entry.tradition,
     quote,
-    citation: `${ex.entry.locus} \u00b7 ${ex.url}`,
+    citation: `${locus} \u00b7 ${ex.url}`,
     paraphrased: false,
     url: ex.url,
     source: "generated",
@@ -118,10 +162,13 @@ function cardFromExtract(ex: FetchedExtract): SourceCard | null {
   };
 }
 
-function cardsFromExtracts(extracts: FetchedExtract[]): SourceCard[] {
+function cardsFromExtracts(
+  extracts: FetchedExtract[],
+  target?: VerseTarget,
+): SourceCard[] {
   const cards: SourceCard[] = [];
   for (const ex of extracts) {
-    const card = cardFromExtract(ex);
+    const card = cardFromExtract(ex, target);
     if (!card) continue;
     cards.push(card);
     if (cards.length >= 4) break;
@@ -198,7 +245,7 @@ export function ensureReservedCards(
     if (!isReservedExtract(ex)) continue;
     if (!extractTreatsTarget(ex, target)) continue;
     if (out.some((c) => cardCoversExtract(c, ex))) continue;
-    const card = cardFromExtract(ex);
+    const card = cardFromExtract(ex, target);
     if (card) out.push(card);
   }
   return out;
@@ -324,7 +371,7 @@ export async function assembleFromSources(opts: {
     focused ? cards : ensureReservedCards(cards, extracts, reserveTarget);
 
   const unchecked = {
-    cards: focused ? [] : withReserved(cardsFromExtracts(extracts)),
+    cards: focused ? [] : withReserved(cardsFromExtracts(extracts, reserveTarget)),
     caution: focused ? t(locale, "cautionNoKey") : t(locale, "cautionUnverified"),
   };
 

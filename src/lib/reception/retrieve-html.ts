@@ -212,12 +212,15 @@ export function isSubstantiveQuote(text: string): boolean {
 
 export function paragraphsFromHtml(html: string): string[] {
   // BibleHub chapter pages put the verse ref in .versenum and the lemma in
-  // .verse; both are short <div>s that used to be dropped before the note.
-  // Glue them so paragraphMentionsVerse can see "Matthew 5:3" on the note.
+  // .verse. Emit only the ref as a short pending label so the following
+  // commentary paragraph inherits "Romans 8:28" — not a separate lemma-only
+  // chunk that later merges into a neighbour via unclosed <p> tags.
   const withHubLabels = html.replace(
     /<div\b[^>]*class=["'][^"']*versenum[^"']*["'][^>]*>([\s\S]*?)<\/div>\s*<div\b[^>]*class=["'][^"']*verse[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi,
-    (_m, numHtml: string, verseHtml: string) =>
-      `<p>${numHtml} ${verseHtml}</p><p>`,
+    (_m, numHtml: string, _verseHtml: string) =>
+      // Force-close prior unclosed Hub <p> runs so the ref is its own short
+      // chunk (pendingLabel), then open a fresh paragraph for the note.
+      `</p></div><p>${numHtml}</p><p>`,
   );
   const clean = sanitizeHtml(withHubLabels);
   const chunks = clean.split(/<\/p>|<br\s*\/?>|<\/div>|<\/h[1-6]>/i);
@@ -230,7 +233,7 @@ export function paragraphsFromHtml(html: string): string[] {
     // Orphan Hub / CCEL verse headings that did not match the paired rewrite.
     if (
       trimmed.length < 80 &&
-      /^(?:[1-3]?\s*[A-Za-z][A-Za-z\s]+)?\d{1,3}:\d{1,3}\s*$/.test(trimmed)
+      /^(?:(?:[1-3]\s*)?[A-Za-z][A-Za-z.]+(?:\s+[A-Za-z][A-Za-z.]+){0,2}\s+)?\d{1,3}:\d{1,3}\s*$/.test(trimmed)
     ) {
       pendingLabel = trimmed;
       continue;
@@ -253,10 +256,13 @@ export function paragraphsFromHtml(html: string): string[] {
 }
 
 /**
- * True when a paragraph announces the target verse. CCEL, New Advent and Bible
- * Hub print the lemma in a handful of fixed shapes: a leading verse number, a
- * "Ver./Verse" label, a "v./vv." abbreviation, or a chapter:verse reference.
- * Ranges ("Ver. 6-13", "9:6-13") count when the target falls inside them.
+ * True when a paragraph announces the target verse. Real label shapes from
+ * BibleHub, bibliaplus, CCEL, New Advent and Tertullian: a leading verse
+ * number, "Ver./Verse/Vs./v./vv." labels, a heading chapter:verse (with or
+ * without a book name), or parenthetical verse markers at the open. Ranges
+ * ("Ver. 6-13", "9:6-13") count when the target falls inside them.
+ * Mid-paragraph cross-references ("see Romans 8:28") do NOT count — those
+ * are how neighbour notes used to outrank the target.
  */
 export function paragraphMentionsVerse(
   text: string,
@@ -265,23 +271,34 @@ export function paragraphMentionsVerse(
 ): boolean {
   const trimmed = text.trim();
 
-  // "11. Though they were not yet born..." — the lemma opens the paragraph.
-  const lead = /^(\d{1,3})\s*[.:)\]]/.exec(trimmed);
+  // "11. Though they were not yet born..." / "11)" / "11:" / "(28)" / "[28]—"
+  const lead = /^(?:[\(\[]\s*)?(\d{1,3})(?:\s*[.:)\]]|\s*[-\u2013\u2014])/.exec(trimmed);
   if (lead && Number(lead[1]) === verse) return true;
 
-  // "Ver. 11", "Verse 11", "Verses 9-13", "v. 11", "vv. 9-13".
-  const labelled = /\b(?:ver(?:s|se|ses)?|vv?)\.?\s*(\d{1,3})(?:\s*[-\u2013\u2014]\s*(\d{1,3}))?/gi;
-  for (const m of trimmed.matchAll(labelled)) {
-    const start = Number(m[1]);
-    const end = m[2] ? Number(m[2]) : start;
+  // "Ver. 11", "Verse 11", "Verses 9-13", "Vs. 11", "v. 11", "vv. 9-13"
+  // at the paragraph open only — mid-note "see ver. 3" / "From verse 3 to
+  // the 10th" must not make a neighbour treat the target.
+  // No book-name prefix here — "From verse 3" must not look like "Ver. 3".
+  const labelledHead =
+    /^(?:ver(?:s|se|ses)?|vs|vv?)\.?\s*(\d{1,3})(?:\s*[-\u2013\u2014]\s*(\d{1,3}))?\b/i.exec(
+      trimmed,
+    );
+  if (labelledHead) {
+    const start = Number(labelledHead[1]);
+    const end = labelledHead[2] ? Number(labelledHead[2]) : start;
     if (verse >= start && verse <= Math.max(start, end)) return true;
   }
 
-  // "9:11" or "9:6-13" — a full chapter:verse reference.
-  const refs = new RegExp(`\\b${chapter}:(\\d{1,3})(?:\\s*[-\\u2013\\u2014]\\s*(\\d{1,3}))?`, "g");
-  for (const m of trimmed.matchAll(refs)) {
-    const start = Number(m[1]);
-    const end = m[2] ? Number(m[2]) : start;
+  // Heading-only chapter:verse — "Romans 8:28. And we know…", "Matt. 5:3 Blessed…",
+  // "8:28 And we know…". Must sit at the paragraph open (optional book name),
+  // not mid-note as a cross-reference.
+  const heading = new RegExp(
+    `^(?:(?:[1-3]\\s*)?[A-Za-z][A-Za-z]+\\.?\\s+)?${chapter}:(\\d{1,3})(?:\\s*[-\\u2013\\u2014]\\s*(\\d{1,3}))?\\b`,
+  );
+  const hm = heading.exec(trimmed);
+  if (hm) {
+    const start = Number(hm[1]);
+    const end = hm[2] ? Number(hm[2]) : start;
     if (verse >= start && verse <= Math.max(start, end)) return true;
   }
 
@@ -305,7 +322,13 @@ export function paragraphIsGillLemmaNote(text: string, query: string): boolean {
   if (lemmaToks.length < 3 || qToks.size < 2) return false;
   let hits = 0;
   for (const t of lemmaToks) if (qToks.has(t)) hits += 1;
-  return hits >= Math.min(3, lemmaToks.length);
+  if (hits < Math.min(3, lemmaToks.length)) return false;
+  // Early lemma tokens must also land in the query — shared theological
+  // vocabulary ("God", "Son", "world") must not let a neighbour Gill note win.
+  const early = lemmaToks.slice(0, Math.min(4, lemmaToks.length));
+  let earlyHits = 0;
+  for (const t of early) if (qToks.has(t)) earlyHits += 1;
+  return earlyHits >= Math.min(3, early.length);
 }
 
 /**
@@ -317,10 +340,19 @@ export function paragraphOpensWithVerseLemma(text: string, query: string): boole
   const qToks = tokenize(query);
   if (qToks.length < 3) return false;
   const need = qToks.slice(0, Math.min(4, qToks.length));
-  const head = text.trim().slice(0, 200).toLowerCase();
+  // Strip a leading verse heading so "Romans 8:28. And we know…" still matches.
+  const head = text
+    .trim()
+    .replace(
+      /^(?:(?:[1-3]\s*)?[A-Za-z][A-Za-z]+\.?\s+)?\d{1,3}:\d{1,3}(?:\s*[-\u2013\u2014]\s*\d{1,3})?\.?\s+/,
+      "",
+    )
+    .slice(0, 160)
+    .toLowerCase();
   let hits = 0;
   for (const t of need) if (head.includes(t)) hits += 1;
-  return hits >= Math.min(3, need.length) && hits >= need.length - 1;
+  // All early tokens — n-1 let "foreknow / all things" look like Rom 8:28.
+  return hits >= need.length;
 }
 
 /** Verse ref, Gill lemma, or Hub opening-lemma — the extract treats this verse. */
@@ -336,18 +368,66 @@ export function paragraphTreatsVerse(
     for (let v = verse; v <= last; v++) {
       if (paragraphMentionsVerse(text, chapter, v)) return true;
     }
+    // "Romans 8:31. …" must not treat 8:28 via a loose lemma/token match.
+    if (paragraphNamesOtherVerse(text, chapter, verse, last)) return false;
   }
   if (paragraphIsGillLemmaNote(text, query)) return true;
   return paragraphOpensWithVerseLemma(text, query);
 }
 
+/** True when the paragraph opens by naming a different verse in this chapter. */
+function paragraphNamesOtherVerse(
+  text: string,
+  chapter: number,
+  verseStart: number,
+  verseEnd: number,
+): boolean {
+  const trimmed = text.trim();
+  const heading = new RegExp(
+    `^(?:(?:[1-3]\\s*)?[A-Za-z][A-Za-z]+\\.?\\s+)?${chapter}:(\\d{1,3})(?:\\s*[-\\u2013\\u2014]\\s*(\\d{1,3}))?\\b`,
+  );
+  const hm = heading.exec(trimmed);
+  if (hm) {
+    const start = Number(hm[1]);
+    const end = hm[2] ? Number(hm[2]) : start;
+    return end < verseStart || start > verseEnd;
+  }
+  const lead = /^(?:[\(\[]\s*)?(\d{1,3})(?:\s*[.:)\]]|\s*[-\u2013\u2014])/.exec(trimmed);
+  if (lead) {
+    const v = Number(lead[1]);
+    return v < verseStart || v > verseEnd;
+  }
+  // "Ver. 31" / "Verse 29" heading for a neighbour.
+  const labelled =
+    /^(?:\s*)(?:ver(?:s|se|ses)?|vs|vv?)\.?\s*(\d{1,3})(?:\s*[-\u2013\u2014]\s*(\d{1,3}))?/i.exec(
+      trimmed,
+    );
+  if (labelled) {
+    const start = Number(labelled[1]);
+    const end = labelled[2] ? Number(labelled[2]) : start;
+    return end < verseStart || start > verseEnd;
+  }
+  return false;
+}
+
 function paragraphLooksVerseLabeled(text: string, chapter?: number): boolean {
   const trimmed = text.trim();
-  if (/^\d{1,3}\s*[.:)\]]/.test(trimmed)) return true;
-  if (/\b(?:ver(?:s|se|ses)?|vv?)\.?\s*\d{1,3}/i.test(trimmed)) return true;
-  if (chapter != null && new RegExp(`\\b${chapter}:\\d{1,3}`).test(trimmed)) {
+  if (/^(?:[\(\[]\s*)?\d{1,3}(?:\s*[.:)\]]|\s*[-\u2013\u2014])/.test(trimmed)) {
     return true;
   }
+  if (/\b(?:ver(?:s|se|ses)?|vs|vv?)\.?\s*\d{1,3}/i.test(trimmed)) return true;
+  // Heading "Romans 8:28" / "8:28" at the open (not a mid-note cross-ref).
+  if (
+    chapter != null &&
+    new RegExp(
+      `^(?:(?:[1-3]\\s*)?[A-Za-z][A-Za-z]+\\.?\\s+)?${chapter}:\\d{1,3}\\b`,
+    ).test(trimmed)
+  ) {
+    return true;
+  }
+  // Gill / Hub lemma notes open "Lemma text,...." — treat as verse-structured
+  // so a page of neighbour lemmas does not fall back to token scoring.
+  if (/^.{15,220}?,\.{3,}(?=\s)/.test(trimmed)) return true;
   return false;
 }
 

@@ -22,4 +22,5 @@ export {
   RETRIEVAL_CAUTION,
   assembleFromSources,
   ensureReservedCards,
+  verseTrueLocus,
 } from "./retrieve-assemble.ts";
