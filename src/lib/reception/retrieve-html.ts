@@ -207,6 +207,10 @@ export function isSubstantiveQuote(text: string): boolean {
   if (trimmed.length < 15) return false;
   const words = trimmed.split(/\s+/).filter(Boolean);
   if (words.length < 3) return false;
+  // Letter-outline theses ("a) The Word is not a creature") are a treatise
+  // contents list, not a verse lemma. They used to win John 1:1 because
+  // "Word" overlaps the verse.
+  if (/^[a-z](?:\)|\.)\s/i.test(trimmed)) return false;
   return true;
 }
 
@@ -271,9 +275,19 @@ export function paragraphMentionsVerse(
 ): boolean {
   const trimmed = text.trim();
 
-  // "11. Though they were not yet born..." / "11)" / "11:" / "(28)" / "[28]—"
-  const lead = /^(?:[\(\[]\s*)?(\d{1,3})(?:\s*[.:)\]]|\s*[-\u2013\u2014])/.exec(trimmed);
-  if (lead && Number(lead[1]) === verse) return true;
+  // "(28)" / "[28]" / "(8)" — parenthetical verse numbers these hosts print.
+  const leadParen = /^(?:[\(\[]\s*)(\d{1,3})\s*[)\]]/.exec(trimmed);
+  if (leadParen && Number(leadParen[1]) === verse) return true;
+
+  // "11. Though they were not yet born..." / "11:" / "11—"
+  // Two-digit lemmas are the Calvin/Henry shape. A single-digit "1." is
+  // usually a treatise section (Cyril's outline on John 1), not verse 1.
+  // "8:" (colon) is still a verse heading.
+  const lead = /^(\d{1,3})(?:\s*([.:])|\s*[-\u2013\u2014])/.exec(trimmed);
+  if (lead && Number(lead[1]) === verse) {
+    if (verse >= 10) return true;
+    if (lead[2] === ":") return true;
+  }
 
   // "Ver. 11", "Verse 11", "Verses 9-13", "Vs. 11", "v. 11", "vv. 9-13"
   // at the paragraph open only — mid-note "see ver. 3" / "From verse 3 to
@@ -347,12 +361,15 @@ export function paragraphOpensWithVerseLemma(text: string, query: string): boole
       /^(?:(?:[1-3]\s*)?[A-Za-z][A-Za-z]+\.?\s+)?\d{1,3}:\d{1,3}(?:\s*[-\u2013\u2014]\s*\d{1,3})?\.?\s+/,
       "",
     )
-    .slice(0, 160)
-    .toLowerCase();
+    .replace(/^(?:[\(\[]\s*)?\d{1,3}\s*[.:)\]]\s+/, "")
+    .slice(0, 160);
+  const headToks = tokenize(head).slice(0, need.length + 1);
+  if (headToks.length < 2) return false;
   let hits = 0;
-  for (const t of need) if (head.includes(t)) hits += 1;
-  // All early tokens — n-1 let "foreknow / all things" look like Rom 8:28.
-  return hits >= need.length;
+  for (const t of need) if (headToks.includes(t)) hits += 1;
+  // Opening tokens of the note must be the verse's opening tokens —
+  // "in the beginning" in a later clause must not make a thesis treat 1:1.
+  return hits >= Math.min(3, need.length);
 }
 
 /** Verse ref, Gill lemma, or Hub opening-lemma — the extract treats this verse. */

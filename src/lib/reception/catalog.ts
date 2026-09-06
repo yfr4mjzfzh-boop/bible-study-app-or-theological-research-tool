@@ -1901,6 +1901,9 @@ export function scoreEntry(
     entry.chapters?.includes(chapter)
   ) {
     score += 20;
+    // A book that covers only this chapter beats a multi-chapter volume that
+    // also happens to include it (Cyril John Book 1 vs Book 2 on 1:1).
+    if (entry.chapters.length === 1) score += 4;
   }
   if (verse != null && entry.verses) {
     score += 30;

@@ -8,6 +8,7 @@ import {
   pickVerseParagraphs,
   paragraphMentionsVerse,
   paragraphTreatsVerse,
+  isSubstantiveQuote,
   parseRetrieved,
   byteCapFor,
   ensureReservedCards,
@@ -1091,7 +1092,43 @@ describe("verse-anchored paragraph selection", () => {
     assert.equal(paragraphMentionsVerse("111 is not a verse here", 9, 11), false);
   });
 
-  it("puts the target verse ahead of a word-similar neighbour", () => {
+  it("does not treat a treatise '1.' / 'a)' outline as John 1:1", () => {
+    const query =
+      "In the beginning was the Word, and the Word was with God, and the Word was God";
+    const outline =
+      "a) The Word is not a creature. b) The Word was not made. c) The Word was God. d) The Word is the Son.";
+    const section =
+      "1. The Word is not a creature, nor a work of the Father, but God of God, the unmade Son.";
+    const lemma =
+      "John 1:1. In the beginning was the Word, and the Word was with God, and the Word was God. He was not made, for by him were all things made.";
+    assert.equal(isSubstantiveQuote(outline), false);
+    assert.equal(paragraphMentionsVerse(section, 1, 1), false);
+    assert.equal(paragraphTreatsVerse(section, 1, 1, query), false);
+    assert.equal(paragraphTreatsVerse(lemma, 1, 1, query), true);
+    const picked = pickVerseParagraphs(
+      [outline, section, lemma],
+      1,
+      1,
+      query,
+      2,
+    );
+    assert.ok(picked.length >= 1);
+    assert.ok(
+      picked.every((p) => /in the beginning was the word/i.test(p)),
+      `got ${picked.map((p) => p.slice(0, 80))}`,
+    );
+  });
+
+  it("still trusts a two-digit '11.' lemma and a parenthetical '(8)'", () => {
+    assert.equal(paragraphMentionsVerse("11. For the children", 9, 11), true);
+    assert.equal(
+      paragraphMentionsVerse(
+        "(8) He that loveth not knoweth not God; for God is love, which the apostle presses on the church.",
+        4,
+        8,
+      ),
+      true,
+    );
     const picked = pickVerseParagraphs(
       [VERSE_4, UNRELATED, VERSE_11],
       9,
