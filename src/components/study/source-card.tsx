@@ -3,20 +3,28 @@ import type { SourceCard as Card } from "@/lib/bible/types";
 import { t, traditionLabel } from "@/lib/i18n";
 import { localizeCard } from "@/lib/i18n-sources";
 import { useStudy } from "@/lib/study-store";
+import { cn } from "@/lib/utils";
 
 export function SourceCard({
   card,
   isGenerated,
   onRemove,
+  land = false,
 }: {
   card: Card;
   isGenerated?: boolean;
   onRemove?: () => void;
+  land?: boolean;
 }) {
   const locale = useStudy((s) => s.locale);
   const shown = localizeCard(card, locale);
   return (
-    <article className="group tl-slip min-w-0 max-w-full px-4 pt-4 pb-3.5 tl-chapter">
+    <article
+      className={cn(
+        "group tl-slip min-w-0 max-w-full px-4 pt-4 pb-3.5",
+        land && "tl-slip-land",
+      )}
+    >
       <header className="mb-3 flex items-baseline justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-[13px] font-semibold leading-tight tracking-[0.14em] text-ink uppercase">
@@ -70,7 +78,7 @@ export function SourceCard({
       {shown.note && shown.note !== shown.contextBridge ? (
         <p className="mt-2.5 text-sm leading-relaxed text-muted">{shown.note}</p>
       ) : null}
-      <p className="mt-3 text-2xs tracking-wide text-faint">
+      <p className="tl-cite mt-3 text-2xs text-faint">
         {shown.citation}
         {shown.paraphrased ? ` · ${t(locale, "paraphrased")}` : ""}
       </p>

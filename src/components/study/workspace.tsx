@@ -437,7 +437,7 @@ export function StudyWorkspace() {
   const shownChapter = waitingOnFetch ? null : chapter;
 
   return (
-    <div className="tl-shell flex flex-col overflow-hidden bg-paper text-ink">
+    <div className="tl-shell flex flex-col overflow-hidden text-ink">
       <TopBar />
 
       <div className="relative flex min-h-0 flex-1">

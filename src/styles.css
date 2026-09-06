@@ -244,7 +244,15 @@
   position: relative;
   border: 1px solid var(--color-rule);
   background: var(--color-surface);
-  box-shadow: var(--shadow-border);
+  box-shadow:
+    var(--shadow-border),
+    0 10px 22px color-mix(in oklab, #1c1917 5%, transparent);
+}
+
+.dark .tl-slip {
+  box-shadow:
+    var(--shadow-border),
+    0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
 .tl-slip::before {
@@ -414,6 +422,32 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(
+      ellipse at 12% -10%,
+      color-mix(in oklab, var(--color-oxblood) 6%, transparent),
+      transparent 42%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-ink) 3%, transparent),
+      transparent 26%
+    );
+}
+
+html.dark .tl-shell {
+  background-image:
+    radial-gradient(
+      ellipse 90% 42% at 50% -8%,
+      color-mix(in oklab, var(--color-gold) 18%, transparent),
+      transparent 56%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-oxblood) 12%, transparent),
+      transparent 24%
+    );
 }
 
 .tl-read {
@@ -931,6 +965,158 @@
   border-top: none;
 }
 
+.tl-cite {
+  letter-spacing: 0.08em;
+}
+
+.tl-slip-land {
+  animation: tl-slip-land var(--motion-medium) var(--ease-smooth-out);
+}
+
+@keyframes tl-slip-land {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tl-closed-folio {
+  position: relative;
+}
+
+.tl-closed-folio::before {
+  content: "";
+  display: block;
+  width: 2.25rem;
+  height: 2px;
+  margin-bottom: 1.1rem;
+  background: var(--color-oxblood);
+}
+
+/* Phone lectern — not the wide website. Grain, night lamp, quieter chrome. */
+@media (max-width: 639px) {
+  .tl-shell {
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 26px,
+        color-mix(in oklab, var(--color-ink) 3.4%, transparent) 27px
+      ),
+      radial-gradient(
+        ellipse at 12% -10%,
+        color-mix(in oklab, var(--color-oxblood) 8%, transparent),
+        transparent 44%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-ink) 3.5%, transparent),
+        transparent 28%
+      );
+  }
+
+  html.dark .tl-shell {
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 28px,
+        color-mix(in oklab, var(--color-gold) 5.5%, transparent) 29px
+      ),
+      radial-gradient(
+        ellipse 92% 46% at 50% -6%,
+        color-mix(in oklab, var(--color-gold) 28%, transparent),
+        transparent 58%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-oxblood) 18%, transparent),
+        transparent 28%
+      );
+  }
+
+  .bible-prose {
+    line-height: 1.84;
+  }
+
+  html.dark .bible-prose {
+    line-height: 1.92;
+  }
+
+  .tl-folio-head h1 {
+    font-size: 2.15rem;
+    letter-spacing: -0.03em;
+  }
+
+  .tl-folio-kicker {
+    letter-spacing: 0.28em;
+  }
+
+  .tl-folio-ch {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--color-ink);
+  }
+
+  .tl-first-verse {
+    margin-bottom: 0.7em;
+    padding-left: 1.28em;
+  }
+
+  .tl-drop {
+    font-size: 2.75em;
+    padding-right: 0.1em;
+  }
+
+  .tl-verse[aria-selected="true"] .verse-num {
+    text-shadow: none;
+  }
+
+  .tl-verse[data-range-start="true"]::before,
+  .tl-verse[data-range-end="true"]::after {
+    width: 3px;
+    box-shadow: 0 0 10px 1px
+      color-mix(in oklab, var(--color-lamp) 55%, transparent);
+  }
+
+  html.dark .tl-verse[aria-selected="true"] {
+    background-color: color-mix(in oklab, var(--color-lamp) 16%, transparent);
+  }
+
+  html.dark .tl-first-verse[aria-selected="true"] .tl-verse-ink {
+    background-color: color-mix(in oklab, var(--color-lamp) 16%, transparent);
+  }
+
+  .tl-sheet-up {
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-ink) 2.5%, transparent),
+      transparent 18%
+    );
+  }
+
+  .tl-sheet-up::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 2px;
+    background: var(--color-oxblood);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  html.dark .tl-sheet-up::before {
+    background: var(--color-lamp);
+  }
+}
+
 .tl-search-mark {
   background: color-mix(in oklab, var(--color-lamp) 18%, transparent);
   color: inherit;
@@ -955,6 +1141,7 @@
   }
 
   .tl-chapter,
+  .tl-slip-land,
   .tl-hint,
   .tl-pick,
   .tl-pick-ref,

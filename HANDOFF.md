@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~13:50 ET)
+# Theos Logos — living handoff (updated 2026-09-06 ~15:15 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -32,11 +32,15 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 ## BUG-4 — DONE (live)
 Desk seats 9.
 
+## Lectern polish — READY (preview, phone only)
+Mobile (max-width 639px) Hairline Folio / Night Lectern: laid-paper grain, night lamp as a room, quieter verse lamps, first source-slip lands, closed-folio empty desk, colophon citations, oxblood hair on the sheet. Desktop website left quiet. Do not promote unless Rardo says promote.
+
 ## Highlight — READY (preview, not live)
 When a verse (or range) is selected, a highlighter sits in the desk chrome. Tap it to keep a dotted oxblood underline on that verse. Tap again to lift it. Persists in localStorage (`theos-logos-highlights-v1`). Does not steal reserved reception seats. Do not promote unless Rardo says promote.
 
 ## BUG-5 — ongoing
 
 ## STOP
-Wave-5B is live. Highlight is on scholar-desk preview — **do not promote** until Rardo says so.
+Wave-5B is live. Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
+Open the preview on a phone (or narrow the pane). Desktop website is intentionally quieter.
 Next: BUG-5, or a new wave only if Rardo names it.

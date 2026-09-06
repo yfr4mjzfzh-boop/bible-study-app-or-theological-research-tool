@@ -227,14 +227,14 @@ export function Reader({
               key={`${chapter.bookId}-${chapter.chapter}`}
               className="tl-chapter"
             >
-              <header className="mb-8 text-center sm:mb-10">
-                <p className="text-2xs font-medium tracking-[0.22em] text-muted uppercase">
+              <header className="tl-folio-head mb-8 text-center sm:mb-10">
+                <p className="tl-folio-kicker text-2xs font-medium tracking-[0.22em] text-muted uppercase">
                   {chapter.translationName}
                 </p>
                 <h1 className="font-display mt-2 text-[2rem] leading-none font-semibold tracking-tight text-ink sm:text-5xl">
                   {chapter.bookName}
                 </h1>
-                <p className="mt-1.5 text-xs tracking-[0.18em] text-faint uppercase">
+                <p className="tl-folio-ch mt-1.5 text-xs tracking-[0.18em] text-faint uppercase">
                   {t(locale, "chapter", { n: chapter.chapter })}
                 </p>
                 <div className="mt-5 flex items-center justify-center gap-2">

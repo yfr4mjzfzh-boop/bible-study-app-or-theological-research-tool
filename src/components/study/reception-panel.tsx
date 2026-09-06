@@ -551,7 +551,7 @@ export function ReceptionPanel({
         ) : null}
 
         {selectedVerse == null ? (
-          <div className="flex flex-col items-start gap-4 py-6">
+          <div className="tl-closed-folio flex flex-col items-start gap-4 py-6">
             <p className="font-display text-xl text-ink">{t(locale, "markVerse")}</p>
             <p className="max-w-xs text-sm leading-relaxed text-muted">
               {t(locale, "receptionHint")}
@@ -750,6 +750,7 @@ export function ReceptionPanel({
                       key={`${card.voice}-${card.citation}-${i}`}
                       card={card}
                       isGenerated={gen}
+                      land={i === 0}
                       onRemove={gen ? () => handleRemoveCard(card) : undefined}
                     />
                   );
