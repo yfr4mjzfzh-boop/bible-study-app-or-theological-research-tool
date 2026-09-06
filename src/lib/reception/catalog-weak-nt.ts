@@ -310,6 +310,42 @@ function catenaChapters(have: Set<string>, byUrl: Map<string, CatalogEntry>): Ca
   return out;
 }
 
+/** Isidore hosts Luke + John as one long page each. One row per gospel — no duplicate URL. */
+function catenaLukeJohnLongPages(
+  have: Set<string>,
+  byUrl: Map<string, CatalogEntry>,
+): CatalogEntry[] {
+  const lukeChapters = Array.from({ length: 24 }, (_, i) => i + 1);
+  const johnChapters = Array.from({ length: 21 }, (_, i) => i + 1);
+  const rows: CatalogEntry[] = [
+    e(
+      "aquinas-catena-luke",
+      "Thomas Aquinas",
+      "Catena Aurea on Luke",
+      "catholic",
+      "Luke",
+      "https://isidore.co/aquinas/CALuke.htm",
+      ["luke", "aquinas", "thomas", "catena"],
+      ["LUK"],
+      lukeChapters,
+    ),
+    e(
+      "aquinas-catena-john",
+      "Thomas Aquinas",
+      "Catena Aurea on John",
+      "catholic",
+      "John",
+      "https://isidore.co/aquinas/CAJohn.htm",
+      ["john", "aquinas", "thomas", "catena"],
+      ["JHN"],
+      johnChapters,
+    ),
+  ];
+  return rows.filter(
+    (row) => !have.has(row.id) && !byUrl.has(canonUrl(row.url)),
+  );
+}
+
 function chrysostomHomilies(have: Set<string>, byUrl: Map<string, CatalogEntry>): CatalogEntry[] {
   const out: CatalogEntry[] = [];
   for (const h of CHRYSOSTOM_HOMILIES) {
@@ -368,6 +404,7 @@ export function attachWeakNtCatalog(): void {
   const incoming = [
     ...calvinCcelSections(have, byUrl),
     ...catenaChapters(have, byUrl),
+    ...catenaLukeJohnLongPages(have, byUrl),
     ...chrysostomHomilies(have, byUrl),
     ...hubAndRevelation(have),
   ];

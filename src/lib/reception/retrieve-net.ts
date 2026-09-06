@@ -22,6 +22,10 @@ const HOSTS = new Set([
   "bibliaplus.org",
   "tertullian.org",
   "www.tertullian.org",
+  "sermonindex.net",
+  "www.sermonindex.net",
+  "isidore.co",
+  "www.isidore.co",
 ]);
 
 const FETCH_MS = 10_000;
@@ -32,7 +36,20 @@ const MAX_BYTES = 180_000;
  * sits well past the default cap, so the passage never reached the librarian.
  */
 const MAX_BYTES_LONG_PAGE = 600_000;
-const LONG_PAGE_HOSTS = new Set(["www.newadvent.org", "newadvent.org", "biblehub.com", "www.biblehub.com", "ccel.org", "www.ccel.org", "tertullian.org", "www.tertullian.org"]);
+const LONG_PAGE_HOSTS = new Set([
+  "www.newadvent.org",
+  "newadvent.org",
+  "biblehub.com",
+  "www.biblehub.com",
+  "ccel.org",
+  "www.ccel.org",
+  "tertullian.org",
+  "www.tertullian.org",
+  "sermonindex.net",
+  "www.sermonindex.net",
+  "isidore.co",
+  "www.isidore.co",
+]);
 
 export function byteCapFor(url: string): number {
   try {

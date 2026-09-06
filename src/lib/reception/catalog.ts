@@ -1474,6 +1474,202 @@ function spurgeonNtChapters(have: Set<string>): CatalogEntry[] {
   return out;
 }
 
+const SI = "https://www.sermonindex.net";
+
+/** SI commentary chapter pages probed 200 on 2026-09-06. Matthew 1–4, 16, 17, 28 404. */
+const RYLE_GOSPELS = [
+  ["matthew", "MAT", "Matthew", 28],
+  ["mark", "MRK", "Mark", 16],
+  ["luke", "LUK", "Luke", 24],
+  ["john", "JHN", "John", 21],
+] as const;
+const RYLE_SKIP_MAT = new Set([1, 2, 3, 4, 16, 17, 28]);
+
+function ryleNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters] of RYLE_GOSPELS) {
+    const tag = name.toLowerCase();
+    for (let ch = 1; ch <= chapters; ch++) {
+      if (bookId === "MAT" && RYLE_SKIP_MAT.has(ch)) continue;
+      const id = `ryle-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "J. C. Ryle",
+          "Expository Thoughts on the Gospels",
+          "reformed",
+          `${name} ${ch}`,
+          `${SI}/commentary/ryle-expository-thoughts/${bookId}/${ch}/`,
+          [tag, "ryle"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+const GODET_BOOKS = [
+  ["luke", "LUK", "Luke", 24, "Commentary on Luke"],
+  ["john", "JHN", "John", 21, "Commentary on John"],
+  ["romans", "ROM", "Romans", 16, "Commentary on Romans"],
+  ["1corinthians", "1CO", "1 Corinthians", 16, "Commentary on First Corinthians"],
+] as const;
+
+function godetNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, work] of GODET_BOOKS) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `godet-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Frédéric Godet",
+          work,
+          "reformed",
+          `${name} ${ch}`,
+          `${SI}/commentary/godet/${bookId}/${ch}/`,
+          [tag, "godet"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+/**
+ * Haldane SI book pages. TOC n=1 preface, n=2 introduction, n=21 conclusion omitted.
+ * ch1→n3 (alt n4), ch2→n5, ch3→n6 (alt n7), chN→n=N+4 through ch16→n20.
+ */
+const HALDANE_PAGES: Record<number, number[]> = {
+  1: [3, 4],
+  2: [5],
+  3: [6, 7],
+  4: [8],
+  5: [9],
+  6: [10],
+  7: [11],
+  8: [12],
+  9: [13],
+  10: [14],
+  11: [15],
+  12: [16],
+  13: [17],
+  14: [18],
+  15: [19],
+  16: [20],
+};
+
+function haldaneRomansChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (let ch = 1; ch <= 16; ch++) {
+    const pages = HALDANE_PAGES[ch];
+    if (!pages?.length) continue;
+    const id = `haldane-romans-${ch}`;
+    if (have.has(id)) continue;
+    const entry = e(
+      id,
+      "Robert Haldane",
+      "Exposition of the Epistle to the Romans",
+      "reformed",
+      `Romans ${ch}`,
+      `${SI}/books/haldane-robert-exposition-on-the-epistle-to-the-romans/${pages[0]}/`,
+      ["romans", "haldane"],
+      ["ROM"],
+      [ch],
+    );
+    if (pages[1] != null) {
+      entry.altUrl = `${SI}/books/haldane-robert-exposition-on-the-epistle-to-the-romans/${pages[1]}/`;
+    }
+    out.push(entry);
+  }
+  return out;
+}
+
+function broadusMatthewChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (let ch = 1; ch <= 28; ch++) {
+    const id = `broadus-matthew-${ch}`;
+    if (have.has(id)) continue;
+    out.push(
+      e(
+        id,
+        "John A. Broadus",
+        "Commentary on the Gospel of Matthew",
+        "reformed",
+        `Matthew ${ch}`,
+        `${SI}/commentary/broadus/MAT/${ch}/`,
+        ["matthew", "broadus"],
+        ["MAT"],
+        [ch],
+      ),
+    );
+  }
+  return out;
+}
+
+/** Hodge SI Romans + 1 Corinthians. Skip Eph — CCEL hodge-eph-* already indexed. */
+const HODGE_SI_BOOKS = [
+  ["romans", "ROM", "Romans", 16, "Commentary on the Epistle to the Romans"],
+  ["1corinthians", "1CO", "1 Corinthians", 16, "Commentary on First Corinthians"],
+] as const;
+
+function hodgeSiChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, work] of HODGE_SI_BOOKS) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `hodge-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Charles Hodge",
+          work,
+          "reformed",
+          `${name} ${ch}`,
+          `${SI}/commentary/hodge/${bookId}/${ch}/`,
+          [tag, "hodge"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function alfordNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `alford-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Henry Alford",
+          "Greek Testament Critical Exegetical Commentary",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/alford/${hub}/${ch}.htm`,
+          [tag, "alford"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
 /** Luther Epistle Postils (Bible Hub library) — lectionary grain from published Text: lines. */
 const LUTHER_EPISTLE_POSTILS: Array<{
   id: string;
@@ -1909,6 +2105,12 @@ export const CATALOG: CatalogEntry[] = (() => {
     expositorNtChapters,
     bengelNtChapters,
     spurgeonNtChapters,
+    ryleNtChapters,
+    godetNtChapters,
+    haldaneRomansChapters,
+    broadusMatthewChapters,
+    hodgeSiChapters,
+    alfordNtChapters,
     lutherEpistlePostils,
     cyrilJohnBooks,
     cyrilLukeSermons,
@@ -2129,6 +2331,8 @@ export function mapCatalog(opts: {
     const WAVE3_RE =
       /^(cambridge|ellicott|owen|kretzmann|luther-epistle|cyril-john|cyril-luke-sermons|augustine-1jn-h|augustine-nt-sermon|augustine-harmony|theodoret|victorinus-rev|hodge-eph|robertson|bengel|spurgeon)-/;
     const WAVE4_RE = /^(pulpit|meyer|egt|expositors)-/;
+    const WAVE5_RE =
+      /^(ryle|godet|haldane|broadus|alford|hodge-romans|hodge-1corinthians)-/;
     const RESERVED_WAVE1 = ["gill-", "geneva-", "lange-"] as const;
     const RESERVED_WAVE2 = [
       "barnes-",
@@ -2150,7 +2354,8 @@ export function mapCatalog(opts: {
       WAVE1_RE.test(id) ||
       WAVE2_RE.test(id) ||
       WAVE3_RE.test(id) ||
-      WAVE4_RE.test(id);
+      WAVE4_RE.test(id) ||
+      WAVE5_RE.test(id);
     const chapterRanked = ranked.filter((r) => chapterMatch(r.entry));
     const deskLimit = limit >= 7 && Boolean(opts.bookId) && opts.chapter != null;
     if (deskLimit) {
@@ -2304,6 +2509,10 @@ export function mapCatalog(opts: {
     } else {
       for (const r of chapterRanked) {
         if (picked.length >= limit) break;
+        // Wave-5B is spare/interleave only (desk limit >=7). Keep default
+        // mapCatalog(limit 5) on Henry/Calvin/classics — Godet/Haldane/Broadus
+        // work titles contain the book name and would otherwise outscore them.
+        if (WAVE5_RE.test(r.entry.id)) continue;
         if (voices.has(r.entry.voice)) continue;
         voices.add(r.entry.voice);
         picked.push(r.entry);

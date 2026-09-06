@@ -809,6 +809,89 @@ describe("NT chapter-1 mapping", () => {
     );
   });
 
+  it("indexes WAVE-5B Ryle/Godet/Haldane/Broadus/Hodge-SI/Alford; Scofield/Darby stay 0", () => {
+    const ryle = CATALOG.find((e) => e.id === "ryle-matthew-5");
+    assert.ok(ryle, "ryle-matthew-5");
+    assert.ok(
+      ryle.url.includes("/commentary/ryle-expository-thoughts/MAT/5/"),
+      ryle.url,
+    );
+    assert.equal(ryle.voice, "J. C. Ryle");
+    assert.equal(
+      CATALOG.some((e) => e.id === "ryle-matthew-1" || e.id === "ryle-matthew-28"),
+      false,
+      "Ryle Matthew 1 and 28 404 on SI — do not index",
+    );
+    assert.ok(CATALOG.find((e) => e.id === "ryle-mark-1"));
+    assert.ok(CATALOG.find((e) => e.id === "ryle-luke-1"));
+    assert.ok(CATALOG.find((e) => e.id === "ryle-john-21"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("ryle-")).length >= 80);
+
+    const godetRom = CATALOG.find((e) => e.id === "godet-romans-8");
+    assert.ok(godetRom?.url.includes("/commentary/godet/ROM/8/"));
+    assert.ok(CATALOG.find((e) => e.id === "godet-luke-1"));
+    assert.ok(CATALOG.find((e) => e.id === "godet-john-1"));
+    assert.ok(CATALOG.find((e) => e.id === "godet-1corinthians-13"));
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("godet-")).length, 77);
+
+    const haldane1 = CATALOG.find((e) => e.id === "haldane-romans-1");
+    assert.ok(haldane1);
+    assert.ok(
+      haldane1.url.includes(
+        "/books/haldane-robert-exposition-on-the-epistle-to-the-romans/3/",
+      ),
+      haldane1.url,
+    );
+    assert.ok(
+      haldane1.altUrl?.includes(
+        "/books/haldane-robert-exposition-on-the-epistle-to-the-romans/4/",
+      ),
+      haldane1.altUrl,
+    );
+    const haldane8 = CATALOG.find((e) => e.id === "haldane-romans-8");
+    assert.ok(
+      haldane8?.url.includes(
+        "/books/haldane-robert-exposition-on-the-epistle-to-the-romans/12/",
+      ),
+    );
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("haldane-")).length, 16);
+    assert.equal(
+      CATALOG.some((e) =>
+        /haldane-robert-exposition-on-the-epistle-to-the-romans\/(1|2|21)\/$/.test(
+          e.url,
+        ),
+      ),
+      false,
+      "Haldane n=1 preface / n=2 intro / n=21 conclusion stay off the catalog",
+    );
+
+    const broadus = CATALOG.find((e) => e.id === "broadus-matthew-5");
+    assert.ok(broadus?.url.includes("/commentary/broadus/MAT/5/"));
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("broadus-")).length, 28);
+
+    const hodgeRom = CATALOG.find((e) => e.id === "hodge-romans-8");
+    assert.ok(hodgeRom?.url.includes("/commentary/hodge/ROM/8/"));
+    assert.equal(hodgeRom?.voice, "Charles Hodge");
+    assert.ok(CATALOG.find((e) => e.id === "hodge-1corinthians-13"));
+    assert.equal(
+      CATALOG.some((e) => e.url.includes("/commentary/hodge/EPH/")),
+      false,
+      "Hodge SI Eph skipped — CCEL hodge-eph-* already indexed",
+    );
+    assert.ok(CATALOG.find((e) => e.id === "hodge-eph-1")?.url.includes("ccel.org"));
+
+    const alford = CATALOG.find((e) => e.id === "alford-matthew-5");
+    assert.ok(alford?.url.includes("/commentaries/alford/matthew/5.htm"));
+    assert.ok(CATALOG.find((e) => e.id === "alford-romans-8"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("alford-")).length >= 250);
+
+    const banned = /scofield|darby|kelly|bellett|pink|stier/i;
+    assert.equal(
+      CATALOG.filter((e) => banned.test(e.id) || banned.test(e.voice)).length,
+      0,
+    );
+  });
+
   it("empty Inquire may seat Pulpit when a spare remains; never drops wave1", async () => {
     const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
     attachWeakNtCatalog();
@@ -827,6 +910,25 @@ describe("NT chapter-1 mapping", () => {
         `wave4 must not drop ${prefix}*, got ${ids.join(",")}`,
       );
     }
+  });
+
+  it("WAVE-5B spare interleave never drops wave1 on empty Inquire", () => {
+    const hits = mapCatalog({
+      question: "",
+      bookId: "ROM",
+      chapter: 8,
+      verse: 28,
+      verseText: "And we know that all things work together for good",
+      limit: 9,
+    });
+    const ids = hits.map((h) => h.id);
+    for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
+      assert.ok(
+        ids.some((id) => id.startsWith(prefix)),
+        `wave5 must not drop ${prefix}*, got ${ids.join(",")}`,
+      );
+    }
+    assert.equal(hits.length, 9);
   });
 
 });
@@ -1067,6 +1169,48 @@ describe("Phase C pericope index", () => {
       CATALOG.some((r) => r.id === "aquinas-catena-john-1"),
       false,
       "John 1 must not point at the Mark catena",
+    );
+    const luke = CATALOG.find((r) => r.id === "aquinas-catena-luke");
+    assert.ok(luke, "Catena Luke long page is missing");
+    assert.equal(luke.url, "https://isidore.co/aquinas/CALuke.htm");
+    assert.equal(luke.chapters?.length, 24);
+    assert.ok(luke.chapters?.includes(15) && luke.chapters?.includes(24));
+    const john = CATALOG.find((r) => r.id === "aquinas-catena-john");
+    assert.ok(john, "Catena John long page is missing");
+    assert.equal(john.url, "https://isidore.co/aquinas/CAJohn.htm");
+    assert.equal(john.chapters?.length, 21);
+    assert.equal(
+      CATALOG.filter((r) => r.url === "https://isidore.co/aquinas/CALuke.htm")
+        .length,
+      1,
+      "one Isidore Luke URL only",
+    );
+  });
+
+  it("verifies Chrysostom NA 2302–2310 digits (PHP COL 1TH 2TH 1TI 2TI TIT PHM GAL)", async () => {
+    const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
+    attachWeakNtCatalog();
+    const count = (needle: string) =>
+      CATALOG.filter((e) => e.url.includes(`/fathers/${needle}`)).length;
+    assert.equal(count("2302"), 15, "PHP 230201–230215");
+    assert.equal(count("2303"), 12, "COL 230301–230312");
+    assert.equal(count("2304"), 11, "1TH 230401–230411");
+    assert.equal(count("2305"), 5, "2TH 23051–23055");
+    assert.equal(count("2306"), 18, "1TI 230601–230618");
+    assert.equal(count("2307"), 10, "2TI 230701–230710");
+    assert.equal(count("2308"), 6, "TIT 23081–23086");
+    assert.equal(count("2309"), 3, "PHM 23091–23093");
+    assert.equal(count("2310"), 6, "GAL 23101–23106");
+    assert.ok(CATALOG.some((e) => e.url.endsWith("/fathers/230201.htm")));
+    assert.ok(CATALOG.some((e) => e.url.endsWith("/fathers/23051.htm")));
+    assert.ok(CATALOG.some((e) => e.url.endsWith("/fathers/23106.htm")));
+    assert.equal(
+      CATALOG.some((e) => e.url.endsWith("/fathers/230216.htm")),
+      false,
+    );
+    assert.equal(
+      CATALOG.some((e) => e.url.endsWith("/fathers/230501.htm")),
+      false,
     );
   });
 
@@ -1748,6 +1892,9 @@ describe("reserved seats survive to cards", () => {
     assert.equal(byteCapFor("https://ccel.org/ccel/calvin/calcom38.iv.html"), 600_000);
     assert.equal(byteCapFor("https://www.ccel.org/ccel/calvin/calcom38.iv.html"), 600_000);
     assert.equal(byteCapFor("https://tertullian.org/fathers/theodoret_commentary_on_romans_01.htm"), 600_000);
+    assert.equal(byteCapFor("https://isidore.co/aquinas/CALuke.htm"), 600_000);
+    assert.equal(byteCapFor("https://www.sermonindex.net/commentary/godet/ROM/8/"), 600_000);
+    assert.equal(byteCapFor("https://sermonindex.net/commentary/ryle-expository-thoughts/MAT/5/"), 600_000);
     assert.equal(byteCapFor("https://godrules.net/library/calvin/calvin.htm"), 180_000);
   });
 
