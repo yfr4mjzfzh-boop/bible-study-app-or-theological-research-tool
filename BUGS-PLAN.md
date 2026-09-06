@@ -1,6 +1,6 @@
 # Theos Logos — BUGS-PLAN (Chief Boss numbering — authoritative)
 
-Updated 2026-09-05 ~23:50 ET · scholar-desk
+Updated 2026-09-05 ~23:52 ET · scholar-desk tip `547c4c7` (await QC; no promote)
 
 **Grok:** Trust symptoms + Chief numbers.
 
@@ -30,10 +30,10 @@ Empty-desk marked `v. N` chips: same clear grammar.
 ## BUG-10 — DONE — reception exit
 xl desk uses `deskShown`/`deskOpen` so sheet exits before unmount; mobile sheet delay ~320ms.
 
-## BUG-4 — DONE (on scholar-desk; no promote yet)
+## BUG-4 — DONE (on scholar-desk tip `547c4c7`; no promote yet)
 Desk seat budget **7 → 9**. Prefer/guarantee **Cambridge + Ellicott + Kretzmann** with wave-1 (Gill/Geneva/Lange) + wave-2 (Barnes/MacLaren/VWS). Verse-true / prefer-empty. Scofield/Darby **0**. Waiting QC + Chief. Prod still `6c8ac5f`.
 
-## AUTO-APPROVE catalogs — DONE (same tip; no promote)
+## AUTO-APPROVE catalogs — DONE (same tip `547c4c7`; no promote)
 Pulpit **skipped** (already via `pulpitNtChapters`). Meyer/EGT left as-is. No Alford. No Scofield/Darby. **Added:** Hodge Eph only; Robertson WP (no joh/heb/rev); Expositor's (skip Col/MacLaren); Bengel; Spurgeon `/9/`.
 
 ## BUG-5 — ongoing
