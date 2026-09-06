@@ -286,11 +286,11 @@
 }
 
 .tl-verse[aria-selected="true"] {
-  background-color: color-mix(in oklab, var(--color-lamp) 9%, transparent);
+  background-color: color-mix(in oklab, var(--color-lamp) 16%, transparent);
 }
 
 .dark .tl-verse[aria-selected="true"] {
-  background-color: color-mix(in oklab, var(--color-lamp) 14%, transparent);
+  background-color: color-mix(in oklab, var(--color-lamp) 22%, transparent);
 }
 
 .tl-first-verse[aria-selected="true"] {
@@ -306,11 +306,11 @@
 }
 
 .tl-first-verse[aria-selected="true"] .tl-verse-ink {
-  background-color: color-mix(in oklab, var(--color-lamp) 9%, transparent);
+  background-color: color-mix(in oklab, var(--color-lamp) 16%, transparent);
 }
 
 .dark .tl-first-verse[aria-selected="true"] .tl-verse-ink {
-  background-color: color-mix(in oklab, var(--color-lamp) 14%, transparent);
+  background-color: color-mix(in oklab, var(--color-lamp) 22%, transparent);
 }
 
 .tl-verse[aria-selected="true"] .verse-num {
@@ -322,11 +322,11 @@
 .tl-verse[data-range-end="true"]::after {
   content: "";
   display: inline-block;
-  width: 3px;
-  height: 1.05em;
+  width: 4px;
+  height: 1.15em;
   border-radius: 1px;
   background: var(--color-lamp);
-  box-shadow: 0 0 14px 2px color-mix(in oklab, var(--color-lamp) 70%, transparent);
+  box-shadow: 0 0 18px 3px color-mix(in oklab, var(--color-lamp) 85%, transparent);
   vertical-align: -0.12em;
   opacity: 0;
   animation: tl-lamp-in var(--motion-medium) var(--ease-smooth-out) forwards;

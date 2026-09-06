@@ -26,7 +26,7 @@ Order: **1 → 6 → 7,8 → 2 → 3 → 9**. Skip **4**.
 - **Want:** installed app fills the screen; status bar is oxblood `#821111` in both modes; no black→white flicker when Control Center drops.
 - **Files:** `src/routes/__root.tsx`, `scripts/grok-pwa-shared.mjs`, `src/lib/pwa.ts`, `src/styles.css`.
 - **Do not:** restore light/dark `theme-color` media queries. User rejected that.
-- **Status:** queued. Spot-check only; oxblood meta already set.
+- **Status:** PASS. `lockThemeColor` in `src/lib/pwa.ts`; boot script strips media-query metas. Oxblood only.
 
 ## BUG-2 — treatise outline dumped as John 1:1
 
@@ -39,13 +39,14 @@ Order: **1 → 6 → 7,8 → 2 → 3 → 9**. Skip **4**.
 
 - **Want:** one card, three detents (peek / mid / full). Drag follows the finger on the chrome. Scrolling sources in mid does not collapse the desk. Mid remains scrollable.
 - **Files:** `src/components/study/workspace.tsx`, `src/components/study/reception-panel.tsx`, `src/styles.css`.
-- **Status:** queued. Earlier session landed chrome-only listeners + per-detent height; re-verify against 3358.mp4 if it still fails.
+- **Status:** PASS. Chrome-only listeners kept. COMMIT 56 / FLING 0.55. Peek-up to full at 28% of room.
 
 ## BUG-9 — selected verses hard to distinguish
 
 - **Want:** no red fill. Subtle lamplight on each end of the selected run. Middle verses quieter.
 - **Files:** `src/components/study/reader.tsx`, `src/styles.css` `.tl-verse`.
-- **Status:** queued.
+- **Status:** PASS. Selected wash 16%/22%. End lamps 4px + stronger glow.
+
 
 ## BUG-4 — SKIP until product call
 
@@ -56,5 +57,5 @@ Do not implement. Do not guess.
 - 2026-09-06 02:04 BUG-1 shipped `4c6adfd`.
 - 2026-09-06 02:32 BUG-2 shipped `11b8a51` (outline dump, numbered as 2 to match pack).
 - 2026-09-06 02:42 Boards moved into the repo. BUG-6 next.
-- 2026-09-06 02:45 BUG-6 shipped. Suite 117 pass. Next: 7,8.
+- 2026-09-06 02:47 BUG-7/8, 3, 9 shipped. Pack complete except skipped 4.
 

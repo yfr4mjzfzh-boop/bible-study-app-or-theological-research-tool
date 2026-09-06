@@ -180,8 +180,8 @@ export function StudyWorkspace() {
     let startT = 0;
     let pulling = false;
     let dy = 0;
-    const COMMIT = 96;
-    const FLING = 0.82;
+    const COMMIT = 56;
+    const FLING = 0.55;
     const onStart = (e: TouchEvent) => {
       startY = e.touches[0].clientY;
       startT = performance.now();
@@ -215,7 +215,7 @@ export function StudyWorkspace() {
         return;
       }
       if (mode === "peek") {
-        if (dy < -room * 0.42 || v < -1.15) setReceptionFull(true);
+        if (dy < -room * 0.28 || v < -1.05) setReceptionFull(true);
         else if (dy < -COMMIT || v < -FLING) setReceptionOpen(true);
         else if (dy > COMMIT || v > FLING) clearSelection();
         else setSheetDrag(0);

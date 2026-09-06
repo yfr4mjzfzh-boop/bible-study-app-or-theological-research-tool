@@ -10,8 +10,32 @@ function notify() {
   for (const fn of listeners) fn();
 }
 
+/** Keep Android's status bar on oxblood. Control Center re-reads the meta. */
+const OXBLOOD = "#821111";
+
+export function lockThemeColor() {
+  if (typeof document === "undefined") return;
+  const apply = () => {
+    document
+      .querySelectorAll('meta[name="theme-color"][media]')
+      .forEach((el) => el.remove());
+    let meta = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "theme-color");
+      document.head.appendChild(meta);
+    }
+    if (meta.getAttribute("content") !== OXBLOOD) {
+      meta.setAttribute("content", OXBLOOD);
+    }
+  };
+  apply();
+  document.addEventListener("visibilitychange", apply);
+}
+
 export function initPwa() {
   if (typeof window === "undefined") return;
+  lockThemeColor();
   if ("serviceWorker" in navigator) {
     void navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
   }
