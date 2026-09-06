@@ -1,19 +1,14 @@
 # Theos Logos — BUGS-PLAN (Chief Boss numbering)
 
-Updated 2026-09-06 ~09:40 ET
+Updated 2026-09-06 ~11:35 ET
 
-## BUG-4 — DONE (prod via `11caa01`)
-## BUG-11 — DONE (prod `11caa01` / `dpl_3ei8AwbXkG2pbSRpdRvkjoADEoBF`)
+## BUG-4 — DONE (prod via `d18ba5c`)
+## BUG-11 — DONE (prod `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`)
 Reception desk vertical scroll no longer nudges cards left.
 Fix: lock `.tl-scroll` horizontal; wrap long quotes; scrollLeft=0 on scroll.
 **Do not regress.**
 
-## Wave-5B — QC PASS (preview `49b850b` / `dpl_FipQn9ZWrXRVW2e61tK1iDudg41X`)
-Do not promote until Rardo says promote.
-Generators in `catalog.ts` (Ryle/Godet/Haldane/Broadus/Hodge-SI/Alford). Catena L+J long-pages in `catalog-weak-nt.ts`. HOSTS + LONG_PAGE in `retrieve-net.ts`. Chrysostom 2302–2310 digits already in `data/chrysostom-homilies.ts` (verified 200; no new rows). Tests in `retrieve.test.ts`. Not preferred. Desk seats 9. No Scofield/Darby/Kelly/Bellett/Pink/Stier.
-
-Ryle MAT skip 1–4, 16, 17, 28 (SI 404). Hodge SI Eph skipped (CCEL dupe). Haldane omit n=1,2,21.
-
-QC 2026-09-06: 124/124 + 48/48 PWA. Counts 82/77/16/28/32/260 + 2 Catena. Sample URLs 200. Wave-1 held. Named Ryle does not steal a reserved seat.
+## Wave-5B — DONE (live `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`)
+Promoted 2026-09-06: GitHub `main` 3908d51 → d18ba5c. Catalog: Ryle 82, Godet 77, Haldane 16, Broadus 28, Hodge SI 32, Alford 260, Catena L+J 2. Spare only. Desk 9. No Scofield/Darby/Kelly/Bellett/Pink/Stier.
 
 ## BUG-5 — ongoing
