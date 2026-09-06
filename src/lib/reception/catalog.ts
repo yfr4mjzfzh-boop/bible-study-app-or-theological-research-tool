@@ -1335,6 +1335,145 @@ function kretzmannNtChapters(have: Set<string>): CatalogEntry[] {
   return out;
 }
 
+
+/** Hodge Ephesians only — CCEL chapters i–vi → Eph 1–6. */
+const HODGE_EPH_ROMAN = ["i", "ii", "iii", "iv", "v", "vi"] as const;
+
+function hodgeEphesiansChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (let ch = 1; ch <= 6; ch++) {
+    const id = `hodge-eph-${ch}`;
+    if (have.has(id)) continue;
+    const roman = HODGE_EPH_ROMAN[ch - 1]!;
+    out.push(
+      e(
+        id,
+        "Charles Hodge",
+        "Commentary on the Epistle to the Ephesians",
+        "reformed",
+        `Ephesians ${ch}`,
+        `https://ccel.org/ccel/hodge/ephesians/ephesians.iii.${roman}.html`,
+        ["ephesians", "hodge", "reformed"],
+        ["EPH"],
+        [ch],
+      ),
+    );
+  }
+  return out;
+}
+
+/**
+ * A.T. Robertson Word Pictures (godrules) — scoped NT chapters.
+ * Skip joh / heb / rev book codes (no aliases for those).
+ */
+function robertsonNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  const SKIP_CODES = new Set(["joh", "heb", "rev"]);
+  for (const [stem, bookId, name, chapters, code] of WAVE1_NT) {
+    if (SKIP_CODES.has(code)) continue;
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `robertson-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "A. T. Robertson",
+          "Word Pictures in the New Testament",
+          "reformed",
+          `${name} ${ch}`,
+          `https://godrules.net/library/robert/robert${code}${ch}.htm`,
+          [tag, "robertson", "word-pictures"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+/**
+ * Expositor's Bible (Bible Hub). Skip Colossians — MacLaren volume already
+ * covered by maclaren- entries.
+ */
+function expositorNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    if (stem === "colossians") continue;
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `expositors-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Expositor's Bible",
+          "The Expositor's Bible",
+          "reformed",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/expositors/${hub}/${ch}.htm`,
+          [tag, "expositors", "expositor"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function bengelNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `bengel-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Johann Albrecht Bengel",
+          "Gnomon of the New Testament",
+          "lutheran",
+          `${name} ${ch}`,
+          `https://biblehub.com/commentaries/bengel/${hub}/${ch}.htm`,
+          [tag, "bengel", "gnomon"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
+function spurgeonNtChapters(have: Set<string>): CatalogEntry[] {
+  const out: CatalogEntry[] = [];
+  for (const [stem, bookId, name, chapters, , hub] of WAVE1_NT) {
+    const tag = name.toLowerCase().replace(/^\d+\s+/, "");
+    const bookSlug = bibliaplusBookSlug(hub);
+    for (let ch = 1; ch <= chapters; ch++) {
+      const id = `spurgeon-${stem}-${ch}`;
+      if (have.has(id)) continue;
+      out.push(
+        e(
+          id,
+          "Charles Spurgeon",
+          "Spurgeon's Bible Commentary",
+          "reformed",
+          `${name} ${ch}`,
+          `https://www.bibliaplus.org/en/commentaries/9/spurgeon-bible-commentary/${bookSlug}/${ch}`,
+          [tag, "spurgeon"],
+          [bookId],
+          [ch],
+        ),
+      );
+    }
+  }
+  return out;
+}
+
 /** Luther Epistle Postils (Bible Hub library) — lectionary grain from published Text: lines. */
 const LUTHER_EPISTLE_POSTILS: Array<{
   id: string;
@@ -1765,6 +1904,11 @@ export const CATALOG: CatalogEntry[] = (() => {
     egtNtChapters,
     owenHebrewsChapters,
     kretzmannNtChapters,
+    hodgeEphesiansChapters,
+    robertsonNtChapters,
+    expositorNtChapters,
+    bengelNtChapters,
+    spurgeonNtChapters,
     lutherEpistlePostils,
     cyrilJohnBooks,
     cyrilLukeSermons,
@@ -1983,8 +2127,8 @@ export function mapCatalog(opts: {
     const WAVE1_RE = /^(gill|geneva|poole|jfb|lange)-/;
     const WAVE2_RE = /^(barnes|maclaren|vws|hawker|trapp|burkitt)-/;
     const WAVE3_RE =
-      /^(cambridge|ellicott|owen|kretzmann|luther-epistle|cyril-john|cyril-luke-sermons|augustine-1jn-h|augustine-nt-sermon|augustine-harmony|theodoret|victorinus-rev)-/;
-    const WAVE4_RE = /^(pulpit|meyer|egt)-/;
+      /^(cambridge|ellicott|owen|kretzmann|luther-epistle|cyril-john|cyril-luke-sermons|augustine-1jn-h|augustine-nt-sermon|augustine-harmony|theodoret|victorinus-rev|hodge-eph|robertson|bengel|spurgeon)-/;
+    const WAVE4_RE = /^(pulpit|meyer|egt|expositors)-/;
     const RESERVED_WAVE1 = ["gill-", "geneva-", "lange-"] as const;
     const RESERVED_WAVE2 = [
       "barnes-",

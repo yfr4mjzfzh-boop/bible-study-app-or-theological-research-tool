@@ -148,6 +148,10 @@ const WAVE3_ID_PREFIXES = [
   "augustine-harmony-",
   "theodoret-",
   "victorinus-rev-",
+  "hodge-eph-",
+  "robertson-",
+  "bengel-",
+  "spurgeon-",
 ] as const;
 
 function isWave2Id(id: string): boolean {

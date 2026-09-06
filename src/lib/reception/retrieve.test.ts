@@ -776,6 +776,39 @@ describe("NT chapter-1 mapping", () => {
     );
   });
 
+  it("indexes AUTO-APPROVE Hodge/Robertson/Expositors/Bengel/Spurgeon; Scofield/Darby stay 0", () => {
+    assert.ok(CATALOG.find((e) => e.id === "hodge-eph-1"));
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("hodge-eph-")).length, 6);
+    const hodge = CATALOG.find((e) => e.id === "hodge-eph-1");
+    assert.ok(hodge?.url.includes("ccel.org/ccel/hodge/ephesians/ephesians.iii.i.html"));
+    assert.equal(hodge?.voice, "Charles Hodge");
+
+    assert.ok(CATALOG.find((e) => e.id === "robertson-matthew-5"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("robertson-")).length > 0);
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("robertson-john-")).length, 0);
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("robertson-hebrews-")).length, 0);
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("robertson-revelation-")).length, 0);
+    const rwp = CATALOG.find((e) => e.id === "robertson-matthew-5");
+    assert.ok(rwp?.url.includes("godrules.net/library/robert/robertmat5.htm"));
+
+    assert.ok(CATALOG.find((e) => e.id === "expositors-matthew-5"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("expositors-")).length > 0);
+    assert.equal(CATALOG.filter((e) => e.id.startsWith("expositors-colossians-")).length, 0);
+
+    assert.ok(CATALOG.find((e) => e.id === "bengel-romans-8"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("bengel-")).length > 0);
+
+    assert.ok(CATALOG.find((e) => e.id === "spurgeon-romans-8"));
+    assert.ok(CATALOG.filter((e) => e.id.startsWith("spurgeon-")).length > 0);
+    const spurgeon = CATALOG.find((e) => e.id === "spurgeon-romans-8");
+    assert.ok(spurgeon?.url.includes("/commentaries/9/spurgeon-bible-commentary/romans/8"));
+
+    assert.equal(
+      CATALOG.filter((e) => /scofield|darby/i.test(e.id) || /scofield|darby/i.test(e.voice)).length,
+      0,
+    );
+  });
+
   it("empty Inquire may seat Pulpit when a spare remains; never drops wave1", async () => {
     const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
     attachWeakNtCatalog();

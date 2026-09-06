@@ -1,10 +1,10 @@
 # Theos Logos — BUGS-PLAN (Chief Boss numbering — authoritative)
 
-Updated 2026-09-05 ~23:45 ET · scholar-desk
+Updated 2026-09-05 ~23:50 ET · scholar-desk
 
 **Grok:** Trust symptoms + Chief numbers.
 
-Order remaining: **BUG-4** seating landed (await QC/Chief); NEW PD sources same PR when Chief lists them. Prior UI pack DONE on prod `6c8ac5f`.
+Order: **BUG-4** + AUTO-APPROVE PD catalogs landed on scholar-desk (await QC/Chief). Prior UI pack DONE on prod `6c8ac5f`.
 
 ## BUG-1 — DONE
 Retap sole verse clears. `applyVerseTap` / `tapVerse`. SHA `4c6adf`.
@@ -31,7 +31,10 @@ Empty-desk marked `v. N` chips: same clear grammar.
 xl desk uses `deskShown`/`deskOpen` so sheet exits before unmount; mobile sheet delay ~320ms.
 
 ## BUG-4 — DONE (on scholar-desk; no promote yet)
-Desk seat budget **7 → 9**. Reserve/interleave **Ellicott** + **Kretzmann** with wave-1 (Gill/Geneva/Lange) + wave-2 (Barnes/MacLaren/VWS) + Cambridge. Verse-true / prefer-empty. Scofield/Darby **0**. Waiting Chief/Librarian NEW PD list for same PR; **no promote** until QC + Chief go. Prod still `6c8ac5f`.
+Desk seat budget **7 → 9**. Prefer/guarantee **Cambridge + Ellicott + Kretzmann** with wave-1 (Gill/Geneva/Lange) + wave-2 (Barnes/MacLaren/VWS). Verse-true / prefer-empty. Scofield/Darby **0**. Waiting QC + Chief. Prod still `6c8ac5f`.
+
+## AUTO-APPROVE catalogs — DONE (same tip; no promote)
+Pulpit **skipped** (already via `pulpitNtChapters`). Meyer/EGT left as-is. No Alford. No Scofield/Darby. **Added:** Hodge Eph only; Robertson WP (no joh/heb/rev); Expositor's (skip Col/MacLaren); Bengel; Spurgeon `/9/`.
 
 ## BUG-5 — ongoing
 Wrong-neighbor → fixture → tighten.
