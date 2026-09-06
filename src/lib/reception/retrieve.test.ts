@@ -497,7 +497,7 @@ describe("NT chapter-1 mapping", () => {
     assert.ok(scoreEntry(calvinJohn, tokens, "JHN", 1) > 0);
   });
 
-  it("empty Inquire limit 7 on Rom 8 / Matt 5 / John 3 includes Gill, Geneva, AND Lange", async () => {
+  it("empty Inquire limit 9 on Rom 8 / Matt 5 / John 3 includes Gill, Geneva, AND Lange", async () => {
     const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
     attachWeakNtCatalog();
     const beatitude =
@@ -529,7 +529,7 @@ describe("NT chapter-1 mapping", () => {
         chapter: c.chapter,
         verse: c.verse,
         verseText: c.verseText,
-        limit: 7,
+        limit: 9,
       });
       const ids = hits.map((h) => h.id);
       for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
@@ -550,7 +550,7 @@ describe("NT chapter-1 mapping", () => {
     }
   });
 
-  it("empty Inquire limit 7 seats wave-2 voices on Matt 5 / Rom 8 / John 3", async () => {
+  it("empty Inquire limit 9 seats wave-2 voices on Matt 5 / Rom 8 / John 3", async () => {
     const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
     attachWeakNtCatalog();
     const WAVE2 = ["barnes-", "maclaren-", "vws-", "hawker-", "trapp-", "burkitt-"] as const;
@@ -583,7 +583,7 @@ describe("NT chapter-1 mapping", () => {
         chapter: c.chapter,
         verse: c.verse,
         verseText: c.verseText,
-        limit: 7,
+        limit: 9,
       });
       const ids = hits.map((h) => h.id);
       for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
@@ -688,11 +688,10 @@ describe("NT chapter-1 mapping", () => {
     );
   });
 
-  it("empty Inquire limit 7 keeps wave1+2 and seats preferred wave-3", async () => {
+  it("empty Inquire limit 9 keeps wave1+2 and seats Cambridge + Ellicott + Kretzmann", async () => {
     const { attachWeakNtCatalog } = await import("./catalog-weak-nt.ts");
     attachWeakNtCatalog();
     const WAVE2 = ["barnes-", "maclaren-", "vws-", "hawker-", "trapp-", "burkitt-"] as const;
-    const WAVE3_PREF = ["cambridge-", "ellicott-", "kretzmann-", "cyril-john-"] as const;
     const cases = [
       {
         bookId: "MAT" as const,
@@ -714,7 +713,9 @@ describe("NT chapter-1 mapping", () => {
         verseText: "For God so loved the world, that he gave his only begotten Son",
       },
     ];
-    let wave3Ok = 0;
+    const seenCambridge = new Set<string>();
+    const seenEllicott = new Set<string>();
+    const seenKretzmann = new Set<string>();
     for (const c of cases) {
       const hits = mapCatalog({
         question: "",
@@ -722,7 +723,7 @@ describe("NT chapter-1 mapping", () => {
         chapter: c.chapter,
         verse: c.verse,
         verseText: c.verseText,
-        limit: 7,
+        limit: 9,
       });
       const ids = hits.map((h) => h.id);
       for (const prefix of ["gill-", "geneva-", "lange-"] as const) {
@@ -735,11 +736,26 @@ describe("NT chapter-1 mapping", () => {
         ids.some((id) => WAVE2.some((p) => id.startsWith(p))),
         `expected >=1 wave-2 for ${c.bookId} ${c.chapter}, got ${ids.join(",")}`,
       );
-      if (ids.some((id) => WAVE3_PREF.some((p) => id.startsWith(p)))) wave3Ok++;
+      // Scofield/Darby never seat
+      assert.equal(
+        ids.filter((id) => /scofield|darby/i.test(id)).length,
+        0,
+      );
+      if (ids.some((id) => id.startsWith("cambridge-"))) seenCambridge.add(`${c.bookId}:${c.chapter}`);
+      if (ids.some((id) => id.startsWith("ellicott-"))) seenEllicott.add(`${c.bookId}:${c.chapter}`);
+      if (ids.some((id) => id.startsWith("kretzmann-"))) seenKretzmann.add(`${c.bookId}:${c.chapter}`);
     }
     assert.ok(
-      wave3Ok >= 1,
-      `expected >=1 preferred wave-3 seat across sample verses`,
+      seenCambridge.size >= 1,
+      `expected Cambridge at least once across Matt 5 / Rom 8 / John 3`,
+    );
+    assert.ok(
+      seenEllicott.size >= 1,
+      `expected Ellicott at least once across samples, got cambridge=${[...seenCambridge]} kretzmann=${[...seenKretzmann]}`,
+    );
+    assert.ok(
+      seenKretzmann.size >= 1,
+      `expected Kretzmann at least once across samples, got cambridge=${[...seenCambridge]} ellicott=${[...seenEllicott]}`,
     );
   });
 
@@ -769,7 +785,7 @@ describe("NT chapter-1 mapping", () => {
       chapter: 8,
       verse: 28,
       verseText: "And we know that all things work together for good",
-      limit: 7,
+      limit: 9,
     });
     const ids = hits.map((h) => h.id);
     for (const prefix of ["gill-", "geneva-", "lange-"] as const) {

@@ -1,10 +1,10 @@
 # Theos Logos — BUGS-PLAN (Chief Boss numbering — authoritative)
 
-Updated 2026-09-05 ~23:30 ET · scholar-desk UI pack (await QC)
+Updated 2026-09-05 ~23:45 ET · scholar-desk
 
-**Grok:** If another `BUGS-PLAN.md` remapped IDs overnight, ignore those numbers. Use **symptoms** below.
+**Grok:** Trust symptoms + Chief numbers.
 
-Order remaining: **none** in this pack (6→7→8→2→3→9→10 done). Skip **4**. **1** done.
+Order remaining: **BUG-4** seating landed (await QC/Chief); NEW PD sources same PR when Chief lists them. Prior UI pack DONE on prod `6c8ac5f`.
 
 ## BUG-1 — DONE
 Retap sole verse clears. `applyVerseTap` / `tapVerse`. SHA `4c6adf`.
@@ -30,8 +30,8 @@ Empty-desk marked `v. N` chips: same clear grammar.
 ## BUG-10 — DONE — reception exit
 xl desk uses `deskShown`/`deskOpen` so sheet exits before unmount; mobile sheet delay ~320ms.
 
-## BUG-4 — HELD
-Desk seat diversity — product call.
+## BUG-4 — DONE (on scholar-desk; no promote yet)
+Desk seat budget **7 → 9**. Reserve/interleave **Ellicott** + **Kretzmann** with wave-1 (Gill/Geneva/Lange) + wave-2 (Barnes/MacLaren/VWS) + Cambridge. Verse-true / prefer-empty. Scofield/Darby **0**. Waiting Chief/Librarian NEW PD list for same PR; **no promote** until QC + Chief go. Prod still `6c8ac5f`.
 
 ## BUG-5 — ongoing
 Wrong-neighbor → fixture → tighten.

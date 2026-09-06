@@ -1994,7 +1994,7 @@ export function mapCatalog(opts: {
       "trapp-",
       "burkitt-",
     ] as const;
-    // Prefer these when desk seats are scarce (limit 7).
+    // Prefer these when desk seats allow (limit 9: up to 3 preferred wave-3).
     const PREFERRED_WAVE3 = [
       "cambridge-",
       "ellicott-",
@@ -2035,10 +2035,11 @@ export function mapCatalog(opts: {
         picked.push(hit.entry);
         wave2Seated++;
       }
-      // Prefer a wave-3 seat when spare room remains after wave-1/2.
+      // Prefer up to 3 wave-3 seats (Cambridge/Ellicott/Kretzmann) when room remains.
+      // With limit 9 after wave1+wave2 (~6), fill remaining seats with preferred wave-3.
       const wave3Budget = Math.min(
-        1,
-        Math.max(0, limit - picked.length - 1),
+        3,
+        Math.max(0, limit - picked.length),
       );
       let wave3Seated = 0;
       for (const prefix of PREFERRED_WAVE3) {
@@ -2129,34 +2130,31 @@ export function mapCatalog(opts: {
         voices.add(miss.entry.voice);
         picked[replaceAt] = miss.entry;
       }
-      // Guarantee one preferred wave-3 seat by displacing a classic only.
-      const hasPreferredWave3 = picked.some((e) =>
-        PREFERRED_WAVE3.some((p) => e.id.startsWith(p)),
-      );
-      if (!hasPreferredWave3) {
-        const miss = PREFERRED_WAVE3.map((prefix) =>
-          chapterRanked.find(
-            (r) => r.entry.id.startsWith(prefix) && r.score > 0,
-          ),
-        ).find(Boolean);
-        if (miss && !voices.has(miss.entry.voice)) {
-          let replaceAt = -1;
-          for (let i = picked.length - 1; i >= 0; i--) {
-            const e = picked[i];
-            if (RESERVED_WAVE1.some((p) => e.id.startsWith(p))) continue;
-            if (WAVE2_RE.test(e.id)) continue;
-            if (isWaveId(e.id)) continue;
-            replaceAt = i;
-            break;
-          }
-          if (replaceAt >= 0) {
-            voices.delete(picked[replaceAt].voice);
-            voices.add(miss.entry.voice);
-            picked[replaceAt] = miss.entry;
-          } else if (picked.length < limit) {
-            voices.add(miss.entry.voice);
-            picked.push(miss.entry);
-          }
+      // Guarantee cambridge / ellicott / kretzmann when a chapter page exists
+      // (score>0), displacing classics only — never wave1/wave2.
+      const GUARANTEED_WAVE3 = ["cambridge-", "ellicott-", "kretzmann-"] as const;
+      for (const prefix of GUARANTEED_WAVE3) {
+        if (picked.some((e) => e.id.startsWith(prefix))) continue;
+        const miss = chapterRanked.find(
+          (r) => r.entry.id.startsWith(prefix) && r.score > 0,
+        );
+        if (!miss || voices.has(miss.entry.voice)) continue;
+        let replaceAt = -1;
+        for (let i = picked.length - 1; i >= 0; i--) {
+          const e = picked[i];
+          if (RESERVED_WAVE1.some((p) => e.id.startsWith(p))) continue;
+          if (WAVE2_RE.test(e.id)) continue;
+          if (isWaveId(e.id)) continue;
+          replaceAt = i;
+          break;
+        }
+        if (replaceAt >= 0) {
+          voices.delete(picked[replaceAt].voice);
+          voices.add(miss.entry.voice);
+          picked[replaceAt] = miss.entry;
+        } else if (picked.length < limit) {
+          voices.add(miss.entry.voice);
+          picked.push(miss.entry);
         }
       }
     } else {

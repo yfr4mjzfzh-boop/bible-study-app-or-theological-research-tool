@@ -183,7 +183,7 @@ export async function retrieveExtracts(opts: {
 }): Promise<FetchedExtract[]> {
   const query = [opts.question, opts.verseText].filter(Boolean).join(" ");
   const focused = Boolean(opts.question.trim());
-  const limit = focused ? 8 : 7;
+  const limit = focused ? 10 : 9;
   const exclude = new Set((opts.excludeUrls ?? []).filter(Boolean));
   // Desk empty-Inquire: map a few past the fetch cap so reserved wave-2
   // seats that rank just outside `limit` can still be pulled onto take.
@@ -206,12 +206,13 @@ export async function retrieveExtracts(opts: {
         take.push(extra);
       }
     }
+    // Prefer seating cambridge + ellicott + kretzmann (cap extras so Gemini stays near desk limit).
     const wave3InTake = take.filter((e) => isPreferredWave3Id(e.id)).length;
-    if (wave3InTake < 1) {
+    if (wave3InTake < 3) {
       const extras = mapped.filter(
         (e) => isPreferredWave3Id(e.id) && !take.some((t) => t.id === e.id),
       );
-      for (const extra of extras.slice(0, 1)) {
+      for (const extra of extras.slice(0, 3 - wave3InTake)) {
         take.push(extra);
       }
     }
