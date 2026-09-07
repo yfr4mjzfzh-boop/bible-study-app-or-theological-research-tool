@@ -1,7 +1,7 @@
 /* Theos Logos — keep the installable WebAPK; do not cache scripture. */
-const CACHE = "theos-logos-icons-v2";
+const CACHE = "theos-logos-icons-v3";
 const PRECACHE = [
-  "/favicon.svg",
+  "/favicon.png",
   "/apple-touch-icon.png",
   "/icon-192.png",
   "/icon-512.png",
