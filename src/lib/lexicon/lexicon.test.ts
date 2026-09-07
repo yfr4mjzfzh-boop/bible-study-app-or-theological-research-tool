@@ -93,6 +93,19 @@ describe("lexicon chips", () => {
     assert.equal(lookupWordNow("love", "Romans 8:35")?.strongs, "G26");
   });
 
+  it("Hebrews 1:1 spoke is G2980 λαλέω, not H2839 wheel spoke", () => {
+    const local = getLocalLexicon("spoke", "Hebrews 1:1");
+    const now = lookupWordNow("spoke", "Hebrews 1:1");
+    assert.ok(local);
+    assert.equal(local?.strongs, "G2980");
+    assert.equal(local?.lemma, "λαλέω");
+    assert.equal(now?.strongs, "G2980");
+    assert.equal(now?.lemma, "λαλέω");
+    // Unscoped English "spoke" still hits the STEPBible gloss noun (H2839) — no global override.
+    assert.equal(getLocalLexicon("spoke"), null);
+    assert.equal(lookupWordNow("spoke")?.strongs, "H2839");
+  });
+
   it("Romans 8:28 God stays G2316; Mark 1:1 beginning stays G746", () => {
     assert.equal(lookupWordNow("God", "Romans 8:28")?.strongs, "G2316");
     assert.equal(lookupWordNow("beginning", "Mark 1:1")?.strongs, "G746");

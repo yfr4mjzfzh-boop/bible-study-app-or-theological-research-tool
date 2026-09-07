@@ -219,7 +219,7 @@ function keyOf(word: string): string {
   return word.toLowerCase().replace(/[^a-z-]/g, "");
 }
 
-/** Verse-scoped Greek notes when English gloss alone is ambiguous (e.g. love → G25 verb vs G26 noun). */
+/** Verse-scoped Greek notes when English gloss alone is ambiguous (e.g. love → G25 verb vs G26 noun; spoke → G2980 vs H2839 wheel spoke). */
 const REF_GREEK: Array<{ match: RegExp; notes: Record<string, Note> }> = [
   {
     match: /^Romans\s+8:28\b/i,
@@ -232,6 +232,22 @@ const REF_GREEK: Array<{ match: RegExp; notes: Record<string, Note> }> = [
         gloss:
           "To love — to prize, delight in, and show goodwill toward. In Romans 8:28 the participle ἀγαπῶσιν marks those who love God.",
         range: "to love, esteem, delight in; of persons and of God.",
+        citation: "Sense-range after BDAG. Not a quotation.",
+        caution: CAUTION,
+      },
+    },
+  },
+  {
+    match: /^Hebrews\s+1:1\b/i,
+    notes: {
+      spoke: {
+        lemma: "λαλέω",
+        language: "greek",
+        strongs: "G2980",
+        source: "AS",
+        gloss:
+          "To speak, talk, or utter. In Hebrews 1:1 the aorist ἐλάλησεν marks God having spoken to the fathers by the prophets.",
+        range: "to speak, talk, utter, proclaim.",
         citation: "Sense-range after BDAG. Not a quotation.",
         caution: CAUTION,
       },
