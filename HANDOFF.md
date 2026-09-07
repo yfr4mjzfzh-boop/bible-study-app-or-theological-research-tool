@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-06 ~19:50 ET)
+# Theos Logos — living handoff (updated 2026-09-07 ~09:50 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -32,6 +32,12 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 ## BUG-4 — DONE (live)
 Desk seats 9.
 
+## Lexicon Strong’s (Rom 8:28 love) — READY (preview, await QC)
+Chip “love” on Romans 8:28 was G26 ἀγάπη (noun); verse Greek is verb ἀγαπῶσιν → **G25 ἀγαπάω**.
+Cause: STEPBible gloss index maps English “love”→G26; verb lives under “to love”. Not a lemma collapse.
+Fix: verse-scoped local note in `src/lib/lexicon/local.ts` (REF_GREEK). Rom 8:28 God stays G2316; Mark 1:1 beginning stays G746; empty-chip hiding unchanged; noun “love” elsewhere still G26.
+**Await QC. Do not promote.**
+
 ## Seal — READY (preview)
 Leather cover stays the home-screen icon. In the bar it is a flat oxblood stamp with the gold TL-cross (no 3D leather, no shadow) so it sits with the type. Regen: `python3 scripts/render-cover-icons.py`. Do not promote unless Rardo says promote.
 
@@ -47,6 +53,6 @@ When a verse (or range) is selected, a highlighter sits in the desk chrome. Tap 
 ## BUG-5 — ongoing
 
 ## STOP
-Wave-5B is live. Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
+Wave-5B is live. Lexicon Strong’s fix + Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
 Open the preview on a phone (or narrow the pane). Desktop website is intentionally quieter.
 Next: BUG-5, or a new wave only if Rardo names it.

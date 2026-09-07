@@ -219,6 +219,37 @@ function keyOf(word: string): string {
   return word.toLowerCase().replace(/[^a-z-]/g, "");
 }
 
+/** Verse-scoped Greek notes when English gloss alone is ambiguous (e.g. love → G25 verb vs G26 noun). */
+const REF_GREEK: Array<{ match: RegExp; notes: Record<string, Note> }> = [
+  {
+    match: /^Romans\s+8:28\b/i,
+    notes: {
+      love: {
+        lemma: "ἀγαπάω",
+        language: "greek",
+        strongs: "G25",
+        source: "AS",
+        gloss:
+          "To love — to prize, delight in, and show goodwill toward. In Romans 8:28 the participle ἀγαπῶσιν marks those who love God.",
+        range: "to love, esteem, delight in; of persons and of God.",
+        citation: "Sense-range after BDAG. Not a quotation.",
+        caution: CAUTION,
+      },
+    },
+  },
+];
+
+function refGreekNote(key: string, reference?: string): Note | undefined {
+  if (!reference) return undefined;
+  for (const row of REF_GREEK) {
+    if (row.match.test(reference.trim())) {
+      const note = row.notes[key];
+      if (note) return note;
+    }
+  }
+  return undefined;
+}
+
 export function getLocalLexicon(
   word: string,
   reference?: string,
@@ -227,7 +258,11 @@ export function getLocalLexicon(
   const ot = reference && /^(Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|Samuel|Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|Proverbs|Ecclesiastes|Song|Isaiah|Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|Habakkuk|Zephaniah|Haggai|Zechariah|Malachi)/i.test(
     reference,
   );
-  const note = (ot ? HEBREW[key] : undefined) ?? GREEK[key] ?? HEBREW[key];
+  const note =
+    (!ot ? refGreekNote(key, reference) : undefined) ??
+    (ot ? HEBREW[key] : undefined) ??
+    GREEK[key] ??
+    HEBREW[key];
   if (!note) return null;
   return { word, ...note };
 }

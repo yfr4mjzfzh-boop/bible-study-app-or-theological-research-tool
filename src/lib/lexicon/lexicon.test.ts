@@ -79,6 +79,26 @@ describe("lexicon chips", () => {
     assert.equal((now?.range ?? "").includes("__"), false);
   });
 
+
+  it("Romans 8:28 love is G25 ἀγαπάω, not G26 noun", () => {
+    const local = getLocalLexicon("love", "Romans 8:28");
+    const now = lookupWordNow("love", "Romans 8:28");
+    assert.ok(local);
+    assert.equal(local?.strongs, "G25");
+    assert.equal(local?.lemma, "ἀγαπάω");
+    assert.equal(now?.strongs, "G25");
+    assert.equal(now?.lemma, "ἀγαπάω");
+    // Noun verses stay on the STEPBible gloss path (G26) — no global love override.
+    assert.equal(getLocalLexicon("love", "Romans 8:35"), null);
+    assert.equal(lookupWordNow("love", "Romans 8:35")?.strongs, "G26");
+  });
+
+  it("Romans 8:28 God stays G2316; Mark 1:1 beginning stays G746", () => {
+    assert.equal(lookupWordNow("God", "Romans 8:28")?.strongs, "G2316");
+    assert.equal(lookupWordNow("beginning", "Mark 1:1")?.strongs, "G746");
+    assert.equal(lookupWordNow("beginning", "Mark 1:1")?.lemma, "ἀρχή");
+  });
+
   it("misses through the committed STEPBible JSON for pocket misses", () => {
     assert.equal(getLocalLexicon("faith", "John 1:12"), null);
     const now = lookupWordNow("faith", "John 1:12");
