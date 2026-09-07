@@ -33,11 +33,13 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 Desk seats 9.
 
 ## Lexicon Strong’s (Rom 8:28 love) — READY (preview, await QC)
-- Fix SHA `9d84530` on `scholar-desk` (preview URL/dpl filled when READY).
+- Fix SHA `9d84530` · tip `bbb4b22` on `scholar-desk`
+- Preview https://theos-logos-official-e699tsohx-castanedag2001-1468.vercel.app · dpl `dpl_2bZFMPtYZYAsUxTqE5HtVozD9rn2`
+- Branch alias https://theos-logos-official-git-scholar-desk-castanedag2001-1468.vercel.app
 Chip “love” on Romans 8:28 was G26 ἀγάπη (noun); verse Greek is verb ἀγαπῶσιν → **G25 ἀγαπάω**.
 Cause: STEPBible gloss index maps English “love”→G26; verb lives under “to love”. Not a lemma collapse.
 Fix: verse-scoped local note in `src/lib/lexicon/local.ts` (REF_GREEK). Rom 8:28 God stays G2316; Mark 1:1 beginning stays G746; empty-chip hiding unchanged; noun “love” elsewhere still G26.
-**Await QC. Do not promote.**
+**Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`.
 
 ## Seal — READY (preview)
 Leather cover stays the home-screen icon. In the bar it is a flat oxblood stamp with the gold TL-cross (no 3D leather, no shadow) so it sits with the type. Regen: `python3 scripts/render-cover-icons.py`. Do not promote unless Rardo says promote.

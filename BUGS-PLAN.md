@@ -11,8 +11,9 @@ Fix: lock `.tl-scroll` horizontal; wrap long quotes; scrollLeft=0 on scroll.
 ## Wave-5B — DONE (live `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`)
 Promoted 2026-09-06: GitHub `main` 3908d51 → d18ba5c. Catalog: Ryle 82, Godet 77, Haldane 16, Broadus 28, Hodge SI 32, Alford 260, Catena L+J 2. Spare only. Desk 9. No Scofield/Darby/Kelly/Bellett/Pink/Stier.
 
-## Lexicon Strong’s (Rom 8:28 love→G25) — READY (preview, await QC) · SHA `9d84530`
-English chip “love” hit G26 noun via STEPBible gloss; verse is ἀγαπῶσιν → G25. Local REF_GREEK override. Regressions: God G2316, Mark 1:1 G746, empty chips. **No promote.**
+## Lexicon Strong’s (Rom 8:28 love→G25) — READY (preview, await QC)
+SHA `9d84530` / tip `bbb4b22` · dpl `dpl_2bZFMPtYZYAsUxTqE5HtVozD9rn2` · https://theos-logos-official-e699tsohx-castanedag2001-1468.vercel.app
+English chip “love” hit G26 noun via STEPBible gloss; verse is ἀγαπῶσιν → G25. Local REF_GREEK override. Regressions: God G2316, Mark 1:1 G746, empty chips. **No promote.** Prod stays `d18ba5c`.
 
 ## Lectern polish — READY (preview, phone)
 Laid grain, Night Lectern room, slips land, closed folio. max-width 639px only.
