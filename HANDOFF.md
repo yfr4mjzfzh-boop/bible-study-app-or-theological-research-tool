@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-07 ~11:05 ET)
+# Theos Logos — living handoff (updated 2026-09-07 ~11:08 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -6,10 +6,11 @@
 - SHA `d18ba5c` · https://theos-logos-official.vercel.app · dpl `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`
 - Wave-5B + BUG-11 + catalogs live. **NO promote from previews without Rardo go.**
 
-## In preview — revised book-edge icons (await QC / Rardo)
+## In preview — revised book-edge icons READY (await QC / Rardo)
+- SHA `3db067e` · preview https://theos-logos-official-axdrzpcl1-castanedag2001-1468.vercel.app · dpl `dpl_FRuExXbBVMe5NAkChs7MfZ15sNjz`
 - App icons only: full-bleed oxblood book cover (icon edge = book edge; no inset plate).
 - Header seal **unchanged** (prior locked header / `public/seal.png`).
-- SW cache bumped to `theos-logos-icons-v4` (PNG precache; no favicon.svg).
+- SW cache `theos-logos-icons-v4` (PNG precache; no favicon.svg).
 - Lexicon tip still held (`342c0fc` / `8b5c41a`): Rom 8:28 love→G25; Heb 1:1 spoke→G2980. Quintilius PASS. Holding promote.
 - **NO promote** until Rardo QC.
 
