@@ -33,6 +33,7 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 Desk seats 9.
 
 ## Lexicon Strong’s (Rom 8:28 love) — READY (preview, await QC)
+- Fix SHA `9d84530` on `scholar-desk` (preview URL/dpl filled when READY).
 Chip “love” on Romans 8:28 was G26 ἀγάπη (noun); verse Greek is verb ἀγαπῶσιν → **G25 ἀγαπάω**.
 Cause: STEPBible gloss index maps English “love”→G26; verb lives under “to love”. Not a lemma collapse.
 Fix: verse-scoped local note in `src/lib/lexicon/local.ts` (REF_GREEK). Rom 8:28 God stays G2316; Mark 1:1 beginning stays G746; empty-chip hiding unchanged; noun “love” elsewhere still G26.
