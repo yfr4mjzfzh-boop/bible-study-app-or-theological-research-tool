@@ -12,7 +12,7 @@ Fix: lock `.tl-scroll` horizontal; wrap long quotes; scrollLeft=0 on scroll.
 Promoted 2026-09-06: GitHub `main` 3908d51 → d18ba5c. Catalog: Ryle 82, Godet 77, Haldane 16, Broadus 28, Hodge SI 32, Alford 260, Catena L+J 2. Spare only. Desk 9. No Scofield/Darby/Kelly/Bellett/Pink/Stier.
 
 ## Lexicon Strong’s (Rom 8:28 love→G25 + Heb 1:1 spoke→G2980) — READY (preview, await QC)
-Fix SHAs `9d84530` / `342c0fc` · tip `342c0fc` (docs tip follows) · dpl `dpl_H4oyBXRuCDjVxHwvKujW23XvisvM` · https://theos-logos-official-l16t9k4i3-castanedag2001-1468.vercel.app
+Fix SHAs `9d84530` / `342c0fc` · tip `db50a6b` · dpl `dpl_H4oyBXRuCDjVxHwvKujW23XvisvM` · https://theos-logos-official-l16t9k4i3-castanedag2001-1468.vercel.app
 “love”→G26 noun / “spoke”→H2839 wheel spoke via STEPBible gloss; verse Greek → G25 / G2980. Local REF_GREEK overrides. Regressions: God G2316, Mark 1:1 G746, empty chips, noun love G26. **No promote.** Prod stays `d18ba5c`.
 
 ## Lectern polish — READY (preview, phone)

@@ -33,7 +33,7 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 Desk seats 9.
 
 ## Lexicon Strong’s (Rom 8:28 love + Heb 1:1 spoke) — READY (preview, await QC)
-- Fix SHAs `9d84530` (love→G25) · `342c0fc` (spoke→G2980) · tip `342c0fc` on `scholar-desk` (docs tip follows)
+- Fix SHAs `9d84530` (love→G25) · `342c0fc` (spoke→G2980) · tip `db50a6b` on `scholar-desk`
 - Preview https://theos-logos-official-l16t9k4i3-castanedag2001-1468.vercel.app · dpl `dpl_H4oyBXRuCDjVxHwvKujW23XvisvM`
 - Branch alias https://theos-logos-official-git-scholar-desk-castanedag2001-1468.vercel.app
 **Rom 8:28 “love”:** was G26 ἀγάπη (noun); verse Greek is ἀγαπῶσιν → **G25 ἀγαπάω**. Gloss index maps “love”→G26; verb under “to love”.
