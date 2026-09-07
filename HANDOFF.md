@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-07 ~10:44 ET)
+# Theos Logos — living handoff (updated 2026-09-07 ~10:47 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -42,12 +42,14 @@ Fix: verse-scoped `REF_GREEK` in `src/lib/lexicon/local.ts` (same class). Regres
 **Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`.
 
 ## Locked logo (header + PWA) — READY (preview, await QC)
-Wired LOCKED Theos Logos mark into `scholar-desk` (header seal + favicon/PWA icons). Source: `/workspace/theos-logos-logo/LOCKED-header.png` + `exports/`.
+- Wire SHA `9eb8d4f` on `scholar-desk` · preview https://theos-logos-official-tgj4uq9h5-castanedag2001-1468.vercel.app · dpl `dpl_7kKJuW3xWg9Qk6BBgYxfFmEfXQXG`
+- Branch alias https://theos-logos-official-git-scholar-desk-castanedag2001-1468.vercel.app
+Wired LOCKED Theos Logos mark (header seal + favicon/PWA icons). Source: box `/workspace/theos-logos-logo/LOCKED-header.png` + `exports/`.
 - Header: `public/seal.png` ← cropped locked oxblood book mark (wordmark still “Theos Logos” + SCRIPTURE FIRST)
 - Favicon/PWA: `favicon.png`, `favicon-48.png`, `apple-touch-icon.png`, `__grok/icon-180.png`, `icon-192.png`, `icon-512.png`, `icon-512-maskable.png`
 - SW cache bumped `theos-logos-icons-v1` → `theos-logos-icons-v2`
 - Oxblood `#821111` unchanged. Manifest paths unchanged (`/icon-192`, `/icon-512`, maskable, apple-touch).
-**Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`.
+**Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`. Lexicon Strong’s PASS notes unchanged.
 
 ## In this chapter — READY (preview)
 Collapsed by default, label only (“In this chapter”). Opens as a folio: height ease + staggered heading rise. BUG-2 retap-clear stays. Do not promote unless Rardo says promote.

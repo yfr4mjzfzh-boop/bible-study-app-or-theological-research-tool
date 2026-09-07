@@ -1,6 +1,6 @@
 # Theos Logos — BUGS-PLAN (Chief Boss numbering)
 
-Updated 2026-09-07 ~10:44 ET
+Updated 2026-09-07 ~10:47 ET
 
 ## BUG-4 — DONE (prod via `d18ba5c`)
 ## BUG-11 — DONE (prod `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`)
@@ -16,7 +16,8 @@ Fix SHAs `9d84530` / `342c0fc` · tip `db50a6b` · dpl `dpl_H4oyBXRuCDjVxHwvKujW
 “love”→G26 noun / “spoke”→H2839 wheel spoke via STEPBible gloss; verse Greek → G25 / G2980. Local REF_GREEK overrides. Regressions: God G2316, Mark 1:1 G746, empty chips, noun love G26. **No promote.** Prod stays `d18ba5c`.
 
 ## Locked logo (header + PWA) — READY (preview, await QC)
-Wired LOCKED oxblood-book header mark + favicon/PWA icons on `scholar-desk`. SW `theos-logos-icons-v2`. Oxblood `#821111` unchanged. **No promote.** Prod stays `d18ba5c`.
+Wire SHA `9eb8d4f` · dpl `dpl_7kKJuW3xWg9Qk6BBgYxfFmEfXQXG` · https://theos-logos-official-tgj4uq9h5-castanedag2001-1468.vercel.app
+LOCKED oxblood-book header mark + favicon/PWA icons on `scholar-desk`. SW `theos-logos-icons-v2`. Oxblood `#821111` unchanged. **No promote.** Prod stays `d18ba5c`. Lexicon Strong’s notes unchanged.
 
 ## Lectern polish — READY (preview, phone)
 Laid grain, Night Lectern room, slips land, closed folio. max-width 639px only.
