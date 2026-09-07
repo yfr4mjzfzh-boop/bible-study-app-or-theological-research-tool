@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-07 ~10:35 ET)
+# Theos Logos — living handoff (updated 2026-09-07 ~10:44 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -41,8 +41,13 @@ Desk seats 9.
 Fix: verse-scoped `REF_GREEK` in `src/lib/lexicon/local.ts` (same class). Regressions held: Rom 8:28 God→G2316; Mark 1:1 beginning→G746; empty chips; noun “love” elsewhere still G26; unscoped “spoke” still H2839.
 **Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`.
 
-## Seal — READY (preview)
-Leather cover stays the home-screen icon. In the bar it is a flat oxblood stamp with the gold TL-cross (no 3D leather, no shadow) so it sits with the type. Regen: `python3 scripts/render-cover-icons.py`. Do not promote unless Rardo says promote.
+## Locked logo (header + PWA) — READY (preview, await QC)
+Wired LOCKED Theos Logos mark into `scholar-desk` (header seal + favicon/PWA icons). Source: `/workspace/theos-logos-logo/LOCKED-header.png` + `exports/`.
+- Header: `public/seal.png` ← cropped locked oxblood book mark (wordmark still “Theos Logos” + SCRIPTURE FIRST)
+- Favicon/PWA: `favicon.png`, `favicon-48.png`, `apple-touch-icon.png`, `__grok/icon-180.png`, `icon-192.png`, `icon-512.png`, `icon-512-maskable.png`
+- SW cache bumped `theos-logos-icons-v1` → `theos-logos-icons-v2`
+- Oxblood `#821111` unchanged. Manifest paths unchanged (`/icon-192`, `/icon-512`, maskable, apple-touch).
+**Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`.
 
 ## In this chapter — READY (preview)
 Collapsed by default, label only (“In this chapter”). Opens as a folio: height ease + staggered heading rise. BUG-2 retap-clear stays. Do not promote unless Rardo says promote.
@@ -56,6 +61,6 @@ When a verse (or range) is selected, a highlighter sits in the desk chrome. Tap 
 ## BUG-5 — ongoing
 
 ## STOP
-Wave-5B is live. Lexicon Strong’s fixes (love→G25 + spoke→G2980) + Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
+Wave-5B is live. Lexicon Strong’s fixes (love→G25 + spoke→G2980) + Locked logo + Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
 Open the preview on a phone (or narrow the pane). Desktop website is intentionally quieter.
 Next: BUG-5, or a new wave only if Rardo names it.
