@@ -1,4 +1,4 @@
-# Theos Logos — living handoff (updated 2026-09-07 ~09:50 ET)
+# Theos Logos — living handoff (updated 2026-09-07 ~10:35 ET)
 
 **Grok: start here.** Repo `HANDOFF.md` + `BUGS-PLAN.md` on `scholar-desk`.
 
@@ -32,13 +32,13 @@ Fix: `.tl-scroll` overflow-x hidden + overscroll-x none; SourceCard quote wrap; 
 ## BUG-4 — DONE (live)
 Desk seats 9.
 
-## Lexicon Strong’s (Rom 8:28 love) — READY (preview, await QC)
-- Fix SHA `9d84530` · tip `bbb4b22` on `scholar-desk`
-- Preview https://theos-logos-official-e699tsohx-castanedag2001-1468.vercel.app · dpl `dpl_2bZFMPtYZYAsUxTqE5HtVozD9rn2`
+## Lexicon Strong’s (Rom 8:28 love + Heb 1:1 spoke) — READY (preview, await QC)
+- Fix SHAs `9d84530` (love→G25) · `342c0fc` (spoke→G2980) · tip `342c0fc` on `scholar-desk` (docs tip follows)
+- Preview https://theos-logos-official-l16t9k4i3-castanedag2001-1468.vercel.app · dpl `dpl_H4oyBXRuCDjVxHwvKujW23XvisvM`
 - Branch alias https://theos-logos-official-git-scholar-desk-castanedag2001-1468.vercel.app
-Chip “love” on Romans 8:28 was G26 ἀγάπη (noun); verse Greek is verb ἀγαπῶσιν → **G25 ἀγαπάω**.
-Cause: STEPBible gloss index maps English “love”→G26; verb lives under “to love”. Not a lemma collapse.
-Fix: verse-scoped local note in `src/lib/lexicon/local.ts` (REF_GREEK). Rom 8:28 God stays G2316; Mark 1:1 beginning stays G746; empty-chip hiding unchanged; noun “love” elsewhere still G26.
+**Rom 8:28 “love”:** was G26 ἀγάπη (noun); verse Greek is ἀγαπῶσιν → **G25 ἀγαπάω**. Gloss index maps “love”→G26; verb under “to love”.
+**Heb 1:1 “spoke”:** was H2839 חִשֻּׁק (wheel spoke); verse Greek is ἐλάλησεν → **G2980 λαλέω**. Gloss index maps “spoke”→H2839; verb under “to speak”.
+Fix: verse-scoped `REF_GREEK` in `src/lib/lexicon/local.ts` (same class). Regressions held: Rom 8:28 God→G2316; Mark 1:1 beginning→G746; empty chips; noun “love” elsewhere still G26; unscoped “spoke” still H2839.
 **Await QC. Do not promote.** Production stays `d18ba5c` / `dpl_7ZgVQAckC5QiHX4EP5ZdaAUZ31nV`.
 
 ## Seal — READY (preview)
@@ -56,6 +56,6 @@ When a verse (or range) is selected, a highlighter sits in the desk chrome. Tap 
 ## BUG-5 — ongoing
 
 ## STOP
-Wave-5B is live. Lexicon Strong’s fix + Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
+Wave-5B is live. Lexicon Strong’s fixes (love→G25 + spoke→G2980) + Highlight + lectern polish are on scholar-desk preview — **do not promote** until Rardo says so.
 Open the preview on a phone (or narrow the pane). Desktop website is intentionally quieter.
 Next: BUG-5, or a new wave only if Rardo names it.
